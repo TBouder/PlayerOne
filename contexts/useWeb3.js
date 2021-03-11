@@ -19,7 +19,6 @@ const fetcher = url => axios.get(url).then(res => res.data)
 const Web3Context = createContext();
 export const Web3ContextApp = ({children}) => {
 	const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY;
-
 	const walletType = {
 		NONE: -1,
 		METAMASK: 0,
