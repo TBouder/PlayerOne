@@ -1,26 +1,27 @@
-import	axios	from	'axios';
+import	axios					from	'axios';
+import	{ethers}				from	'ethers';
+import	{bigNumber, address} 	from	'achievements/helpers'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address had a specific amount of some ERC20
 **		in the wallet lifetime
 ******************************************************************************/
-const	ERC20_JSON = [{"constant": true,"inputs": [{"name": "_owner","type": "address"}],"name": "balanceOf","outputs": [{"name": "balance","type": "uint256"}],"payable": false,"stateMutability": "view","type": "function"},{"anonymous": false,"inputs": [{"indexed": true,"internalType": "address","name": "src","type": "address"}, {"indexed": true,"internalType": "address","name": "dst","type": "address"}, {"indexed": false,"internalType": "uint256","name": "wad","type": "uint256"}],"name": "Transfer","type": "event"}];
+const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
 
-async function	checkERC20Amount(web3, userAddress, erc20Address, amount, data) {
-	const	erc20Json = new web3.eth.Contract(ERC20_JSON, erc20Address);
-	const	BN = web3.utils.BN;
-	const	toChecksumAddress = web3.utils.toChecksumAddress;
-	const	bigAmount = new BN(amount);
+async function	checkERC20Amount(provider, userAddress, erc20Address, amount, data) {
+	const	erc20Json = new ethers.Contract(erc20Address, ERC20_ABI, provider);
+	const	bigAmount = bigNumber.from(amount);
 	let		informations = undefined;
 	let		transactions = [];
 
 	//1 - checking if balance is above amount -> true if yes
-	const	balanceRightNow = await erc20Json.methods.balanceOf(userAddress).call().then(e => e);
-	if (new BN(balanceRightNow).gt(bigAmount)) {
+	const	balanceRightNow = await erc20Json.balanceOf(userAddress);
+	if (bigNumber.from(balanceRightNow).gt(bigAmount)) {
+		const	blockNumber = await provider.getBlockNumber();
 		return {unlocked: true, informations: {
-			blockNumber: await web3.eth.getBlockNumber(),
-			hash: (await web3.eth.getBlock('latest')).hash,
-			details: new BN(balanceRightNow).toString(),
+			blockNumber,
+			hash: (await provider.getBlock(blockNumber)).hash,
+			details: bigNumber.from(balanceRightNow).toString(),
 			timestamp: Date.now(),
 		}};
 	}
@@ -42,14 +43,14 @@ async function	checkERC20Amount(web3, userAddress, erc20Address, amount, data) {
 		transactions = data.erc20.filter(e => e.contractAddress === erc20Address);
 	}
 
-	let		balance = new BN(0);
+	let		balance = bigNumber.from(0);
 	const	failed = transactions.every(({from, to, value, blockNumber, hash, timeStamp}) => {
-		if (toChecksumAddress(from) === toChecksumAddress(userAddress) && toChecksumAddress(to) === toChecksumAddress(userAddress)) {
+		if (address(from) === address(userAddress) && address(to) === address(userAddress)) {
 			//nothing to do
-		} else if (toChecksumAddress(from) === toChecksumAddress(userAddress)) {
-			balance = balance.sub(new BN(value));
-		} else if (toChecksumAddress(to) === toChecksumAddress(userAddress)) {
-			balance = balance.add(new BN(value));
+		} else if (address(from) === address(userAddress)) {
+			balance = balance.sub(bigNumber.from(value));
+		} else if (address(to) === address(userAddress)) {
+			balance = balance.add(bigNumber.from(value));
 		}
 		if (balance.gte(bigAmount)) {
 			informations = {blockNumber, hash, timestamp: timeStamp * 1000, details: balance.toString()}

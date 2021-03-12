@@ -13,7 +13,7 @@ const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) 
 const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
 
 const	AchievementCard = forwardRef(({title, description, icon, background, unlocked, claimed, claim, informations, set_details, checkAchievement = () => null, version}, ref) => {
-	const	{web3, address, actions} = useWeb3();
+	const	{provider, address, actions} = useWeb3();
 	const	[animate, set_animate] = useState(false);
 	const	[animateEnd, set_animateEnd] = useState(false);
 	const	[isUnlocked, set_isUnlocked] = useState(unlocked);
@@ -27,38 +27,31 @@ const	AchievementCard = forwardRef(({title, description, icon, background, unloc
 	useEffect(() => set_informationsData(informations || {}), [informations])
 
 	async function	onClaim() {
-		const	result = await checkAchievement(web3, address);
+		const	result = await checkAchievement(provider, address);
 		if (!result) {
 			return null;
 		}
 		const	randomCount = randomInteger(1, 999999);
 		const	randomID = randomInteger(1, randomCount);
 		const	randomLevel = randomItem([null, null, null, null, null, 'cooper', 'cooper', 'cooper', 'cooper', 'silver', 'silver', 'gold'])
-		const	msgParams = JSON.stringify({
+		const	msgParams = {
 			domain: {
-				chainId: 1,
 				name: 'Degen Achievement',
+				version: '1',
+				chainId: 1,
 				verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-				version: '0.0.1',
 			},
 			message: {
 				action: 'Claiming',
 				title: title,
 				unlock: {
-					blockNumber: informationsData.blockNumber,
-					hash: informationsData.hash,
-					timestamp: informationsData.timestamp,
-					details: informationsData.details,
+					blockNumber: String(informationsData.blockNumber),
+					hash: String(informationsData.hash),
+					timestamp: String(informationsData.timestamp),
+					details: String(informationsData.details),
 				}
 			},
-			primaryType: 'Achievement',
 			types: {
-				EIP712Domain: [
-					{name: 'name', type: 'string'},
-					{name: 'version', type: 'string'},
-					{name: 'chainId', type: 'uint256'},
-					{name: 'verifyingContract', type: 'address'}
-				],
 				Achievement: [
 					{name: 'action', type: 'string'},
 					{name: 'title', type: 'string'},
@@ -71,8 +64,13 @@ const	AchievementCard = forwardRef(({title, description, icon, background, unloc
 					{name: 'details', type: 'string'}
 				],
 			},
-		});
-		actions.sign(msgParams, () => {
+		};
+		actions.sign(
+			JSON.stringify(msgParams),
+			msgParams.domain,
+			msgParams.types,
+			msgParams.message,
+			() => {
 			set_claimData({
 				id: randomID,
 				count: randomCount,
@@ -82,13 +80,7 @@ const	AchievementCard = forwardRef(({title, description, icon, background, unloc
 		});
 	}
 	function	onClaimed() {
-		// if (web3) {
-			// web3 = new Web3(window.ethereum);
-			// window.ethereum.enable();
-			// web3 = new Web3(window.ethereum);
-			// window.ethereum.enable();
-			// alert(web3.utils.hexToString(web3.utils.stringToHex(`${title} achievement already claimed`)))
-		// }
+		
 	}
 	function	renderClaimButton() {
 		if (isUnlocked && !isClaimed) {

@@ -50,6 +50,7 @@ function	Page({version}) {
 	const	[currentProviderType, set_currentProviderType] = useState(providerType);
 	const	[details, set_details] = useState({open: false});
 
+
 	useEffect(() => {
 		set_currentProviderType(providerType);
 	}, [providerType])

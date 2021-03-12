@@ -6,27 +6,27 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
-import	axios										from	'axios';
-import	useSWR, {mutate}							from	'swr';
-import	Web3										from	'web3';
-import	WalletConnect								from	'@walletconnect/client';
-import	QRCodeModal									from	'@walletconnect/qrcode-modal';
-import	useLocalStorage								from	'hook/useLocalStorage';
-import	Achievements								from	'achievements/achievements';
-import	UUID										from	'utils/uuid';
+import	axios												from	'axios';
+import	useSWR, {mutate}									from	'swr';
+import	{ethers}											from	'ethers';
+import	WalletConnect										from	'@walletconnect/client';
+import	QRCodeModal											from	'@walletconnect/qrcode-modal';
+import	useLocalStorage										from	'hook/useLocalStorage';
+import	Achievements										from	'achievements/achievements';
+import	UUID												from	'utils/uuid';
 
 const fetcher = url => axios.get(url).then(res => res.data)
 const Web3Context = createContext();
 export const Web3ContextApp = ({children}) => {
-	const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY;
+	const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 	const walletType = {
 		NONE: -1,
 		METAMASK: 0,
 		WALLET_CONNECT: 1,
 	};
 	const	[nonce, set_nonce] = useState(0);
-	const	[web3, set_web3] = useState(undefined);
 	const	[provider, set_provider] = useState(undefined);
+	const	[connector, set_connector] = useState(undefined);
 	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE); //-1 none | 0 web3 | 1 wc
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[walletData, set_walletData] = useState(undefined);
@@ -94,7 +94,7 @@ export const Web3ContextApp = ({children}) => {
 			return;
 		}
 		if (achievement.checkAchievement) {
-			const	{unlocked, informations} = await achievement.checkAchievement(web3, address, walletData);
+			const	{unlocked, informations} = await achievement.checkAchievement(provider, address, walletData);
 			achievement.unlocked = unlocked;
 			achievement.informations = informations || {};
 		}
@@ -122,7 +122,9 @@ export const Web3ContextApp = ({children}) => {
 		set_walletData(undefined);
 	}
 	function	onConnect(_provider, _walletType, _account) {
-		set_web3(window.web3);
+		set_achievements(Achievements());
+		set_achievementsVersion(0);
+		set_walletData(undefined);
 		set_provider(_provider);
 		set_providerType(_walletType);
 		set_address(_account);
@@ -138,52 +140,50 @@ export const Web3ContextApp = ({children}) => {
 		set_nonce(nonce + 1);
 	}
 	async function	connect(_providerType) {
-		window.web3 = await new Web3(window.ethereum || Web3.givenProvider || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf');
-		
+		const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 		if (_providerType === walletType.METAMASK) {
-			await window.ethereum.enable();
-			const	accounts = await window.web3.eth.getAccounts()
-			onConnect(window.web3.currentProvider, walletType.METAMASK, accounts[0]);
-
+			const	_provider = new ethers.providers.Web3Provider(web3Provider)
+			const	signer = _provider.getSigner();
+			const	address = await signer.getAddress();
+			onConnect(_provider, walletType.METAMASK, address);
 			ethereum.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
 			ethereum.on('disconnect', () => disconnect());
 
+
 		} else if (_providerType === walletType.WALLET_CONNECT) {
-			const connector = new WalletConnect({
-				bridge: 'https://bridge.walletconnect.org',
+			const _connector = new WalletConnect({
+				bridge: "https://bridge.walletconnect.org", // Required
 				qrcodeModal: QRCodeModal,
 			});
-	
-			if (connector.connected)
-				await connector.killSession();
-			await connector.createSession();
-			connector.on('connect', (err, d) => !err ? onConnect(connector, walletType.WALLET_CONNECT, d.params[0].accounts[0]) : null);
-			connector.on('disconnect', () => disconnect());
-			connector.on('session_update', (_, d) => onChangeAccount(d.params[0].accounts[0]));
+			if (_connector.connected)
+				await _connector.killSession();
+			await _connector.createSession();
+			set_connector(_connector)
+
+			_connector.on('connect', (err, d) => {
+				if (err) {
+					return console.error(err)
+				}
+				const	_provider = new ethers.providers.Web3Provider(web3Provider)
+				onConnect(_provider, walletType.WALLET_CONNECT, d.params[0].accounts[0]);
+			});
+			_connector.on('disconnect', () => disconnect());
+			_connector.on('session_update', (_, d) => onChangeAccount(d.params[0].accounts[0]));
 		}
 	}
 
 	/**************************************************************************
 	**	Web3 actions
 	**************************************************************************/
-	async function	sign(data, callback = () => null) {
+	async function	sign(data, domain, types, value, callback = () => null) {
 		if (providerType === walletType.WALLET_CONNECT) {
-			provider.signPersonalMessage([address, data])
+			connector.signPersonalMessage([address, data])
 			.then(result => callback(result))
 			.catch(error => console.error(error))
 		} else if (providerType === walletType.METAMASK) {
-			provider.send({
-				method: 'eth_signTypedData_v4',
-				params: [address, data],
-				from: address,
-			}, function(err, result) {
-				if (err) {
-					return console.dir(err)
-				} else if (result.error) {
-					return console.error(result.error)
-				}
-				callback(result);
-			});
+			const	signer = provider.getSigner();
+			const	signature = await signer._signTypedData(domain, types, value);
+			callback(signature);
 		}
 	}
 
@@ -191,13 +191,12 @@ export const Web3ContextApp = ({children}) => {
 		<Web3Context.Provider
 			children={children}
 			value={{
-				web3,
-				set_web3,
 				address,
 				connect,
 				disconnect,
 				providerType,
 				walletType,
+				provider,
 				achievements,
 				achievementsVersion,
 				achievementsCheckProgress,

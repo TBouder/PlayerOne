@@ -9,8 +9,18 @@ import	checkYearnDaiExploit	from	'achievements/checkYearnDaiExploit';
 import	checkERC20Amount		from	'achievements/checkERC20Amount';
 import	checkGasPrice			from	'achievements/checkGasPrice';
 import	checkAirdrop			from	'achievements/checkAirdrop';
+import	checkWalletLogin		from	'achievements/checkWalletLogin';
 
 const	Achievements = [
+	{
+		title: 'Pioneer',
+		description: 'Connect your wallet',
+		icon: '💸',
+		background: 'linear-gradient(to top, #fddb92 0%, #d1fdff 100%)',
+		unlocked: false,
+		claimed: false,
+		checkAchievement: (provider) => checkWalletLogin(provider),
+	},
 	{
 		title: 'Booty ASSY',
 		description: 'Own at least 1 ASSY DEFI index token.',
@@ -18,7 +28,7 @@ const	Achievements = [
 		background: 'conic-gradient(from 90deg at bottom right, cyan, rebeccapurple)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkERC20Amount(web3, address, '0xfa2562da1bba7b954f26c74725df51fb62646313', '1000000000000000000', data),
+		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xfa2562da1bba7b954f26c74725df51fb62646313', '1000000000000000000', data),
 	},
 	{
 		title: 'Like a Unicorn',
@@ -27,7 +37,7 @@ const	Achievements = [
 		background: 'conic-gradient(from -270deg at 75% 110%, fuchsia, floralwhite)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkAirdrop(web3, address, '10875192', '0x090D4613473dEE047c3f2706764f49E0821D256e', data),
+		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '10875192', '0x090D4613473dEE047c3f2706764f49E0821D256e', data),
 	},
 	{
 		title: 'Like a Dark Unicorn',
@@ -36,7 +46,7 @@ const	Achievements = [
 		background: 'linear-gradient(113.3deg, rgba(217,9,27,1) 6.9%, rgba(22,68,150,1) 75%)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkAirdrop(web3, address, '11517558', '0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe', data),
+		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '11517558', '0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe', data),
 	},
 	{
 		title: 'Pwnd',
@@ -45,7 +55,7 @@ const	Achievements = [
 		background: 'conic-gradient(at 125% 50%, #b78cf7, #ff7c94, #ffcf0d, #ff7c94, #b78cf7)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address) => checkYearnDaiExploit(web3, address),
+		checkAchievement: (provider, address) => checkYearnDaiExploit(provider, address),
 	},
 	{
 		title: 'Pwnd Protection',
@@ -62,7 +72,7 @@ const	Achievements = [
 		background: 'conic-gradient(from .5turn at center left, lime, cyan)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkERC20Amount(web3, address, '0xacd43e627e64355f1861cec6d3a6688b31a6f952', '114000000000000000000', data),
+		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xacd43e627e64355f1861cec6d3a6688b31a6f952', '114000000000000000000', data),
 	},
 	{
 		title: 'Airdrop seeker',
@@ -79,7 +89,7 @@ const	Achievements = [
 		background: 'linear-gradient(to bottom right, #8DD2C0, #1D722C)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkGasPrice(web3, address, '11565019', '60000000000', -1, data),
+		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '60000000000', -1, data),
 	},
 	{
 		title: 'Ethereum is SOOO Cheap',
@@ -88,7 +98,7 @@ const	Achievements = [
 		background: 'linear-gradient(109.6deg, rgba(255,174,0,1) 11.2%, rgba(255,0,0,1) 100.2%)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkGasPrice(web3, address, '11565019', '150000000000', 1, data),
+		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '150000000000', 1, data),
 	},
 	{
 		title: 'Instant trader',
@@ -97,7 +107,7 @@ const	Achievements = [
 		background: 'linear-gradient(to bottom right, #DB1926, #90388E)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkGasPrice(web3, address, '11565019', '1000000000000', 1, data),
+		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '1000000000000', 1, data),
 	},
 	{
 		title: 'Sushi & Bento',
@@ -114,7 +124,7 @@ const	Achievements = [
 		background: 'linear-gradient(to bottom right, #f7931a, #DF5820)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkERC20Amount(web3, address, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', '100000', data),
+		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', '100000', data),
 	},
 	{
 		title: 'Wrapper',
@@ -123,7 +133,7 @@ const	Achievements = [
 		background: 'linear-gradient(to bottom right, #c6c5d4, #37367b)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkERC20Amount(web3, address, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1000000000000000', data),
+		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1000000000000000', data),
 	},
 	{
 		title: 'Early adopter',
@@ -132,7 +142,7 @@ const	Achievements = [
 		background: 'linear-gradient( 183.5deg, rgba(244,173,6,1) 18.6%, rgba(229,251,31,1) 119.9%)',
 		unlocked: false,
 		claimed: false,
-		checkAchievement: (web3, address, data) => checkAirdrop(web3, address, '11526195', '0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68', data),
+		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '11526195', '0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68', data),
 	},
 	{
 		title: 'Sponsor',

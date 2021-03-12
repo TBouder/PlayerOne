@@ -5,14 +5,15 @@
 **	@Filename:				checkAirdrop.js
 ******************************************************************************/
 
-import	axios	from	'axios';
+import	axios		from	'axios';
+import	{ethers}	from	'ethers';
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address got an airdrop from a specific
 **		address
 ******************************************************************************/
-async function	checkAirdrop(web3, userAddress, startBlock, from, data) {
-	const	toChecksumAddress = web3.utils.toChecksumAddress;
+async function	checkAirdrop(_, userAddress, startBlock, from, data) {
+	const	address = ethers.utils.getAddress;
 	let		informations = undefined;
 	let		transactions = [];
 
@@ -27,7 +28,7 @@ async function	checkAirdrop(web3, userAddress, startBlock, from, data) {
 		transactions = data.erc20;
 	}
 	const	result = transactions.some((each) => {
-		if (toChecksumAddress(each.from) === toChecksumAddress(from) && toChecksumAddress(each.to) === toChecksumAddress(userAddress)) {
+		if (address(each.from) === address(from) && address(each.to) === address(userAddress)) {
 			informations = {
 				blockNumber: each.blockNumber,
 				hash: each.hash,

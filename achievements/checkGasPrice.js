@@ -5,15 +5,14 @@
 **	@Filename:				erc20Amount copy.js
 ******************************************************************************/
 
-import	axios	from	'axios';
+import	axios					from	'axios';
+import	{bigNumber, address} 	from	'achievements/helpers'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address has paid more than X since block Y
 ******************************************************************************/
-async function	checkGasPrice(web3, userAddress, block, amount, moreOrLess, data) {
-	const	toChecksumAddress = web3.utils.toChecksumAddress;
-	const	BN = web3.utils.BN;
-	const	bigAmount = new BN(amount);
+async function	checkGasPrice(_, userAddress, block, amount, moreOrLess, data) {
+	const	bigAmount = bigNumber.from(amount);
 	let		informations = undefined;
 	let		transactions = [];
 
@@ -30,13 +29,13 @@ async function	checkGasPrice(web3, userAddress, block, amount, moreOrLess, data)
 		}
 		transactions = [...responseERC20.result, ...responseNormal.result];
 	} else {
-		const	erc20Transactions = data.erc20.filter(each => each.blockNumber >= block && toChecksumAddress(each.from) === toChecksumAddress(userAddress));
-		const	normalTransactions = data.transactions.filter(each => each.blockNumber >= block && toChecksumAddress(each.from) === toChecksumAddress(userAddress));
+		const	erc20Transactions = data.erc20.filter(each => each.blockNumber >= block && address(each.from) === address(userAddress));
+		const	normalTransactions = data.transactions.filter(each => each.blockNumber >= block && address(each.from) === address(userAddress));
 		transactions = [...erc20Transactions, ...normalTransactions];
 	}
 
 	const	result = transactions.some((each) => {
-		if (moreOrLess === -1 && new BN(each.gasPrice).lte(bigAmount)) {
+		if (moreOrLess === -1 && bigNumber.from(each.gasPrice).lte(bigAmount)) {
 			informations = {
 				blockNumber: each.blockNumber,
 				hash: each.hash,
@@ -44,7 +43,7 @@ async function	checkGasPrice(web3, userAddress, block, amount, moreOrLess, data)
 				timestamp: each.timeStamp * 1000,
 			};
 			return true;
-		} else if (moreOrLess === 1 && new BN(each.gasPrice).gte(bigAmount)) {
+		} else if (moreOrLess === 1 && bigNumber.from(each.gasPrice).gte(bigAmount)) {
 			informations = {
 				blockNumber: each.blockNumber,
 				hash: each.hash,
