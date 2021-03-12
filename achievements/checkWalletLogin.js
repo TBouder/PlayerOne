@@ -6,7 +6,6 @@
 ******************************************************************************/
 
 async function	checkWalletLogin(provider) {
-	console.log(provider)
 	const	blockNumber = await provider.getBlockNumber();
 
 	return {unlocked: true, informations: {
