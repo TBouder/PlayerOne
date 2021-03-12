@@ -14,7 +14,7 @@ import	useWeb3								from	'contexts/useWeb3';
 
 const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k] < b[k]) ? -1 : 0));
 
-function	SectionAchievements({version, type, list, onDetails = () => null}) {
+function	SectionAchievements({type, list, onDetails = () => null}) {
 	if (list.length === 0) {
 		return null;
 	}
@@ -34,7 +34,6 @@ function	SectionAchievements({version, type, list, onDetails = () => null}) {
 				{sortBy(list, 'unlocked').map((each) => (
 					<AchievementCard
 						key={each.title}
-						version={version}
 						set_details={(e) => each.unlocked ? onDetails(e) : null}
 						{...each} />
 				))}
@@ -43,7 +42,7 @@ function	SectionAchievements({version, type, list, onDetails = () => null}) {
 	);
 }
 
-function	Page({version}) {
+function	Page() {
 	const	{providerType, connect, walletType, achievements, achievementsVersion, achievementsCheckProgress} = useWeb3();
 	const	[unlocked, set_unlocked] = useState(achievements.filter(e => e.unlocked).length);
 	const	[myAchievements, set_myAchievements] = useState([...achievements]);
@@ -133,7 +132,6 @@ function	Page({version}) {
 				<SectionAchievements 
 					type={'Achievements'}
 					list={myAchievements}
-					version={version}
 					// list={myAchievements.filter(e => e.unlocked)}
 					onDetails={set_details}
 				/>

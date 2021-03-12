@@ -16,6 +16,7 @@ import	Achievements										from	'achievements/achievements';
 import	UUID												from	'utils/uuid';
 
 const fetcher = url => fetch(url).then(r => r.json()).catch(e => console.error(e))
+
 const Web3Context = createContext();
 export const Web3ContextApp = ({children}) => {
 	const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';

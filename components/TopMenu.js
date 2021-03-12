@@ -33,7 +33,7 @@ function	StandardToggle({active, onClick, label}) {
 	)
 }
 
-function	TopMenu({version, set_version}) {
+function	TopMenu() {
 	const	refOutside = useRef();
 	const	[open, set_open] = useState(false);
 	const	{address, connect, disconnect, providerType, walletType} = useWeb3();
@@ -45,15 +45,6 @@ function	TopMenu({version, set_version}) {
 			<div
 				className={'relative flex flex-row items-center text-left z-50 pointer-events-auto'}
 				ref={refOutside}>
-				<div className={'mr-8'}>
-					<StandardToggle
-						label={`Version ${version.toUpperCase()}`}
-						active={version === 'b'}
-						onClick={() => {
-							console.log(`hello`)
-							set_version(version === 'a' ? 'b' : 'a')
-						}} />
-				</div>
 				<div>
 					<button
 						onClick={() => set_open(!open)}

@@ -5,7 +5,7 @@
 **	@Filename:				_app.js
 ******************************************************************************/
 
-import	React, {useState}			from	'react';
+import	React						from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
@@ -21,7 +21,6 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
-	const	[version, set_version] = useState('a');
 
 	return (
 		<>
@@ -37,13 +36,9 @@ function	AppWrapper(props) {
 			<div>
 				<div id={'app'} className={'flex'}>
 					<div className={'w-full pt-16 px-6 md:px-12 lg:px-16 xl:px-24'}>
-						<TopMenu
-							version={version}
-							set_version={set_version}
-						/>
+						<TopMenu />
 						<Component
 							key={router.route}
-							version={version}
 							element={props.element}
 							router={props.router}
 							{...pageProps} />
