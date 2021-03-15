@@ -170,10 +170,12 @@ export const Web3ContextApp = ({children}) => {
 			set_connector(_connector)
 
 			_connector.on('connect', (err, d) => {
+				console.log(err)
+				console.log(d)
 				if (err) {
 					return console.error(err)
 				}
-				const	_provider = new ethers.providers.Web3Provider(web3Provider)
+				const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
 				onConnect(_provider, walletType.WALLET_CONNECT, d.params[0].accounts[0]);
 			});
 			_connector.on('disconnect', () => disconnect());
