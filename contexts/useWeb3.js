@@ -75,7 +75,7 @@ export const Web3ContextApp = ({children}) => {
 	**	Updating the achievements when we have the wallet history
 	**************************************************************************/
 	useEffect(() => {
-		if (walletData && walletData.erc20 && walletData.transactions)
+		if (walletData && walletData.erc20 && walletData.transactions && address && provider)
 			checkAchievements();
 	}, [walletData]);
 

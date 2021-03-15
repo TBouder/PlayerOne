@@ -20,6 +20,13 @@ function	SectionAchievements({type, list, onDetails = () => null}) {
 	}
 	return (
 		<section className={'mt-12'} aria-label={`achievements-${type}`}>
+			<div className={'mb-5'}>
+				<div className={'pb-5 border-b border-gray-200'}>
+					<h3 className={'text-lg leading-6 font-medium text-gray-400'}>
+						{type}
+					</h3>
+				</div>
+			</div>
 			<motion.div initial={'initial'} animate={'enter'} exit={'exit'}>
 				<FlipMove
 					enterAnimation={'fade'}

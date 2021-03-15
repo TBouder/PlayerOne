@@ -13,9 +13,16 @@ async function	checkERC20Amount(provider, userAddress, erc20Address, amount, dat
 	const	bigAmount = bigNumber.from(amount);
 	let		informations = undefined;
 	let		transactions = [];
+	let		balanceRightNow = undefined;
 
 	//1 - checking if balance is above amount -> true if yes
-	const	balanceRightNow = await erc20Json.balanceOf(userAddress);
+	try {
+		balanceRightNow = await erc20Json.balanceOf(userAddress);
+	} catch (error) {
+		console.dir(error)
+		return {unlocked: false, informations: undefined};
+	}
+
 	if (bigNumber.from(balanceRightNow).gt(bigAmount)) {
 		const	blockNumber = await provider.getBlockNumber();
 		return {unlocked: true, informations: {
