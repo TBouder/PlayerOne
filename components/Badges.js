@@ -5,82 +5,358 @@
 **	@Filename:				Badges.js
 ******************************************************************************/
 
-const	badgeClassNames = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2';
+import	{useState, useEffect}	from	'react';
 
-export function Meta() {
+const	badgeClassNames = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2 mb-2 lg:mb-0';
+
+export function Meta({selected, onClick}) {
 	return (
 		<span
-		className={`${badgeClassNames} text-white`}
-		style={{
-			background: 'linear-gradient(90deg, rgba(20,184,166,0.2) 0%, rgba(139,92,246,0.2) 50%, rgba(236,72,153,0.2) 100%)',
-			color: 'rgba(139,92,246,1)'
-		}}>
-			{'Meta'}
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-teal-600 bg-opacity-20 border-teal-600 border-opacity-20 text-teal-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-teal-600 hover:bg-opacity-20 hover:border-teal-600 hover:border-opacity-20 hover:text-teal-800
+			`}>
+		{'Meta'}
 		</span>
 	);
 }
-export function DEFI() {
-	return (<span className={`${badgeClassNames} bg-gray-600 bg-opacity-20 text-gray-800`}>{'DEFI'}</span>);
-}
-export function Airdrop() {
-	return (<span className={`${badgeClassNames} bg-teal-600 bg-opacity-20 text-teal-800`}>{'Airdrop'}</span>);
-}
-export function Exploit() {
-	return (<span className={`${badgeClassNames} bg-red-600 bg-opacity-20 text-red-800`}>{'Exploit'}</span>);
-}
-export function Fees() {
-	return (<span className={`${badgeClassNames} bg-green-600 bg-opacity-20 text-green-800`}>{'Fees'}</span>);
-}
-export function ERC20() {
-	return (<span className={`${badgeClassNames} bg-amber-600 bg-opacity-20 text-amber-800`}>{'ERC-20'}</span>);
-}
-export function Protocole1Inch() {
+export function DEFI({selected, onClick}) {
 	return (
-		<span className={`${badgeClassNames}`} style={{background: 'rgba(223, 235, 255, 1)', color: 'rgba(85, 153, 255, 1)'}}>
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-gray-600 bg-opacity-20 border-gray-600 border-opacity-20 text-gray-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-gray-600 hover:bg-opacity-20 hover:border-gray-600 hover:border-opacity-20 hover:text-gray-800
+			`}>
+			{'DEFI'}
+		</span>
+	);
+}
+export function Airdrop({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-orange-600 bg-opacity-20 border-orange-600 border-opacity-20 text-orange-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-orange-600 hover:bg-opacity-20 hover:border-orange-600 hover:border-opacity-20 hover:text-orange-800
+			`}>
+			{'Airdrop'}
+		</span>
+	);
+}
+export function Exploit({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-red-600 bg-opacity-20 border-red-600 border-opacity-20 text-red-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-red-600 hover:bg-opacity-20 hover:border-red-600 hover:border-opacity-20 hover:text-red-800
+			`}>
+			{'Exploit'}
+		</span>
+	);
+}
+export function Fees({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-green-600 bg-opacity-20 border-green-600 border-opacity-20 text-green-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-green-600 hover:bg-opacity-20 hover:border-green-600 hover:border-opacity-20 hover:text-green-800
+			`}>
+			{'Fees'}
+		</span>
+	);
+}
+export function ERC20({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-amber-600 bg-opacity-20 border-amber-600 border-opacity-20 text-amber-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-amber-600 hover:bg-opacity-20 hover:border-amber-600 hover:border-opacity-20 hover:text-amber-800
+			`}>
+			{'ERC-20'}
+		</span>
+	);
+}
+export function Protocole1Inch({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-1inch-600 bg-opacity-20 border-1inch-600 border-opacity-20 text-1inch-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-1inch-600 hover:bg-opacity-20 hover:border-1inch-600 hover:border-opacity-20 hover:text-1inch-800
+			`}>
 			{'1Inch'}
 		</span>
 	);
 }
-export function ProtocoleUniswap() {
+export function ProtocoleUniswap({selected, onClick}) {
 	return (
 		<span
-			className={`${badgeClassNames}`}
-			style={{
-				background: 'linear-gradient(128.17deg, rgba(189, 0, 255, 0.2) -14.78%, rgba(255, 31, 138, 0.2) 110.05%)',
-				color: '#BD00FF'
-			}}>
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-uniswap-600 bg-opacity-20 border-uniswap-600 border-opacity-20 text-uniswap-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-uniswap-600 hover:bg-opacity-20 hover:border-uniswap-600 hover:border-opacity-20 hover:text-uniswap-800
+			`}>
 			{'Uniswap'}
 		</span>
 	);
 }
-export function ProtocoleSushiswap() {
+export function ProtocoleSushiswap({selected, onClick}) {
 	return (
 		<span
-			className={`${badgeClassNames}`}
-			style={{background: 'radial-gradient(circle at left top, rgba(37, 167, 219, 0.3), rgba(250, 82, 160, 0.3)', color: 'rgb(250, 81, 157)'}}>
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-sushiswap-600 bg-opacity-20 border-sushiswap-600 border-opacity-20 text-sushiswap-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-sushiswap-600 hover:bg-opacity-20 hover:border-sushiswap-600 hover:border-opacity-20 hover:text-sushiswap-800
+			`}>
 			{'Sushiswap'}
 		</span>
 	);
 }
+export function ProtocoleYearn({selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-yearn-600 bg-opacity-20 border-yearn-600 border-opacity-20 text-yearn-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-yearn-600 hover:bg-opacity-20 hover:border-yearn-600 hover:border-opacity-20 hover:text-yearn-800
+			`}>
+			{'Yearn'}
+		</span>
+	);
+}
+export function Default({type, selected, onClick}) {
+	return (
+		<span
+			onClick={onClick}
+			className={`
+				${badgeClassNames}
+				${!selected ?
+					'bg-gray-100 border-gray-200 text-gray-400'
+					:
+					'bg-gray-600 bg-opacity-20 border-gray-600 border-opacity-20 text-gray-800'
+				}
+				cursor-pointer border border-solid 
+				hover:bg-gray-600 hover:bg-opacity-20 hover:border-gray-600 hover:border-opacity-20 hover:text-gray-800
+			`}>
+			{type}
+		</span>
+	);
+}
 
-export function ProtocoleAAVE() {
-	return (<span className={`${badgeClassNames}`}>{'AAVE'}</span>);
-}
-export function ProtocoleYearn() {
-	return (<span className={`${badgeClassNames}`} style={{background: 'rgba(0, 106, 227, 0.2)', color: 'rgb(0, 106, 227)'}}>{'Yearn'}</span>);
+export	function getBadgeList() {
+	return ([
+		'meta',
+		'defi',
+		'airdrop',
+		'exploit',
+		'fees',
+		'erc20',
+		'1inch',
+		'uniswap',
+		'sushiswap',
+		'yearn',
+	].map(e => e));
 }
 
-export function Badge({type}) {
-	if (type === 'meta') return (<Meta />);
-	if (type === 'defi') return (<DEFI />);
-	if (type === 'airdrop') return (<Airdrop />);
-	if (type === 'exploit') return (<Exploit />);
-	if (type === 'fees') return (<Fees />);
-	if (type === 'erc20') return (<ERC20 />);
-	if (type === '1inch') return (<Protocole1Inch />);
-	if (type === 'uniswap') return (<ProtocoleUniswap />);
-	if (type === 'sushiswap') return (<ProtocoleSushiswap />);
-	if (type === 'aave') return (<ProtocoleAAVE />);
-	if (type === 'yearn') return (<ProtocoleYearn />);
-	return (<span className={`${badgeClassNames} bg-gray-600 bg-opacity-20 text-gray-800`}>{type}</span>);
+function	Badge({type, defaultSelected, onClick, disable}) {
+	const	[selected, set_selected] = useState(defaultSelected);
+
+	if (type === 'meta') {
+		return (
+			<Meta
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'defi') {
+		return (
+			<DEFI
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'airdrop') {
+		return (
+			<Airdrop
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'exploit') {
+		return (
+			<Exploit
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'fees') {
+		return (
+			<Fees
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'erc20') {
+		return (
+			<ERC20
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === '1inch') {
+		return (
+			<Protocole1Inch
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'uniswap') {
+		return (
+			<ProtocoleUniswap
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'sushiswap') {
+		return (
+			<ProtocoleSushiswap
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	if (type === 'yearn') {
+		return (
+			<ProtocoleYearn
+				selected={selected}
+				onClick={() => {
+					if (disable)
+						return null;
+					set_selected(s => !s);
+					onClick();
+				}} />
+		);
+	}
+	return (
+		<Default
+			type={type}
+			selected={selected}
+			onClick={() => {
+				if (disable)
+					return null;
+				set_selected(s => !s);
+				onClick();
+			}} />
+	);
 }
+
+export default Badge;

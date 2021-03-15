@@ -15,6 +15,7 @@ module.exports = {
       pink: colors.pink,
       green: colors.green,
       emerald: colors.emerald,
+      orange: colors.orange,
       red: colors.red,
       white: colors.white,
     },
@@ -28,6 +29,24 @@ module.exports = {
       'full': '100%',
     },
     extend: {
+      colors: {
+        'uniswap': {
+          600: 'rgba(189, 0, 255, 0.2)',
+          800: '#BD00FF',
+        },
+        '1inch': {
+          600: 'rgba(223, 235, 255, 1)',
+          800: 'rgba(85, 153, 255, 1)',
+        },
+        'sushiswap': {
+          600: 'rgba(250, 82, 160, 0.2)',
+          800: 'rgba(250, 82, 160, 1)',
+        },
+        'yearn': {
+          600: 'rgba(0, 106, 227, 0.2)',
+          800: 'rgba(0, 106, 227, 1)',
+        }
+      },
       scale: {
         '101': '1.01',
         '102': '1.02',

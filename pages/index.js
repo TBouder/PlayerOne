@@ -5,16 +5,29 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect}				from	'react';
+import	{useState, useEffect, useLayoutEffect}				from	'react';
 import	Image								from	'next/image';
 import	{motion}							from	'framer-motion';
 import	FlipMove							from	'react-flip-move';
 import	AchievementCard						from	'components/AchievementCard';
 import	useWeb3								from	'contexts/useWeb3';
+import	Badge, {getBadgeList}				from	'components/Badges';
 
 const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k] < b[k]) ? -1 : 0));
+const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0 : 1].push(i), acc), [[], []]);
+const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
 
 function	SectionAchievements({type, list, onDetails = () => null}) {
+	const	[achievementList, set_achievementList] = useState(list);
+	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
+	const	[nonce, set_nonce] = useState(0);
+
+	useLayoutEffect(() => {
+		const	[inList, outList] = partition(list, e => hasIntersection(e.badges, badgeList));
+		const	sortByUnlocked = sortBy(inList, 'unlocked');
+		set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
+	}, [nonce, list]);
+
 	if (list.length === 0) {
 		return null;
 	}
@@ -25,16 +38,39 @@ function	SectionAchievements({type, list, onDetails = () => null}) {
 					<h3 className={'text-lg leading-6 font-medium text-gray-400'}>
 						{type}
 					</h3>
+					<div className={'mt-2'}>
+						{getBadgeList().map((t, index) => (
+							<Badge
+								key={t}
+								type={t}
+								defaultSelected
+								onClick={() => {
+									const	_badgeList = badgeList;
+									const	_index = _badgeList.indexOf(t);
+									if (_index > -1) {
+										_badgeList.splice(_index, 1);
+									} else {
+										_badgeList.push(t);
+									}
+									set_badgeList(_badgeList); 
+									setTimeout(() => set_nonce(n => n + 1), 0);
+								}}
+								/>
+							)
+						)}
+					</div>
 				</div>
 			</div>
 			<motion.div initial={'initial'} animate={'enter'} exit={'exit'}>
 				<FlipMove
 					enterAnimation={'fade'}
 					leaveAnimation={'fade'}
+					maintainContainerHeight
 					className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'}>
-					{sortBy(list, 'unlocked').map((each) => (
+					{achievementList.map((each) => (
 						<AchievementCard
 							key={each.UUID}
+							hidden={each.hidden}
 							set_details={(e) => each.unlocked ? onDetails(e) : null}
 							{...each} />
 					))}

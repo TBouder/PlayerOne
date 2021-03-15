@@ -23,7 +23,7 @@ const cardVariants = {
 const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
 
-const	AchievementCard = forwardRef(({UUID, title, description, icon, background, unlocked, claimed, claim, informations, set_details, checkAchievement = () => null}, ref) => {
+const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, background, unlocked, claimed, claim, informations, set_details, checkAchievement = () => null}, ref) => {
 	const	{provider, address, actions} = useWeb3();
 	const	[isUnlocked, set_isUnlocked] = useState(unlocked);
 	const	[isClaimed, set_isClaimed] = useState(claimed);
@@ -119,10 +119,10 @@ const	AchievementCard = forwardRef(({UUID, title, description, icon, background,
 		}
 		return null;
 	}
-	
+
 	return (
 		<Link href={`/details/${UUID}`}>
-		  <motion.div variants={cardVariants}>
+		  <motion.div variants={cardVariants} className={hidden ? 'not-visible' : 'visible'}>
 			<div
 				ref={ref}
 				className={'flex w-full lg:w-auto h-auto lg:h-96'}

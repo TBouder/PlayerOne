@@ -231,7 +231,9 @@ input[type=number] {
 .-m-1px {
 	margin: -1px;
 }
-
+.not-visible {
+	visibility: hidden;
+}
 
 [type='checkbox'],
 [type='radio'] {

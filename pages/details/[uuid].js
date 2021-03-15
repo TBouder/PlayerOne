@@ -9,7 +9,7 @@ import	{useState, useEffect}				from	'react';
 import	Image								from	'next/image';
 import	{motion}							from	'framer-motion';
 import	Achievements						from	'achievements/achievements';
-import	* as Badges							from	'components/Badges';
+import	Badge								from	'components/Badges';
 
 let easing = [0.175, 0.85, 0.42, 0.96];
 
@@ -83,7 +83,7 @@ function	SectionStatus({achievement, isUnlocked, informationsData}) {
 							</div>
 							<div className={'-mt-2'}>
 								<div className={'flow-root mb-2'}>
-									{achievement.badges.map((e, i) => <Badges.Badge key={`${e}_${i}`} type={e} />)}
+									{achievement.badges.map((e, i) => <Badge key={`${e}_${i}`} defaultSelected disable type={e} />)}
 								</div>
 								<p className={'text-xl font-bold text-gray-900 sm:text-2xl'}>
 									{achievement.title}
