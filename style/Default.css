@@ -197,120 +197,6 @@ input:focus {
 	border: 1px solid hsl(0,0%,80%);
 }
 
-
-/******************************************************************************
-**	Table grids
-******************************************************************************/
-@media (min-width: 640px) {
-	.tableGridWrapperFooter {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(14rem,8fr)
-			minmax(5rem,5fr)
-			minmax(5rem,5fr)
-			minmax(4rem,4fr)
-			minmax(3rem,1fr);
-	}
-
-	.tableGridWrapperHeader,
-	.tableGridWrapper {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(2rem,0.5fr)
-			minmax(2rem,0.5fr)
-			minmax(10rem,7fr)
-			minmax(5rem,5fr)
-			minmax(5rem,5fr)
-			minmax(4rem,4fr)
-			minmax(3rem,1fr);
-	}
-}
-@media (min-width: 768px) {}
-@media (min-width: 1024px) {
-	.priceTableGridWrapper {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(1rem,0.5fr)
-			minmax(2rem,1fr)
-			minmax(7rem,3fr)
-			minmax(5rem,2fr)
-			minmax(2rem,1fr)
-			minmax(4rem,2fr)
-			minmax(3rem,1fr);
-	}
-
-	.tableGridWrapperFooter {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(14rem,8fr)
-			minmax(5rem,5fr)
-			minmax(5rem,5fr)
-			minmax(4rem,4fr)
-			minmax(3rem,1fr);
-	}
-
-	.tableGridWrapperHeader,
-	.tableGridWrapper {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(2rem,0.5fr)
-			minmax(2rem,0.5fr)
-			minmax(10rem,7fr)
-			minmax(5rem,5fr)
-			minmax(5rem,5fr)
-			minmax(4rem,4fr)
-			minmax(3rem,1fr);
-	}
-}
-@media (min-width: 1280px) {
-	.priceTableGridWrapper {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(1rem,0.5fr),
-			minmax(2rem,1fr)
-			minmax(7rem,3fr)
-			minmax(5rem,2fr)
-			minmax(2rem,1fr)
-			minmax(4rem,2fr)
-			minmax(3rem,1fr);
-	}
-
-	.tableGridWrapperFooter {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(24rem,10fr)
-			minmax(10rem,4fr)
-			minmax(10rem,4fr)
-			minmax(8rem,2fr)
-			minmax(3rem,1fr);
-	}
-
-	.tableGridWrapperHeader,
-	.tableGridWrapper {
-		position: relative;
-		display: grid;
-		grid-template-columns:
-			minmax(2rem,0.5fr)
-			minmax(2rem,0.5fr)
-			minmax(20rem,9fr)
-			minmax(10rem,4fr)
-			minmax(10rem,4fr)
-			minmax(8rem,2fr)
-			minmax(3rem,1fr);
-	}
-}
-
-
-/******************************************************************************
-**	Input remove stepper
-******************************************************************************/
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -320,61 +206,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 input[type=number] {
     -moz-appearance:textfield;
-}
-
-
-/******************************************************************************
-**	React Aria Modal -> TODO: CLEAN
-******************************************************************************/
-.modal {
-  background: #fff;
-  outline: 0;
-  min-width: 250px;
-  max-width: 500px;
-  border-radius: 4px;
-}
-
-.modal-header,
-.modal-body,
-.modal-footer {
-  padding: 0.5em 1.5em;
-}
-
-.modal-header {
-  border-bottom: 1px solid #eee;
-}
-
-.modal-title {
-  margin: 0;
-}
-
-.modal-footer {
-  border-top: 1px solid #eee;
-  text-align: right;
-}
-
-.modal--animated {
-  opacity: 0.3;
-  transform: scale(1.1) translateY(-10px);
-  -webkit-transform: scale(1.1) translateY(-10px);
-  transition: all 0.3s linear;
-  -webkit-transition: all 0.3s linear;
-}
-
-.modal--animated.has-entered {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-  -webkit-transform: scale(1) translateY(0);
-}
-
-.underlay {
-  background-color: rgba(0, 0, 0, 0);
-  transition: all 0.3s linear;
-  -webkit-transition: all 0.3s linear;
-}
-
-.underlay.has-entered {
-  background-color: rgba(0, 0, 0, 0.5);
 }
 
 /******************************************************************************
@@ -571,6 +402,13 @@ input[type=number] {
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
 }
+.text-gradient-revert {
+	background: linear-gradient(90deg, rgba(236,72,153,1) 0%,  rgba(139,92,246,1) 50%, rgba(20,184,166,1) 100%);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
 .contents {
 	display: contents;
 }
@@ -629,4 +467,7 @@ input[type=number] {
 }
 .-rotateY-180 {
 	transform: rotateY(-180deg);
+}
+.toWhite {
+	filter: brightness(0) invert(1);
 }

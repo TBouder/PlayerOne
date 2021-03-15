@@ -11,6 +11,7 @@ import	Router						from	'next/router';
 import	Head						from	'next/head';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
 import	TopMenu						from	'components/TopMenu';
+import	{AnimatePresence}			from	'framer-motion';
 
 import	'style/Default.css'
 import	'tailwindcss/tailwind.css';
@@ -18,6 +19,17 @@ import	'tailwindcss/tailwind.css';
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
+
+let easing = [0.175, 0.85, 0.42, 0.96];
+
+const textVariants = {
+  exit: { y: 100, opacity: 0, transition: { duration: 0.5, ease: easing } },
+  enter: {
+    y: 0,
+    opacity: 1,
+    transition: { delay: 0.1, duration: 0.5, ease: easing }
+  }
+};
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
@@ -35,14 +47,18 @@ function	AppWrapper(props) {
 			</Head>
 			<div>
 				<div id={'app'} className={'flex'}>
-					<div className={'w-full pt-16 px-6 md:px-12 lg:px-16 xl:px-24'}>
-						<TopMenu />
-						<Component
-							key={router.route}
-							element={props.element}
-							router={props.router}
-							{...pageProps} />
-					</div>
+					<AnimatePresence exitBeforeEnter>
+						<div className={'w-full'} key={router.pathname}>
+							<TopMenu />
+							<div style={{marginTop: 52}}>
+								<Component
+									key={router.route}
+									element={props.element}
+									router={props.router}
+									{...pageProps} />
+							</div>
+						</div>
+					</AnimatePresence>
 				</div>
 			</div>
 			<div id={'portal-root'} />

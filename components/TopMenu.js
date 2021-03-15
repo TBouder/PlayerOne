@@ -7,6 +7,8 @@
 
 import	{useState, useRef}			from	'react';
 import	Image						from	'next/image';
+import	Link						from	'next/link';
+import	{useRouter}					from	'next/router';
 import	{Transition}				from	'@headlessui/react';
 import	useWeb3						from	'contexts/useWeb3';
 import	useOnClickOutside			from	'hook/useOnClickOutside';
@@ -37,11 +39,17 @@ function	TopMenu() {
 	const	refOutside = useRef();
 	const	[open, set_open] = useState(false);
 	const	{address, connect, disconnect, providerType, walletType} = useWeb3();
+	const	router = useRouter();
 
 	useOnClickOutside(refOutside, () => set_open(false));
 
 	return (
-		<div className={'w-full py-2 pr-4 flex justify-end items-center fixed top-0 left-0 z-10 bg-white bg-opacity-90 pointer-events-none'}>
+		<div className={'w-full py-2 px-4 flex justify-between items-center fixed top-0 left-0 z-10 bg-white bg-opacity-90 pointer-events-none'}>
+			<div className={'relative flex flex-row items-center text-left z-50 pointer-events-auto'}>
+				{router.pathname !== '/' ? <Link href={'/'} passHref>
+					<svg className={'w-6 h-6 text-gray-400 hover:text-gray-900 cursor-pointer'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+				</Link> : null}
+			</div>
 			<div
 				className={'relative flex flex-row items-center text-left z-50 pointer-events-auto'}
 				ref={refOutside}>

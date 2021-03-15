@@ -18,7 +18,7 @@ module.exports = withBundleAnalyzer({
 		ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
 	},
 	images: {
-		domains: ['images.unsplash.com'],
+		domains: ['images.unsplash.com', 'source.unsplash.com'],
 	},
   	optimization: {
 		minimize: true,
