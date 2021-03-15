@@ -5,17 +5,20 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect, useLayoutEffect}				from	'react';
-import	Image								from	'next/image';
-import	{motion}							from	'framer-motion';
-import	FlipMove							from	'react-flip-move';
-import	AchievementCard						from	'components/AchievementCard';
-import	useWeb3								from	'contexts/useWeb3';
-import	Badge, {getBadgeList}				from	'components/Badges';
+import	{useState, useEffect, useLayoutEffect}	from	'react';
+import	Image									from	'next/image';
+import	{motion}								from	'framer-motion';
+import	FlipMove								from	'react-flip-move';
+import	useSWR									from	'swr';
+import	axios									from	'axios';
+import	AchievementCard							from	'components/AchievementCard';
+import	useWeb3									from	'contexts/useWeb3';
+import	Badge, {getBadgeList}					from	'components/Badges';
 
 const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k] < b[k]) ? -1 : 0));
 const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0 : 1].push(i), acc), [[], []]);
 const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
+const fetcher = url => axios.get(url).then(res => res.data);
 
 function	SectionAchievements({type, list, unlocked, onDetails = () => null}) {
 	const	[achievementList, set_achievementList] = useState(list);
@@ -80,13 +83,30 @@ function	SectionAchievements({type, list, unlocked, onDetails = () => null}) {
 	);
 }
 
-function	Page() {
-	const	{providerType, connect, walletType, achievements, achievementsVersion, achievementsCheckProgress} = useWeb3();
+function	Page(props) {
+	const	{data: achievements} = useSWR('/api/achievement', fetcher, {initialData: props.achievements})
+	const	{providerType, connect, walletType, achievementsVersion, achievementsCheckProgress} = useWeb3();
 	const	[unlocked, set_unlocked] = useState(achievements.filter(e => e.unlocked).length);
 	const	[myAchievements, set_myAchievements] = useState([...achievements]);
 	const	[currentProviderType, set_currentProviderType] = useState(providerType);
 	const	[details, set_details] = useState({open: false});
 
+	// console.log(data)
+
+	function save() {
+		achievements.forEach(async (e) => {
+			const res = await axios.post('/api/achievement', {
+				UUID: e.UUID,
+				title: e.title,
+				description: e.description,
+				icon: e.icon,
+				background: e.background,
+				badges: e.badges,
+				check: e.check || null,
+			});
+			console.dir(res)
+		})
+	}
 
 	useEffect(() => {
 		set_currentProviderType(providerType);
@@ -172,5 +192,13 @@ function	Page() {
 	)
 }
 
+export async function getStaticProps() {
+	const	uri = process.env.VERCEL_ENV !== 'development' ?
+				`https://${process.env.VERCEL_URL}` :
+				`http://${process.env.VERCEL_URL}`;
+	const	achievements = await fetcher(`${uri}/api/achievement`)
+
+	return {props: {achievements}}
+}
 
 export default Page;

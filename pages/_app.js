@@ -9,9 +9,9 @@ import	React						from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
+import	{AnimatePresence}			from	'framer-motion';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
 import	TopMenu						from	'components/TopMenu';
-import	{AnimatePresence}			from	'framer-motion';
 
 import	'style/Default.css'
 import	'tailwindcss/tailwind.css';
@@ -68,7 +68,7 @@ function	AppWrapper(props) {
 
 function	MyApp(props) {
 	const	{Component, pageProps} = props;
-	
+
 	return (
 		<Web3ContextApp>
 			<AppWrapper
@@ -79,6 +79,5 @@ function	MyApp(props) {
 		</Web3ContextApp>
 	);
 }
-
 
 export default MyApp;

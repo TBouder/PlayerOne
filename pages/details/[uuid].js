@@ -204,7 +204,7 @@ function	PageContent({achievement}) {
 }
 
 
-function	Page({achievement}) {
+function	Page({achievement, isConnected}) {
 	return (
 		<div className={'bg-gray-50 min-h-screen'}>
 			<motion.div initial="exit" animate="enter" exit="exit">
@@ -226,6 +226,7 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({params}) {
 	const	achievement = Achievements().find(e => e.UUID === params.uuid);
+
 	return	{props: {
 		achievement: {
 			UUID: achievement.UUID,

@@ -7,6 +7,7 @@
 
 import	{useState, useEffect, forwardRef}	from	'react';
 import	Link								from	'next/link';
+import	axios								from	'axios';
 import	{motion}							from	'framer-motion';
 import	useWeb3								from	'contexts/useWeb3';
 
@@ -81,7 +82,11 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 			msgParams.domain,
 			msgParams.types,
 			msgParams.message,
-			() => {
+			async (signature) => {
+			const res = await axios.post('/api/address', {
+				address, signature, date: new Date()
+			});
+			console.log(signature, res)
 			set_claimData({
 				id: randomID,
 				count: randomCount,
