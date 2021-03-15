@@ -17,7 +17,7 @@ const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k
 const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0 : 1].push(i), acc), [[], []]);
 const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
 
-function	SectionAchievements({type, list, onDetails = () => null}) {
+function	SectionAchievements({type, list, unlocked, onDetails = () => null}) {
 	const	[achievementList, set_achievementList] = useState(list);
 	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
 	const	[nonce, set_nonce] = useState(0);
@@ -26,7 +26,7 @@ function	SectionAchievements({type, list, onDetails = () => null}) {
 		const	[inList, outList] = partition(list, e => hasIntersection(e.badges, badgeList));
 		const	sortByUnlocked = sortBy(inList, 'unlocked');
 		set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
-	}, [nonce, list]);
+	}, [nonce, list, unlocked]);
 
 	if (list.length === 0) {
 		return null;
@@ -39,7 +39,7 @@ function	SectionAchievements({type, list, onDetails = () => null}) {
 						{type}
 					</h3>
 					<div className={'mt-2'}>
-						{getBadgeList().map((t, index) => (
+						{getBadgeList().map((t) => (
 							<Badge
 								key={t}
 								type={t}
@@ -164,6 +164,7 @@ function	Page() {
 				<SectionAchievements 
 					type={'Achievements'}
 					list={myAchievements}
+					unlocked={unlocked}
 					onDetails={set_details}
 				/>
 			</div>

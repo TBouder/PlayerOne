@@ -5,7 +5,7 @@
 **	@Filename:				Badges.js
 ******************************************************************************/
 
-import	{useState, useEffect}	from	'react';
+import	{useState}	from	'react';
 
 const	badgeClassNames = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium mr-2 mb-2 lg:mb-0';
 
