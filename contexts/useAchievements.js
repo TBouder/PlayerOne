@@ -42,7 +42,6 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 
 	useEffect(() => {
 		if (!achievements) {
-			console.log(`heeeere`)
 			set_achievements(achievementsList.map(e => ({...e})));
 		}
 	}, [achievementsList])

@@ -31,7 +31,6 @@ const handler = nextConnect()
 	**	queries, send as parameters
 	**************************************************************************/
 	.get(async (req, res) => {
-		console.log(`GET ACHIEVEMENTS`)
         const	documents = await req.db.collection(collectionName).find({}).toArray();
 	    res.json(documents);
 	})

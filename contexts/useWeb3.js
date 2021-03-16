@@ -34,7 +34,6 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 
 	useEffect(() => {
 		if (walletData.ready) {
-			console.warn(`here`)
 			shouldRecheck();
 		}
 	}, [walletData.ready])

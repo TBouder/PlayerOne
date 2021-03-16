@@ -165,7 +165,6 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 function	Page(props) {
 	const	{achievements, achievementsNonce} = useAchievements();
 	const	achievementsList = achievements || props.achievementsList;
-	console.warn(achievements, props.achievementsList)
 	const	[unlocked, set_unlocked] = useState(achievementsList.filter(e => e.unlocked).length);
 	const	[myAchievements, set_myAchievements] = useState([...achievementsList]);
 
@@ -214,8 +213,9 @@ function	Page(props) {
 
 export async function getStaticProps() {
 	const	uri = process.env.VERCEL_ENV !== 'development' ?
-				`https://${process.env.VERCEL_URL}` :
+				`${process.env.VERCEL_URL}` :
 				`http://${process.env.VERCEL_URL}`;
+	console.log(uri)
 	const	achievements = await fetcher(`${uri}/api/achievement`)
 
 	return {props: {achievementsList: achievements}}
