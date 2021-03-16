@@ -113,9 +113,12 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	}
 	async function	connect(_providerType) {
 		const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
+		if (window.ethereum)
+			await window.ethereum.enable();
+
 		if (_providerType === walletType.METAMASK) {
 			const	_provider = new ethers.providers.Web3Provider(web3Provider)
-			const	signer = _provider.getSigner();
+			const	signer = await _provider.getSigner();
 			const	address = await signer.getAddress();
 			onConnect(_provider, walletType.METAMASK, address);
 			ethereum.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
