@@ -5,12 +5,13 @@
 **	@Filename:				_app.js
 ******************************************************************************/
 
-import	React						from	'react';
+import	React, {useState}			from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
 import	{AnimatePresence}			from	'framer-motion';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
+import	{AchievementsContextApp}	from	'contexts/useAchievements';
 import	TopMenu						from	'components/TopMenu';
 
 import	'style/Default.css'
@@ -19,17 +20,6 @@ import	'tailwindcss/tailwind.css';
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
-
-let easing = [0.175, 0.85, 0.42, 0.96];
-
-const textVariants = {
-  exit: { y: 100, opacity: 0, transition: { duration: 0.5, ease: easing } },
-  enter: {
-    y: 0,
-    opacity: 1,
-    transition: { delay: 0.1, duration: 0.5, ease: easing }
-  }
-};
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
@@ -68,14 +58,28 @@ function	AppWrapper(props) {
 
 function	MyApp(props) {
 	const	{Component, pageProps} = props;
+	const	[restartIndex, set_restartIndex] = useState(0);
+	const	[checkIndex, set_checkIndex] = useState(0);
+	/**************************************************************************
+	**	AchievementList: matches the list of all the achievements, fetched from
+	**	the database in getStaticProps on each page.
+	**************************************************************************/
+	const	achievementsList = pageProps && pageProps.achievementsList ? [...pageProps.achievementsList] : [];
 
 	return (
-		<Web3ContextApp>
+		<Web3ContextApp
+			shouldRecheck={() => set_checkIndex(r => r + 1)}
+			onRestart={() => set_restartIndex(r => r + 1)}>
+			<AchievementsContextApp
+				restartIndex={restartIndex}
+				checkIndex={checkIndex}
+				achievementsList={achievementsList}>
 			<AppWrapper
 				Component={Component}
-				pageProps={pageProps}
+				pageProps={{...pageProps, achievementsList}}
 				element={props.element}
 				router={props.router} />
+			</AchievementsContextApp>
 		</Web3ContextApp>
 	);
 }

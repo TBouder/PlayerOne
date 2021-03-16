@@ -5,30 +5,30 @@
 **	@Filename:				checkAirdrop.js
 ******************************************************************************/
 
-import	axios		from	'axios';
-import	{ethers}	from	'ethers';
+import	axios			from	'axios';
+import	{toAddress} 	from	'achievements/helpers'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address got an airdrop from a specific
 **		address
 ******************************************************************************/
-async function	checkAirdrop(_, userAddress, startBlock, from, data) {
-	const	address = ethers.utils.getAddress;
+async function	checkAirdrop(provider, userAddress, walletData, args) {
+	const	{block, address} = args;
 	let		informations = undefined;
 	let		transactions = [];
 
-	if (data === undefined || (data && data.erc20 === undefined)) {
-		const	responseERC20 = await axios.get(`https://api.etherscan.io/api?module=account&action=tokentx&address=${userAddress}&startblock=${startBlock}&endblock=999999999&sort=asc&apikey=${process.env.ETHERSCAN_KEY}`).then(e => e.data).catch(e => console.dir(e))
+	if (walletData === undefined || (walletData && walletData.erc20 === undefined)) {
+		const	responseERC20 = await axios.get(`https://api.etherscan.io/api?module=account&action=tokentx&address=${userAddress}&startblock=${block}&endblock=999999999&sort=asc&apikey=${process.env.ETHERSCAN_KEY}`).then(e => e.data).catch(e => console.dir(e))
 		if (responseERC20.status !== '1') {
 			console.dir(responseERC20);
 			return false;
 		}
 		transactions = responseERC20.result;
 	} else {
-		transactions = data.erc20;
+		transactions = walletData.erc20;
 	}
 	const	result = transactions.some((each) => {
-		if (address(each.from) === address(from) && address(each.to) === address(userAddress)) {
+		if (toAddress(each.from) === toAddress(address) && toAddress(each.to) === toAddress(userAddress)) {
 			informations = {
 				blockNumber: each.blockNumber,
 				hash: each.hash,

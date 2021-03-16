@@ -7,19 +7,19 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	axios												from	'axios';
-import	useSWR, {mutate}									from	'swr';
 import	{ethers}											from	'ethers';
 import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 import	useLocalStorage										from	'hook/useLocalStorage';
-import	Achievements										from	'achievements/achievements';
-import	UUID												from	'utils/uuid';
 
-const fetcher = url => fetch(url).then(r => r.json()).catch(e => console.error(e))
+const fetcher = url => axios.get(url).then(res => res.data);
+
+const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
+const	fetchERC20 = address => fetcher(`https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
+const	fetchTx = address => fetcher(`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
 
 const Web3Context = createContext();
-export const Web3ContextApp = ({children}) => {
-	const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
+export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	const walletType = {
 		NONE: -1,
 		METAMASK: 0,
@@ -30,32 +30,14 @@ export const Web3ContextApp = ({children}) => {
 	const	[connector, set_connector] = useState(undefined);
 	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE); //-1 none | 0 web3 | 1 wc
 	const	[address, set_address] = useLocalStorage('address', '');
-	const	[walletData, set_walletData] = useState(undefined);
-	const	[achievements, set_achievements] = useState(Achievements());
-	const	[achievementsVersion, set_achievementsVersion] = useState(0);
-	const	[achievementsCheckProgress, set_achievementsCheckProgress] = useState(undefined);
-	const	[actionID, set_actionID] = useState(undefined);
-	const	[previousActionID, set_previousActionID] = useState(undefined);
-
-	const	{data: walletDataERC20, mutate: mutateDataERC20} = useSWR(
-		nonce > 0 && address !== '' && (!walletData || (walletData && !walletData.erc20)) ?
-			`https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}` :
-			null,
-		fetcher
-	);
-	const	{data: walletDataTransactions, mutate: mutateDataTransactions} = useSWR(
-		nonce > 0 && address !== '' && (!walletData || (walletData && !walletData.transactions)) ?
-			`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}` :
-			null,
-		fetcher
-	);
+	const	[walletData, set_walletData] = useState({erc20: undefined, transactions: undefined, ready: false});
 
 	useEffect(() => {
-		walletDataERC20 ? set_walletData(wc => ({...wc, erc20: walletDataERC20.result || []})) : null
-	}, [walletDataERC20])
-	useEffect(() => {
-		walletDataTransactions ? set_walletData(wc => ({...wc, transactions: walletDataTransactions.result || []})) : null
-	}, [walletDataTransactions])
+		if (walletData.ready) {
+			console.warn(`here`)
+			shouldRecheck();
+		}
+	}, [walletData.ready])
 
 	/**************************************************************************
 	**	If user was connected with metamask, auto-reconnect
@@ -64,53 +46,16 @@ export const Web3ContextApp = ({children}) => {
 		if (nonce === 0) {
 			if (providerType === walletType.METAMASK) {
 				connect(walletType.METAMASK);
+				set_nonce(n => n + 1);
 			} else {
 				set_address('');
 				set_providerType(walletType.NONE);
+				set_nonce(n => n + 1);
 			}
+		} else {
+			set_nonce(n => n + 1);
 		}
 	}, []);
-
-	/**************************************************************************
-	**	Updating the achievements when we have the wallet history
-	**************************************************************************/
-	useEffect(() => {
-		if (walletData && walletData.erc20 && walletData.transactions && address && provider)
-			checkAchievements();
-	}, [walletData]);
-
-	function	checkAchievements() {
-		if (nonce === 0)
-			return;
-
-		set_actionID(UUID());
-		set_achievementsCheckProgress(0);
-		if (previousActionID === undefined) {
-			set_previousActionID(UUID());
-		}
-		const	_achievements = achievements;
-		recursiveCheckAchivements(_achievements, _achievements[0], 0);
-	}
-	async function	recursiveCheckAchivements(_achievements, achievement, index) {
-		if (achievement === undefined) {
-			set_actionID(undefined);
-			set_previousActionID(undefined);
-			setTimeout(() => set_achievementsCheckProgress(undefined), 500);
-			return;
-		}
-		if (achievement.checkAchievement) {
-			const	{unlocked, informations} = await achievement.checkAchievement(provider, address, walletData);
-			achievement.unlocked = unlocked;
-			achievement.informations = informations || {};
-		}
-		_achievements[index] = achievement;
-		if (actionID === previousActionID) {
-			set_achievements(_achievements);
-			set_achievementsVersion(v => v + 1);
-			set_achievementsCheckProgress(v => v + 1);
-			recursiveCheckAchivements(_achievements, _achievements[index + 1], index + 1);
-		}
-	}
 
 	/**************************************************************************
 	**	Wallet & account management
@@ -118,35 +63,54 @@ export const Web3ContextApp = ({children}) => {
 	function	disconnect(error) {
 		if (error)
 			console.error(error);
-		set_nonce(0);
 		set_provider(undefined);
 		set_connector(undefined);
 		set_providerType(walletType.NONE);
 		set_address('');
-		set_walletData(undefined);
-		set_achievements(Achievements());
-		set_achievementsVersion(0);
-		set_achievementsCheckProgress(undefined);
-		set_actionID(undefined);
-		set_previousActionID(undefined);
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
+		onRestart();
 	}
 	function	onConnect(_provider, _walletType, _account) {
-		set_achievements(Achievements());
-		set_achievementsVersion(0);
-		set_walletData(undefined);
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_provider(_provider);
 		set_providerType(_walletType);
 		set_address(_account);
-		set_nonce(n => n + 1);
-		mutateDataERC20();
-		mutateDataTransactions();
+		onRestart();
+
+		fetchERC20(_account).then((walletDataERC20) => {
+			set_walletData(wc => ({
+				transactions: wc.transactions,
+				erc20: walletDataERC20.result || [],
+				ready: Boolean(wc.transactions && walletDataERC20.result)
+			}));
+		});
+		fetchTx(_account).then((walletDataTransactions) => {
+			set_walletData(wc => ({
+				transactions: walletDataTransactions.result || [],
+				erc20: wc.erc20,
+				ready: Boolean(walletDataTransactions.result && wc.erc20)
+			}));
+		});
 	}
 	function	onChangeAccount(_account) {
-		set_achievements(Achievements());
-		set_achievementsVersion(0);
-		set_walletData(undefined);
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_address(_account);
-		set_nonce(nonce + 1);
+		onRestart();
+
+		fetchERC20(_account).then((walletDataERC20) => {
+			set_walletData(wc => ({
+				transactions: wc.transactions,
+				erc20: walletDataERC20.result || [],
+				ready: Boolean(wc.transactions && walletDataERC20.result)
+			}));
+		});
+		fetchTx(_account).then((walletDataTransactions) => {
+			set_walletData(wc => ({
+				transactions: walletDataTransactions.result || [],
+				erc20: wc.erc20,
+				ready: Boolean(walletDataTransactions.result && wc.erc20)
+			}));
+		});
 	}
 	async function	connect(_providerType) {
 		const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
@@ -170,8 +134,6 @@ export const Web3ContextApp = ({children}) => {
 			set_connector(_connector)
 
 			_connector.on('connect', (err, d) => {
-				console.log(err)
-				console.log(d)
 				if (err) {
 					return console.error(err)
 				}
@@ -207,10 +169,8 @@ export const Web3ContextApp = ({children}) => {
 				disconnect,
 				providerType,
 				walletType,
+				walletData,
 				provider,
-				achievements,
-				achievementsVersion,
-				achievementsCheckProgress,
 				actions: {
 					sign
 				}

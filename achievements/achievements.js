@@ -22,7 +22,8 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider) => checkWalletLogin(provider),
-		check: 'checkWalletLogin'
+		check: 'checkWalletLogin',
+		checkArguments: {}
 	},
 	{
 		UUID: '029e3d84-adab-4a25-9e99-2549667ae325',
@@ -34,7 +35,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xfa2562da1bba7b954f26c74725df51fb62646313', '1000000000000000000', data),
-		check: 'checkERC20Amount'
+		check: 'checkERC20Amount',
+		checkArguments: {
+			address: '0xfa2562da1bba7b954f26c74725df51fb62646313',
+			value: '1000000000000000000'
+		}
 	},
 	{
 		UUID: 'd63b6d4b-811e-4f13-8a51-506628294683',
@@ -46,7 +51,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '10875192', '0x090D4613473dEE047c3f2706764f49E0821D256e', data),
-		check: 'checkAirdrop'
+		check: 'checkAirdrop',
+		checkArguments: {
+			address: '0xfa2562da1bba7b954f26c74725df51fb62646313',
+			block: '10875192'
+		}
 	},
 	{
 		UUID: '97020eab-f4d5-4aa5-9549-ec2f75111b93',
@@ -58,7 +67,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '11517558', '0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe', data),
-		check: 'checkAirdrop'
+		check: 'checkAirdrop',
+		checkArguments: {
+			address: '0xE295aD71242373C37C5FdA7B57F26f9eA1088AFe',
+			block: '11517558'
+		}
 	},
 	{
 		UUID: 'cacfc0bd-4216-48e4-a3f1-10c8bdbd0b66',
@@ -70,7 +83,8 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address) => checkYearnDaiExploit(provider, address),
-		check: 'checkYearnDaiExploit'
+		check: 'checkYearnDaiExploit',
+		checkArguments: {}
 	},
 	{
 		UUID: 'cc22bb74-7e1c-42cb-82ff-b85684439856',
@@ -81,6 +95,7 @@ const	Achievements = [
 		badges: ['yearn', 'exploit', 'defi'],
 		unlocked: false,
 		claimed: false,
+		checkArguments: {}
 	},
 	{
 		UUID: '268480ee-d580-4029-9432-2203678ec377',
@@ -92,7 +107,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xacd43e627e64355f1861cec6d3a6688b31a6f952', '114000000000000000000', data),
-		check: 'checkERC20Amount'
+		check: 'checkERC20Amount',
+		checkArguments: {
+			address: '0xacd43e627e64355f1861cec6d3a6688b31a6f952',
+			value: '114000000000000000000'
+		}
 	},
 	{
 		UUID: '2cde12c0-7817-4034-ade7-306c123d834f',
@@ -103,6 +122,7 @@ const	Achievements = [
 		badges: ['airdrop', 'erc20', 'defi'],
 		unlocked: false,
 		claimed: false,
+		checkArguments: {}
 	},
 	{
 		UUID: '9fe57dcb-68a3-4d4f-89ff-714b783f6610',
@@ -114,7 +134,12 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '60000000000', -1, data),
-		check: 'checkGasPrice'
+		check: 'checkGasPrice',
+		checkArguments: {
+			startBlock: '11565019',
+			value: '60000000000',
+			moreOrLess: -1
+		}
 	},
 	{
 		UUID: '8697b471-b78e-445e-8da9-2cea79abfd0a',
@@ -126,7 +151,12 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '150000000000', 1, data),
-		check: 'checkGasPrice'
+		check: 'checkGasPrice',
+		checkArguments: {
+			startBlock: '11565019',
+			value: '150000000000',
+			moreOrLess: 1
+		}
 	},
 	{
 		UUID: 'd54d6aa8-29ea-4575-be00-0df2c3738e77',
@@ -138,7 +168,12 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkGasPrice(provider, address, '11565019', '1000000000000', 1, data),
-		check: 'checkGasPrice'
+		check: 'checkGasPrice',
+		checkArguments: {
+			startBlock: '11565019',
+			value: '1000000000000',
+			moreOrLess: 1
+		}
 	},
 	{
 		UUID: '967fa724-69f8-493d-b841-c72b245c2295',
@@ -148,7 +183,8 @@ const	Achievements = [
 		background: 'linear-gradient(to bottom right, #EB9A2A, #DC5F5D)',
 		badges: ['sushiswap', 'defi'],
 		unlocked: false,
-		claimed: false
+		claimed: false,
+		checkArguments: {}
 	},
 	{
 		UUID: '95adcf07-d866-4f21-aa01-33f2a84415fa',
@@ -160,7 +196,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', '100000', data),
-		check: 'checkERC20Amount'
+		check: 'checkERC20Amount',
+		checkArguments: {
+			address: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
+			value: '100000'
+		}
 	},
 	{
 		UUID: '9820837d-a179-4d4b-9bc2-f8e25e5ddd72',
@@ -172,7 +212,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkERC20Amount(provider, address, '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '1000000000000000', data),
-		check: 'checkERC20Amount'
+		check: 'checkERC20Amount',
+		checkArguments: {
+			address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+			value: '1000000000000000'
+		}
 	},
 	{
 		UUID: 'f41eb8fa-761e-46c0-a82f-6358f6425a3a',
@@ -184,7 +228,11 @@ const	Achievements = [
 		unlocked: false,
 		claimed: false,
 		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '11526195', '0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68', data),
-		check: 'checkAirdrop'
+		check: 'checkAirdrop',
+		checkArguments: {
+			address: '0x41d5d79431a913c4ae7d69a668ecdfe5ff9dfb68',
+			block: '11526195'
+		}
 	},
 	{
 		UUID: '48cbd64e-a50c-4ce2-96cf-ab548d476b8c',
@@ -195,6 +243,7 @@ const	Achievements = [
 		badges: ['meta'],
 		unlocked: false,
 		claimed: false,
+		checkArguments: {}
 	},
 ]
 

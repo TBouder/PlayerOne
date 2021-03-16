@@ -24,7 +24,7 @@ const cardVariants = {
 const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
 
-const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, background, unlocked, claimed, claim, informations, set_details, checkAchievement = () => null}, ref) => {
+const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, background, unlocked, claimed, claim, informations, checkAchievement = () => null}, ref) => {
 	const	{provider, address, actions} = useWeb3();
 	const	[isUnlocked, set_isUnlocked] = useState(unlocked);
 	const	[isClaimed, set_isClaimed] = useState(claimed);
@@ -137,7 +137,6 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 					${isUnlocked ? 'transition-transform transform-gpu hover:scale-102 cursor-pointer shine' : ''}
 				`}>
 					<div
-						onClick={() => set_details({open: true, background, icon, title, description, informations})}
 						className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
 						style={{background}}>
 						<div
@@ -147,7 +146,7 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 						</div>
 					</div>
 					<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white ${isUnlocked && isClaimed ? claimData?.level : ''}`}>
-						<div className={'flex-1'} onClick={() => set_details({open: true, background, icon, title, description, informations})}>
+						<div className={'flex-1'}>
 							<div className={'block'}>
 								<p className={'text-xl font-semibold text-gray-900'}>{title}</p>
 								<p className={'mt-3 text-base text-gray-500'}>{description}</p>

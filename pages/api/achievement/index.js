@@ -16,7 +16,10 @@ const	collection = {
 	icon:			'string',
 	background:		'string',
 	badges:			['string'],
-	check:			'string',
+	strategy: {
+		name:		'string',
+		arguments:	['string'],
+	}
 };
 if (false) console.log(collection);
 
@@ -28,6 +31,7 @@ const handler = nextConnect()
 	**	queries, send as parameters
 	**************************************************************************/
 	.get(async (req, res) => {
+		console.log(`GET ACHIEVEMENTS`)
         const	documents = await req.db.collection(collectionName).find({}).toArray();
 	    res.json(documents);
 	})
