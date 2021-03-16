@@ -214,8 +214,8 @@ function	Page(props) {
 
 export async function getStaticProps() {
 	const	uri = process.env.VERCEL_ENV !== 'development' ?
-				`https://${process.env.VERCEL_URL}` :
-				`http://${process.env.VERCEL_URL}`;
+				`https://${process.env.NEXT_PUBLIC_VERCEL_URL}` :
+				`http://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
 	const	achievements = await fetcher(`${uri}/api/achievement`)
 
 	return {props: {achievementsList: achievements}}
