@@ -8,7 +8,7 @@
 import	{useState, useEffect}				from	'react';
 import	Image								from	'next/image';
 import	{motion}							from	'framer-motion';
-import	Achievements						from	'achievements/achievements';
+import	axios								from	'axios';
 import	Badge								from	'components/Badges';
 
 let easing = [0.175, 0.85, 0.42, 0.96];
@@ -44,6 +44,7 @@ const headerVariants = {
 	}
 };
 
+const	fetcher = url => axios.get(url).then(res => res.data);
 const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 function	PageHeader({achievement}) {
@@ -219,26 +220,20 @@ function	Page({achievement, isConnected}) {
 	)
 }
 
+// /api/achievement/af327787-cb54-4351-8cbb-093c859f97ee
+
 export async function getStaticPaths() {
-	const	achievements = Achievements().map((achievement) => ({params: {achievement, uuid: achievement.UUID}}))
+	const	achievementsList = await fetcher(`${process.env.API_URI}/achievements`)
+	const	achievements = achievementsList.map((achievement) => ({params: {achievement, uuid: achievement.UUID}}))
+
 	return	{paths: achievements, fallback: false}
-  }
+}
 
 export async function getStaticProps({params}) {
-	const	achievement = Achievements().find(e => e.UUID === params.uuid);
+	const	achievement = await fetcher(`${process.env.API_URI}/achievement/${params.uuid}`)
 
-	return	{props: {
-		achievement: {
-			UUID: achievement.UUID,
-			title: achievement.title,
-			description: achievement.description,
-			icon: achievement.icon,
-			background: achievement.background,
-			badges: achievement.badges || [],
-			unlocked: achievement.unlocked,
-			claimed: achievement.claimed,
-		}
-	}}
+	return {props: {achievement: achievement}}
 }
+
 
 export default Page;

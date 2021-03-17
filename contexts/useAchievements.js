@@ -6,11 +6,13 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
+import	axios												from	'axios';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
 
-const AchievementsContext = createContext();
+const	fetcher = url => axios.get(url).then(res => res.data);
+const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, restartIndex, checkIndex}) => {
 	const	{address, provider, walletData} = useWeb3();
 
@@ -40,8 +42,11 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 	**************************************************************************/
 	const	[achievementsProgressNonce, set_achievementsProgressNonce] = useState({previous: undefined, current: undefined});
 
-	useEffect(() => {
-		if (!achievements) {
+	useEffect(async () => {
+		if (achievements === undefined && achievementsList === undefined || achievementsList.length === 0) {
+			const	list = await fetcher(`${process.env.API_URI}/achievements`)
+			set_achievements(list);
+		} else if (!achievements) {
 			set_achievements(achievementsList.map(e => ({...e})));
 		}
 	}, [achievementsList])

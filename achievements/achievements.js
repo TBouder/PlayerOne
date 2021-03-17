@@ -53,7 +53,7 @@ const	Achievements = [
 		checkAchievement: (provider, address, data) => checkAirdrop(provider, address, '10875192', '0x090D4613473dEE047c3f2706764f49E0821D256e', data),
 		check: 'checkAirdrop',
 		checkArguments: {
-			address: '0xfa2562da1bba7b954f26c74725df51fb62646313',
+			address: '0x090D4613473dEE047c3f2706764f49E0821D256e',
 			block: '10875192'
 		}
 	},

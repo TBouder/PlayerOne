@@ -16,6 +16,7 @@ module.exports = withBundleAnalyzer({
 	env: {
 		WSS_ETH_NODE: process.env.WSS_ETH_NODE,
 		ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
+		API_URI: process.env.API_URI,
 	},
 	images: {
 		domains: ['images.unsplash.com', 'source.unsplash.com'],

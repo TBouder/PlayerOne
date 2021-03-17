@@ -93,7 +93,7 @@ function	PageHeader() {
 					{'No more unknow. So much wow.'}
 				</p>
 				<p className={'mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto'}>
-					{'Unlock unique achievements throughout your Degen life in the DEFI ecosystem, and become the first to get the golden NFT'}
+					{'Unlock unique achievements throughout your Degen life in the DEFI ecosystem, and become the first to get the golden Reward'}
 				</p>
 			</div>
 		</header>
@@ -107,7 +107,7 @@ function	SectionWalletConnect() {
 		return null;
 	}
 	return (
-		<section aria-label={'wallet-connect-select'} className={'w-full'}>
+		<>
 			<div className={'grid flex-col justify-center items-center w-full gap-y-4 md:flex md:gap-y-0 md:gap-x-4 md:flex-row'}>
 				{(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) ? <button
 					onClick={() => connect(walletType.METAMASK)}
@@ -136,7 +136,7 @@ function	SectionWalletConnect() {
 					</p>
 				</button>
 			</div>
-		</section>
+		</>
 	)
 }
 
@@ -148,7 +148,7 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 		return null;
 	}
 	return (
-		<section aria-label={'achievement-progress'} className={'w-full'}>
+		<>
 			<div className={'flex flex-col w-full'}>
 				<h3 className={'text-base text-teal-600 font-semibold tracking-wide uppercase mb-4 text-center'}>
 					{`${(unlocked/myAchievements.length*100).toFixed(2)}% completed ${achievementsCheckProgress.checking ? `(${achievementsCheckProgress.progress}/${achievementsCheckProgress.total})` : ''}`}
@@ -157,7 +157,7 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 					<div className={'h-full progressBarColor rounded transition-all duration-700'} style={{width: `calc(100% * ${unlocked/myAchievements.length})`}} />
 				</div>
 			</div>
-		</section>
+		</>
 	)
 }
 
@@ -170,7 +170,7 @@ function	Page(props) {
 
 	function save() {
 		achievements.forEach(async (e) => {
-			const res = await axios.post('/api/achievement', {
+			const res = await axios.post(`${process.env.API_URI}/achievement`, {
 				UUID: e.UUID,
 				title: e.title,
 				description: e.description,
@@ -199,8 +199,12 @@ function	Page(props) {
 				<PageHeader />
 
 				<div className={'pt-12 pb-4 w-full'}>
-					<SectionWalletConnect />
-					<SectionAchievementProgress unlocked={unlocked} myAchievements={myAchievements} />
+					<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full'}>
+						<SectionWalletConnect />
+					</section>
+					<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full'}>
+						<SectionAchievementProgress unlocked={unlocked} myAchievements={myAchievements} />
+					</section>
 				</div>
 
 
@@ -211,13 +215,9 @@ function	Page(props) {
 }
 
 export async function getStaticProps() {
-	const	uri = process.env.VERCEL_ENV !== 'development' ?
-				`https://achievements.tbouder.com` :
-				`http://${process.env.VERCEL_URL}`;
-	console.log(uri)
-	const	achievements = await fetcher(`${uri}/api/achievement`)
+	const	achievements = await fetcher(`${process.env.API_URI}/achievements`)
 
-	return {props: {achievementsList: achievements}}
+	return {props: {achievementsList: achievements || []}}
 }
 
 export default Page;
