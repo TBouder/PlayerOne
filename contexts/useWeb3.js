@@ -8,6 +8,7 @@
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	axios												from	'axios';
 import	{ethers}											from	'ethers';
+import	{useToasts}											from	'react-toast-notifications';
 import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 import	useLocalStorage										from	'hook/useLocalStorage';
@@ -20,7 +21,8 @@ const	fetchTx = address => fetcher(`https://api.etherscan.io/api?module=account&
 
 const Web3Context = createContext();
 export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
-	const walletType = {
+	const	{addToast} = useToasts();
+	const	walletType = {
 		NONE: -1,
 		METAMASK: 0,
 		WALLET_CONNECT: 1,
@@ -60,8 +62,10 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	**	Wallet & account management
 	**************************************************************************/
 	function	disconnect(error) {
-		if (error)
-			console.error(error);
+		if (error) {
+			addToast(error, {appearance: 'error'});
+			return console.error(error);
+		}
 		set_provider(undefined);
 		set_connector(undefined);
 		set_providerType(walletType.NONE);
@@ -113,11 +117,11 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	}
 	async function	connect(_providerType) {
 		const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
-		if (window.ethereum)
-			await window.ethereum.enable();
 
 		if (_providerType === walletType.METAMASK) {
 			const	_provider = new ethers.providers.Web3Provider(web3Provider)
+			await _provider.send('eth_requestAccounts');
+
 			const	signer = await _provider.getSigner();
 			const	address = await signer.getAddress();
 			onConnect(_provider, walletType.METAMASK, address);
@@ -137,6 +141,7 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 
 			_connector.on('connect', (err, d) => {
 				if (err) {
+					addToast(err, {appearance: 'error'});
 					return console.error(err)
 				}
 				const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
@@ -154,11 +159,19 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 		if (providerType === walletType.WALLET_CONNECT) {
 			connector.signPersonalMessage([address, data])
 			.then(result => callback(result))
-			.catch(error => console.error(error))
+			.catch((error) => {
+				addToast(error, {appearance: 'error'});
+				console.error(error)
+			})
 		} else if (providerType === walletType.METAMASK) {
-			const	signer = provider.getSigner();
-			const	signature = await signer._signTypedData(domain, types, value);
-			callback(signature);
+			try {
+				const	signer = provider.getSigner();
+				const	signature = await signer._signTypedData(domain, types, value);
+				callback(signature);
+			} catch (error) {
+				addToast(error.message, {appearance: 'error'});
+				console.error(error)
+			}
 		}
 	}
 

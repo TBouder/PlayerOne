@@ -8,7 +8,6 @@
 import	{ethers}				from	'ethers';
 import	checkYearnDaiExploit	from	'achievements/checkYearnDaiExploit';
 import	checkERC20Amount		from	'achievements/checkERC20Amount';
-import	checkERC20AmountNew		from	'achievements/checkERC20Amount';
 import	checkGasPrice			from	'achievements/checkGasPrice';
 import	checkAirdrop			from	'achievements/checkAirdrop';
 import	checkWalletLogin		from	'achievements/checkWalletLogin';
@@ -21,7 +20,7 @@ export function getStrategy(strategy) {
 	if (strategy === 'checkYearnDaiExploit') {
 		return checkYearnDaiExploit;
 	} else if (strategy === 'checkERC20Amount') {
-		return checkERC20AmountNew;
+		return checkERC20Amount;
 	} else if (strategy === 'checkAirdrop') {
 		return checkAirdrop;
 	} else if (strategy === 'checkWalletLogin') {

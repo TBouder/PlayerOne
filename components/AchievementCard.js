@@ -9,7 +9,9 @@ import	{useState, useEffect, forwardRef}	from	'react';
 import	Link								from	'next/link';
 import	axios								from	'axios';
 import	{motion}							from	'framer-motion';
+import	{useToasts}							from	'react-toast-notifications';
 import	useWeb3								from	'contexts/useWeb3';
+import	{getStrategy}						from	'achievements/helpers';
 
 const cardVariants = {
 	initial: { scale: 0.96, y: 30, opacity: 0 },
@@ -24,25 +26,43 @@ const cardVariants = {
 const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
 
-const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, background, unlocked, claimed, claim, informations, checkAchievement = () => null}, ref) => {
-	const	{provider, address, actions} = useWeb3();
-	const	[isUnlocked, set_isUnlocked] = useState(unlocked);
-	const	[isClaimed, set_isClaimed] = useState(claimed);
-	const	[claimData, set_claimData] = useState(claim);
+const	AchievementCard = forwardRef((achievement, ref) => {
+	const	{informations} = achievement;
+	const	{addToast} = useToasts();
+	const	{provider, address, actions, walletData} = useWeb3();
+
+	const	[isUnlocked, set_isUnlocked] = useState(achievement.unlocked);
+	const	[isClaimed, set_isClaimed] = useState(achievement.claimed);
+	const	[claimData, set_claimData] = useState(achievement.claim);
 	const	[informationsData, set_informationsData] = useState(informations);
 
-	useEffect(() => set_isUnlocked(unlocked), [unlocked])
-	useEffect(() => set_isClaimed(claimed), [claimed])
-	useEffect(() => set_claimData(claim), [claim])
-	useEffect(() => set_informationsData(informations || {}), [informations])
+	useEffect(() => set_isUnlocked(achievement.unlocked), [achievement.unlocked]);
+	useEffect(() => set_isClaimed(achievement.claimed), [achievement.claimed]);
+	useEffect(() => set_claimData(achievement.claim), [achievement.claim]);
+	useEffect(() => set_informationsData(informations || {}), [informations]);
 
 	async function	onClaim(e) {
 		e.stopPropagation();
 		e.preventDefault();
-		const	result = await checkAchievement(provider, address);
-		if (!result) {
-			return null;
+
+		const	strategy = achievement.strategy;
+		if (!strategy?.name) {
+			addToast(`No strategy`, {appearance: 'error'});
+			return console.error(`No strategy`);
 		}
+
+		const	strategyFunc = getStrategy(strategy.name);
+		if (!strategyFunc) {
+			addToast(`No strategy function`, {appearance: 'error'});
+			return console.error(`No strategy function`);
+		}
+
+		const	{unlocked} = await strategyFunc(provider, address, walletData, strategy?.args);
+		if (!unlocked) {
+			addToast(`Achievement is not unlocked`, {appearance: 'error'});
+			return console.error(`Achievement is not unlocked`);
+		}
+
 		const	randomCount = randomInteger(1, 999999);
 		const	randomID = randomInteger(1, randomCount);
 		const	randomLevel = randomItem([null, null, null, null, null, 'cooper', 'cooper', 'cooper', 'cooper', 'silver', 'silver', 'gold'])
@@ -55,7 +75,7 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 			},
 			message: {
 				action: 'Claiming',
-				title: title,
+				title: achievement.title,
 				unlock: {
 					blockNumber: String(informationsData.blockNumber),
 					hash: String(informationsData.hash),
@@ -126,8 +146,8 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 	}
 
 	return (
-		<Link href={`/details/${UUID}`}>
-		  <motion.div variants={cardVariants} className={hidden ? 'not-visible' : 'visible'}>
+		<Link href={`/details/${achievement.UUID}`}>
+		  <motion.div variants={cardVariants} className={achievement.hidden ? 'not-visible' : 'visible'}>
 			<div
 				ref={ref}
 				className={'flex w-full lg:w-auto h-auto lg:h-96'}
@@ -138,18 +158,22 @@ const	AchievementCard = forwardRef(({UUID, hidden, title, description, icon, bac
 				`}>
 					<div
 						className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
-						style={{background}}>
+						style={{background: achievement.background}}>
 						<div
 							className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl'}
 							style={{background: 'rgba(255, 255, 255, 0.9)'}}>
-							{icon}
+							{achievement.icon}
 						</div>
 					</div>
 					<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white ${isUnlocked && isClaimed ? claimData?.level : ''}`}>
 						<div className={'flex-1'}>
 							<div className={'block'}>
-								<p className={'text-xl font-semibold text-gray-900'}>{title}</p>
-								<p className={'mt-3 text-base text-gray-500'}>{description}</p>
+								<p className={'text-xl font-semibold text-gray-900'}>
+									{achievement.title}
+								</p>
+								<p className={'mt-3 text-base text-gray-500'}>
+									{achievement.description}
+								</p>
 							</div>
 						</div>
 						<div className={'flex items-center mt-6'}>

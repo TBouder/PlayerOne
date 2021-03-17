@@ -65,6 +65,9 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 	}, [checkIndex]);
 
 	function	checkAchievements() {
+		if (!achievements) {
+			return
+		}
 		const	_achievements = achievements.map(e => ({...e}));
 		const	progressUUID = UUID();
 		set_achievementsProgressNonce(v => ({previous: v.previous === undefined ? progressUUID : undefined, current: progressUUID}));

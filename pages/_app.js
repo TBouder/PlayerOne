@@ -10,6 +10,7 @@ import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
 import	{AnimatePresence}			from	'framer-motion';
+import	{ToastProvider}				from	'react-toast-notifications';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
 import	{AchievementsContextApp}	from	'contexts/useAchievements';
 import	TopMenu						from	'components/TopMenu';
@@ -67,20 +68,22 @@ function	MyApp(props) {
 	const	achievementsList = pageProps && pageProps.achievementsList ? [...pageProps.achievementsList] : [];
 
 	return (
-		<Web3ContextApp
-			shouldRecheck={() => set_checkIndex(r => r + 1)}
-			onRestart={() => set_restartIndex(r => r + 1)}>
-			<AchievementsContextApp
-				restartIndex={restartIndex}
-				checkIndex={checkIndex}
-				achievementsList={achievementsList}>
-			<AppWrapper
-				Component={Component}
-				pageProps={{...pageProps, achievementsList}}
-				element={props.element}
-				router={props.router} />
-			</AchievementsContextApp>
-		</Web3ContextApp>
+		<ToastProvider autoDismiss>
+			<Web3ContextApp
+				shouldRecheck={() => set_checkIndex(r => r + 1)}
+				onRestart={() => set_restartIndex(r => r + 1)}>
+				<AchievementsContextApp
+					restartIndex={restartIndex}
+					checkIndex={checkIndex}
+					achievementsList={achievementsList}>
+				<AppWrapper
+					Component={Component}
+					pageProps={{...pageProps, achievementsList}}
+					element={props.element}
+					router={props.router} />
+				</AchievementsContextApp>
+			</Web3ContextApp>
+		</ToastProvider>
 	);
 }
 

@@ -5,11 +5,10 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect, useLayoutEffect}	from	'react';
+import	{useState, useEffect}					from	'react';
 import	Image									from	'next/image';
 import	{motion}								from	'framer-motion';
 import	FlipMove								from	'react-flip-move';
-import	useSWR									from	'swr';
 import	axios									from	'axios';
 import	AchievementCard							from	'components/AchievementCard';
 import	useWeb3									from	'contexts/useWeb3';
@@ -26,7 +25,7 @@ function	SectionAchievements({type, list, achievementsNonce}) {
 	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
 	const	[nonce, set_nonce] = useState(0);
 
-	useLayoutEffect(() => {
+	useEffect(() => {
 		const	[inList, outList] = partition(list, e => hasIntersection(e.badges, badgeList));
 		const	sortByUnlocked = sortBy(inList, 'unlocked');
 		set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
