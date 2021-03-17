@@ -103,16 +103,16 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 			msgParams.types,
 			msgParams.message,
 			async (signature) => {
-			const res = await axios.post('/api/address', {
-				address, signature, date: new Date()
-			});
-			console.log(signature, res)
-			set_claimData({
-				id: randomID,
-				count: randomCount,
-				level: randomLevel
-			})
-			set_isClaimed(result);
+				const res = await axios.post('/api/address', {
+					address, signature, date: new Date()
+				});
+				console.log(signature, res)
+				set_claimData({
+					id: randomID,
+					count: randomCount,
+					level: randomLevel
+				})
+				set_isClaimed(true);
 		});
 	}
 	function	onClaimed() {
