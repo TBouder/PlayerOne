@@ -12,8 +12,17 @@ import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
 
 const	fetcher = url => axios.get(url).then(res => res.data);
+
+const	removeFromArray = (arr, item) => {
+	const i = arr.findIndex(a => a.UUID === item);
+	if (i > -1) {
+		arr.splice(i, 1);
+	}
+	return arr;
+}
+
 const	AchievementsContext = createContext();
-export const AchievementsContextApp = ({children, achievementsList, restartIndex, checkIndex}) => {
+export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
 	const	{address, provider, walletData} = useWeb3();
 
 	/**************************************************************************
@@ -42,8 +51,13 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 	**************************************************************************/
 	const	[achievementsProgressNonce, set_achievementsProgressNonce] = useState({previous: undefined, current: undefined});
 
+	/**************************************************************************
+	**	claims: lists the claims for this user
+	**************************************************************************/
+	const	[claims, set_claims] = useState();
+
 	useEffect(async () => {
-		if (achievements === undefined && achievementsList === undefined || achievementsList.length === 0) {
+		if (achievements === undefined && (achievementsList === undefined || achievementsList.length === 0)) {
 			const	list = await fetcher(`${process.env.API_URI}/achievements`)
 			set_achievements(list);
 		} else if (!achievements) {
@@ -51,39 +65,80 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 		}
 	}, [achievementsList])
 
+	useEffect(async () => {
+		if (address && claims === undefined && achievements !== undefined) {
+			const	addressClaims = await fetcher(`${process.env.API_URI}/claims/address/${address}`);
+			const	_achievements = achievements.map((achievement) => {
+				const	_achievement = {...achievement};
+				const	achievementClaim = addressClaims.find(e => e.achievementUUID === achievement.UUID);
+				if (achievementClaim) {
+					_achievement.unlocked = true
+					_achievement.claim = {
+						id: achievementClaim.nonce,
+						count: 100,
+						level: null
+					}
+				}
+				return _achievement;
+			})
+
+			set_claims(addressClaims || []);
+			set_achievements(_achievements);
+			set_achievementsNonce(n => n + 1);
+			set_achievementsCheckProgress({checking: false, progress: addressClaims.length, total: _achievements.length});
+		}
+	}, [address, achievements])
+
 	useEffect(() => {
-		if (restartIndex > 0) {
+		if (shouldReset) {
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
-			set_achievements(achievementsList.map(e => ({...e})))
+			set_achievements(achievementsList.map(e => ({...e})));
+			set_claims(undefined);
 			set_achievementsNonce(n => n + 1);
+			set_shouldReset(false);
 		}
-	}, [restartIndex])
-	
+	}, [shouldReset])
+
 	/**************************************************************************
 	**	Updating the achievements when we have the wallet history
 	**************************************************************************/
 	useEffect(() => {
-		if (checkIndex > 0 && provider) {
-			checkAchievements();
+		if (walletData.ready && provider) {
+			if (claims !== undefined) {
+				checkAchievements();
+			}
 		}
-	}, [checkIndex]);
+	}, [walletData.ready, claims]);
 
 	function	checkAchievements() {
 		if (!achievements) {
 			return
 		}
 		const	_achievements = achievements.map(e => ({...e}));
+		const	lockedStack = achievements.map(e => ({...e}));
 		const	progressUUID = UUID();
 		set_achievementsProgressNonce(v => ({previous: v.previous === undefined ? progressUUID : undefined, current: progressUUID}));
 		set_achievementsCheckProgress({checking: true, progress: 0, total: _achievements.length});
-		recursiveCheckAchivements(_achievements, _achievements[0], 0);
+		recursiveCheckAchivements(_achievements, [], lockedStack, _achievements[0], 0);
 	}
-	async function	recursiveCheckAchivements(_achievements, achievement, index) {
+	async function	recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, achievement, index) {
+		let	newLockedStack = lockedStack;
+
 		if (achievement === undefined) {
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			return;
+		}
+		if (achievement.unlocked && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
+			unlockedStack.push(achievement);
+			newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+
+			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
+			set_achievementsNonce(v => v + 1);
+			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress, total: v.total}));
+			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+			return
 		}
 
 		achievement.unlocked = false;
@@ -94,14 +149,19 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 				const	{unlocked, informations} = await strategy(provider, address, walletData, achievement?.strategy?.args);
 				achievement.unlocked = unlocked;
 				achievement.informations = informations || {};
+				if (unlocked) {
+					unlockedStack.push(achievement);
+					newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+				}
 			}
 		}
+
 		_achievements[index] = achievement;
 		if (achievementsProgressNonce.current === achievementsProgressNonce.previous) {
-			set_achievements(_achievements);
+			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
 			set_achievementsNonce(v => v + 1);
 			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress + 1, total: v.total}));
-			recursiveCheckAchivements(_achievements, _achievements[index + 1], index + 1);
+			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
 		}
 	}
 
@@ -109,7 +169,9 @@ export const AchievementsContextApp = ({children, achievementsList, restartIndex
 		<AchievementsContext.Provider
 			children={children}
 			value={{
+				claims,
 				achievements,
+				set_achievements,
 				achievementsNonce,
 				achievementsCheckProgress,
 			}} />

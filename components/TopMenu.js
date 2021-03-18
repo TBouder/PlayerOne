@@ -55,6 +55,7 @@ function	TopMenu() {
 				ref={refOutside}>
 				<div>
 					<button
+						suppressHydrationWarning
 						onClick={() => set_open(!open)}
 						type={'button'}
 						className={'inline-flex border border-solid border-gray-200 px-4 py-2 items-center shadow-sm leading-4 font-normal rounded-md text-xs text-gray-700 bg-white hover:bg-gray-100'}

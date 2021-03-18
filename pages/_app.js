@@ -59,8 +59,7 @@ function	AppWrapper(props) {
 
 function	MyApp(props) {
 	const	{Component, pageProps} = props;
-	const	[restartIndex, set_restartIndex] = useState(0);
-	const	[checkIndex, set_checkIndex] = useState(0);
+	const	[shouldReset, set_shouldReset] = useState(false);
 	/**************************************************************************
 	**	AchievementList: matches the list of all the achievements, fetched from
 	**	the database in getStaticProps on each page.
@@ -70,11 +69,10 @@ function	MyApp(props) {
 	return (
 		<ToastProvider autoDismiss>
 			<Web3ContextApp
-				shouldRecheck={() => set_checkIndex(r => r + 1)}
-				onRestart={() => set_restartIndex(r => r + 1)}>
+				set_shouldReset={() => set_shouldReset(true)}>
 				<AchievementsContextApp
-					restartIndex={restartIndex}
-					checkIndex={checkIndex}
+					shouldReset={shouldReset}
+					set_shouldReset={value => set_shouldReset(value)}
 					achievementsList={achievementsList}>
 				<AppWrapper
 					Component={Component}

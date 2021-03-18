@@ -13,14 +13,15 @@ import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 import	useLocalStorage										from	'hook/useLocalStorage';
 
-const fetcher = url => axios.get(url).then(res => res.data);
+const	fetcher = url => axios.get(url).then(res => res.data);
+const	toAddress = ethers.utils.getAddress;
 
 const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 const	fetchERC20 = address => fetcher(`https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
 const	fetchTx = address => fetcher(`https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
 
 const Web3Context = createContext();
-export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
+export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	{addToast} = useToasts();
 	const	walletType = {
 		NONE: -1,
@@ -33,12 +34,6 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE); //-1 none | 0 web3 | 1 wc
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[walletData, set_walletData] = useState({erc20: undefined, transactions: undefined, ready: false});
-
-	useEffect(() => {
-		if (walletData.ready) {
-			shouldRecheck();
-		}
-	}, [walletData.ready])
 
 	/**************************************************************************
 	**	If user was connected with metamask, auto-reconnect
@@ -71,14 +66,13 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 		set_providerType(walletType.NONE);
 		set_address('');
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		onRestart();
+		set_shouldReset();
 	}
 	function	onConnect(_provider, _walletType, _account) {
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_provider(_provider);
 		set_providerType(_walletType);
-		set_address(_account);
-		onRestart();
+		set_address(toAddress(_account));
 
 		fetchERC20(_account).then((walletDataERC20) => {
 			set_walletData(wc => ({
@@ -97,8 +91,8 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	}
 	function	onChangeAccount(_account) {
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		set_address(_account);
-		onRestart();
+		set_address(toAddress(_account));
+		set_shouldReset();
 
 		fetchERC20(_account).then((walletDataERC20) => {
 			set_walletData(wc => ({
@@ -127,8 +121,6 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 			onConnect(_provider, walletType.METAMASK, address);
 			ethereum.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
 			ethereum.on('disconnect', () => disconnect());
-
-
 		} else if (_providerType === walletType.WALLET_CONNECT) {
 			const _connector = new WalletConnect({
 				bridge: "https://bridge.walletconnect.org", // Required
@@ -155,9 +147,9 @@ export const Web3ContextApp = ({children, onRestart, shouldRecheck}) => {
 	/**************************************************************************
 	**	Web3 actions
 	**************************************************************************/
-	async function	sign(data, domain, types, value, callback = () => null) {
+	async function	sign(domain, types, value, callback = () => null) {
 		if (providerType === walletType.WALLET_CONNECT) {
-			connector.signPersonalMessage([address, data])
+			connector.signPersonalMessage([address, JSON.stringify({domain, types, value})])
 			.then(result => callback(result))
 			.catch((error) => {
 				addToast(error, {appearance: 'error'});

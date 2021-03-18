@@ -20,26 +20,35 @@ const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0
 const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
 const fetcher = url => axios.get(url).then(res => res.data);
 
-function	SectionAchievements({type, list, achievementsNonce}) {
-	const	[achievementList, set_achievementList] = useState(list);
+function	SectionAchievements(props) {
+	const	{achievements} = useAchievements();
+	const	[achievementList, set_achievementList] = useState(achievements || props.achievements);
 	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
 	const	[nonce, set_nonce] = useState(0);
 
 	useEffect(() => {
-		const	[inList, outList] = partition(list, e => hasIntersection(e.badges, badgeList));
-		const	sortByUnlocked = sortBy(inList, 'unlocked');
-		set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
-	}, [nonce, list, achievementsNonce]);
+		if (achievements) {
+			set_achievementList(achievements)
+		}
+	}, [achievements]);
 
-	if (list.length === 0) {
+	useEffect(() => {
+		if (achievements && nonce > 0) {
+			const	[inList, outList] = partition(achievements, e => hasIntersection(e.badges, badgeList));
+			const	sortByUnlocked = sortBy(inList, 'unlocked');
+			set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
+		}
+	}, [nonce]);
+
+	if (!achievementList ||achievementList.length === 0) {
 		return null;
 	}
 	return (
-		<section className={'mt-12'} aria-label={`achievements-${type}`}>
+		<section className={'mt-12'} aria-label={`achievements`}>
 			<div className={'mb-5'}>
 				<div className={'pb-5 border-b border-gray-200'}>
 					<h3 className={'text-lg leading-6 font-medium text-gray-400'}>
-						{type}
+						{`Achievements`}
 					</h3>
 					<div className={'mt-2'}>
 						{getBadgeList().map((t) => (
@@ -56,7 +65,7 @@ function	SectionAchievements({type, list, achievementsNonce}) {
 										_badgeList.push(t);
 									}
 									set_badgeList(_badgeList); 
-									setTimeout(() => set_nonce(n => n + 1), 0);
+									set_nonce(n => n + 1);
 								}}
 								/>
 							)
@@ -70,7 +79,7 @@ function	SectionAchievements({type, list, achievementsNonce}) {
 					leaveAnimation={'fade'}
 					maintainContainerHeight
 					className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'}>
-					{achievementList.map((each) => (
+					{(achievementList).map((each) => (
 						<AchievementCard
 							key={each.UUID}
 							hidden={each.hidden}
@@ -108,7 +117,7 @@ function	SectionWalletConnect() {
 	}
 	return (
 		<>
-			<div className={'grid flex-col justify-center items-center w-full gap-y-4 md:flex md:gap-y-0 md:gap-x-4 md:flex-row'}>
+			<div className={'grid flex-col justify-center items-center w-full gap-y-4 py-0 md:flex md:gap-y-0 md:gap-x-4 md:flex-row md:py-3'}>
 				{(typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) ? <button
 					onClick={() => connect(walletType.METAMASK)}
 					type={'button'}
@@ -151,64 +160,36 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 		<>
 			<div className={'flex flex-col w-full'}>
 				<h3 className={'text-base text-teal-600 font-semibold tracking-wide uppercase mb-4 text-center'}>
-					{`${(unlocked/myAchievements.length*100).toFixed(2)}% completed ${achievementsCheckProgress.checking ? `(${achievementsCheckProgress.progress}/${achievementsCheckProgress.total})` : ''}`}
+					{`${(unlocked/myAchievements.length*100).toFixed(2)}% completed`}
 				</h3>
 				<div className={'rounded overflow-hidden h-2 mb-0.5 bg-gray-200 flex flex-row mx-6 md:mx-12 lg:mx-16 xl:mx-24'}>
 					<div className={'h-full progressBarColor rounded transition-all duration-700'} style={{width: `calc(100% * ${unlocked/myAchievements.length})`}} />
 				</div>
+				<p className={'text-gray-400 uppercase mt-2 text-center text-xs'}>
+					&nbsp;{achievementsCheckProgress.checking ? `(${achievementsCheckProgress.progress}/${achievementsCheckProgress.total})` : ''}&nbsp;
+				</p>
 			</div>
 		</>
 	)
 }
 
 function	Page(props) {
-	const	{achievements, achievementsNonce} = useAchievements();
+	const	{achievements, claims} = useAchievements();
 	const	achievementsList = achievements || props.achievementsList;
-	const	[unlocked, set_unlocked] = useState(achievementsList.filter(e => e.unlocked).length);
-	const	[myAchievements, set_myAchievements] = useState([...achievementsList]);
-
-
-	function save() {
-		achievements.forEach(async (e) => {
-			const res = await axios.post(`${process.env.API_URI}/achievement`, {
-				UUID: e.UUID,
-				title: e.title,
-				description: e.description,
-				icon: e.icon,
-				background: e.background,
-				badges: e.badges,
-				strategy: {
-					name:	e.check,
-					args:	e.checkArguments
-				},
-			});
-			console.dir(res)
-		})
-	}
-
-	useEffect(() => {
-		if (achievements) {
-			set_myAchievements(achievements);
-			set_unlocked(achievements.filter(e => e.unlocked).length);
-		}
-	}, [achievementsNonce])
 
 	return (
 		<div className={'w-full pt-16 px-6 md:px-12 lg:px-16 xl:px-24'}>
 			<div className={'py-6 bg-white'}>
 				<PageHeader />
 
-				<div className={'pt-12 pb-4 w-full'}>
-					<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full'}>
-						<SectionWalletConnect />
-					</section>
-					<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full'}>
-						<SectionAchievementProgress unlocked={unlocked} myAchievements={myAchievements} />
-					</section>
-				</div>
+				<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full pt-12'} suppressHydrationWarning>
+					<SectionWalletConnect />
+				</section>
+				<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full pb-4'} suppressHydrationWarning>
+					<SectionAchievementProgress unlocked={claims?.length || 0} myAchievements={achievementsList} />
+				</section>
 
-
-				<SectionAchievements type={'Achievements'} list={myAchievements} achievementsNonce={achievementsNonce} />
+				<SectionAchievements type={'Achievements'} achievements={achievementsList} />
 			</div>
 		</div>
 	)

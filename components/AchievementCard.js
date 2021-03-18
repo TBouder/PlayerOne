@@ -26,6 +26,26 @@ const cardVariants = {
 const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
 
+const	claimDomain = {
+	name: 'Degen Achievement',
+	version: '1',
+	chainId: 1,
+	verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+};
+const	claimTypes = {
+	Achievement: [
+		{name: 'action', type: 'string'},
+		{name: 'title', type: 'string'},
+		{name: 'unlock', type: 'Unlock'}
+	],
+	Unlock: [
+		{name: 'blockNumber', type: 'string'},
+		{name: 'hash', type: 'string'},
+		{name: 'timestamp', type: 'string'},
+		{name: 'details', type: 'string'}
+	],
+};
+
 const	AchievementCard = forwardRef((achievement, ref) => {
 	const	{informations} = achievement;
 	const	{addToast} = useToasts();
@@ -66,54 +86,34 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 		const	randomCount = randomInteger(1, 999999);
 		const	randomID = randomInteger(1, randomCount);
 		const	randomLevel = randomItem([null, null, null, null, null, 'cooper', 'cooper', 'cooper', 'cooper', 'silver', 'silver', 'gold'])
-		const	msgParams = {
-			domain: {
-				name: 'Degen Achievement',
-				version: '1',
-				chainId: 1,
-				verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-			},
-			message: {
-				action: 'Claiming',
-				title: achievement.title,
-				unlock: {
-					blockNumber: String(informationsData.blockNumber),
-					hash: String(informationsData.hash),
-					timestamp: String(informationsData.timestamp),
-					details: String(informationsData.details),
-				}
-			},
-			types: {
-				Achievement: [
-					{name: 'action', type: 'string'},
-					{name: 'title', type: 'string'},
-					{name: 'unlock', type: 'Unlock'}
-				],
-				Unlock: [
-					{name: 'blockNumber', type: 'string'},
-					{name: 'hash', type: 'string'},
-					{name: 'timestamp', type: 'string'},
-					{name: 'details', type: 'string'}
-				],
-			},
+		const	claimMessage = {
+			action: 'Claiming',
+			title: achievement.title,
+			unlock: {
+				blockNumber: String(informationsData.blockNumber),
+				hash: String(informationsData.hash),
+				timestamp: String(informationsData.timestamp),
+				details: String(informationsData.details),
+			}
 		};
-		actions.sign(
-			JSON.stringify(msgParams),
-			msgParams.domain,
-			msgParams.types,
-			msgParams.message,
-			async (signature) => {
-				const res = await axios.post('/api/address', {
-					address, signature, date: new Date()
-				});
-				console.log(signature, res)
-				set_claimData({
-					id: randomID,
-					count: randomCount,
-					level: randomLevel
-				})
-				set_isClaimed(true);
-		});
+
+		try {
+			const	signature = await actions.sign(claimDomain, claimTypes, claimMessage);
+			await axios.post(`${process.env.API_URI}/claim`, {
+				achievementUUID: achievement.UUID,
+				address: address,
+				signature: signature
+			});
+			set_claimData({
+				id: randomID,
+				count: randomCount,
+				level: randomLevel
+			})
+			set_isClaimed(true);
+		} catch (error) {
+			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
+			return console.error(error.message);
+		}
 	}
 	function	onClaimed() {
 		
