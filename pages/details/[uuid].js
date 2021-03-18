@@ -6,11 +6,14 @@
 ******************************************************************************/
 
 import	{useRef, useState, useEffect}		from	'react';
+import	{useRouter}							from	'next/router';
+import	useSWR								from	'swr';
 import	{motion}							from	'framer-motion';
 import	{ethers}							from	'ethers';
 import	jazzicon							from	'@metamask/jazzicon';
+import	useWeb3								from	'contexts/useWeb3';
 import	Badge								from	'components/Badges';
-import	{fetcher, randomInteger}			from	'utils';
+import	{fetcher}							from	'utils';
 
 let easing = [0.175, 0.85, 0.42, 0.96];
 
@@ -88,7 +91,7 @@ function	PageHeader({achievement}) {
 	);
 }
 
-function	SectionStatus({achievement, isUnlocked, informationsData, numberOfClaims}) {
+function	SectionStatus({achievement, numberOfClaims, currentAddressClaim}) {
 	return (
 		<section aria-labelledby="profile-overview-title">
 			<div className="rounded-lg bg-white overflow-hidden shadow">
@@ -106,11 +109,14 @@ function	SectionStatus({achievement, isUnlocked, informationsData, numberOfClaim
 								<div className={'flow-root mb-2'}>
 									{achievement.badges.map((e, i) => <Badge key={`${e}_${i}`} defaultSelected disable type={e} />)}
 								</div>
-								<p className={'text-xl font-bold text-gray-900 sm:text-2xl'}>
+								<span className={'text-xl font-bold text-gray-900 sm:text-2xl'}>
 									{achievement.title}
-								</p>
+									<p className={'text-sm font-normal text-gray-400 inline ml-2'}>
+										{currentAddressClaim?.nonce ? `#${currentAddressClaim.nonce}` : ''}
+									</p>
+								</span>
 								<p className={'text-sm font-medium text-gray-600'}>
-									{isUnlocked && informationsData?.timestamp ? <time dateTime={informationsData.timestamp}>{new Date(informationsData.timestamp).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
+									{currentAddressClaim?.date ? <time dateTime={currentAddressClaim?.date}>{new Date(currentAddressClaim?.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
 								</p>
 							</div>
 						</div>
@@ -183,7 +189,7 @@ function	Leader({claim}) {
 					<div className={'w-full mt-2 bg-gray-100 py-1 px-2 rounded '}>
 						<code className={'text-xs font-medium text-gray-900 break-all whitespace-pre-wrap inline'}>
 							{claim.signature}
-							<svg className={'w-4 h-4 text-green-600 inline ml-1'} style={{marginBottom: 2}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>
+							{validSignature ? <svg className={'w-4 h-4 text-green-600 inline ml-1'} style={{marginBottom: 2}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg> : null}
 						</code>
 					</div>
 				</div>
@@ -192,17 +198,7 @@ function	Leader({claim}) {
 	);
 }
 
-function	PageContent({achievement, claims}) {
-	const	[isUnlocked, set_isUnlocked] = useState(achievement.unlocked);
-	const	[isClaimed, set_isClaimed] = useState(achievement.claimed);
-	const	[claimData, set_claimData] = useState(achievement.claim);
-	const	[informationsData, set_informationsData] = useState(achievement.informations);
-
-	useEffect(() => set_isUnlocked(achievement.unlocked), [achievement.unlocked])
-	useEffect(() => set_isClaimed(achievement.claimed), [achievement.claimed])
-	useEffect(() => set_claimData(achievement.claim), [achievement.claim])
-	useEffect(() => set_informationsData(achievement.informations || {}), [achievement.informations])
-
+function	PageContent({achievement, claims, currentAddressClaim}) {
 	return (
 		<main className="-mt-24 pb-8">
 			<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
@@ -210,9 +206,8 @@ function	PageContent({achievement, claims}) {
 					<div className="grid grid-cols-1 gap-4 lg:col-span-3">
 						<SectionStatus
 							achievement={achievement}
-							isUnlocked={isUnlocked}
 							numberOfClaims={claims?.length || 0}
-							informationsData={informationsData} />
+							currentAddressClaim={currentAddressClaim} />
 
 						<section aria-labelledby="leaderboard">
 							<div className="rounded-lg bg-white overflow-hidden shadow">
@@ -239,7 +234,51 @@ function	PageContent({achievement, claims}) {
 }
 
 
-function	Page({achievement, claims}) {
+function	Page(props) {
+	const	{address} = useWeb3();
+
+	/**************************************************************************
+	**	First, we need the router in order to get the achievement UUID.
+	**************************************************************************/
+	const	router = useRouter();
+
+	/**************************************************************************
+	**	Based on the props received from the static props, we can initialize
+	**	`achievement` (the informations about this achievement) and
+	**	`claims` (the list of all the claims).
+	**************************************************************************/
+	const	[achievement, set_achievement] = useState(props.achievement);
+	const	[claims, set_claims] = useState(props.claims);
+
+	/**************************************************************************
+	**	Then, we need to hydrate the default page's informations, aka data,
+	**	which are `achievement` (the informations about this achievement) and
+	**	`claims` (the list of all the claims).
+	**************************************************************************/
+	const	{data} = useSWR(
+		router?.query?.uuid ? `${process.env.API_URI}/achievement/withclaims/${router.query.uuid}` : null,
+		fetcher,
+		{initialData: {achievement: props.achievement, claims: props.claims}}
+	);
+
+	/**************************************************************************
+	**	We should check if the current address has a claim, and use if to
+	**	display some useful informations
+	**************************************************************************/
+	const	{data: currentAddressClaim} = useSWR(
+		address && router?.query?.uuid ? `${process.env.API_URI}/claim/${router.query.uuid}/${address}` : null,
+		fetcher
+	);
+
+	/**************************************************************************
+	**	Effect to update the `achievement` and `claims` state when receiving
+	**	data from swr.
+	**************************************************************************/
+	useEffect(() => {
+		set_achievement(data.achievement)
+		set_claims(data.claims)
+	}, [data])
+
 	return (
 		<div className={'bg-gray-50 min-h-screen'}>
 			<motion.div initial="exit" animate="enter" exit="exit">
@@ -247,7 +286,7 @@ function	Page({achievement, claims}) {
 					<PageHeader achievement={achievement} />
 				</motion.div>
 				<motion.div variants={textVariants}>
-					<PageContent achievement={achievement} claims={claims} />
+					<PageContent achievement={achievement} claims={claims} currentAddressClaim={currentAddressClaim} />
 				</motion.div>
 			</motion.div>
 		</div>
