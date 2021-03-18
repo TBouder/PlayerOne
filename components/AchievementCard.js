@@ -12,6 +12,7 @@ import	{motion}							from	'framer-motion';
 import	{useToasts}							from	'react-toast-notifications';
 import	useWeb3								from	'contexts/useWeb3';
 import	{getStrategy}						from	'achievements/helpers';
+import	{randomInteger, randomItem}			from	'utils';
 
 const cardVariants = {
 	initial: { scale: 0.96, y: 30, opacity: 0 },
@@ -23,9 +24,6 @@ const cardVariants = {
 	  transition: { duration: 0.2, ease: [0.48, 0.15, 0.25, 0.96] }
 	}
 };
-const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const	randomItem = arr => arr[(Math.random() * arr.length) | 0];
-
 const	claimDomain = {
 	name: 'Degen Achievement',
 	version: '1',

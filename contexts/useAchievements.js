@@ -6,20 +6,10 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
-import	axios												from	'axios';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
-
-const	fetcher = url => axios.get(url).then(res => res.data);
-
-const	removeFromArray = (arr, item) => {
-	const i = arr.findIndex(a => a.UUID === item);
-	if (i > -1) {
-		arr.splice(i, 1);
-	}
-	return arr;
-}
+import	{fetcher, removeFromArray, sortBy}					from	'utils';
 
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
@@ -83,7 +73,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			})
 
 			set_claims(addressClaims || []);
-			set_achievements(_achievements);
+			set_achievements(sortBy(_achievements, 'unlocked'));
 			set_achievementsNonce(n => n + 1);
 			set_achievementsCheckProgress({checking: false, progress: addressClaims.length, total: _achievements.length});
 		}
@@ -132,7 +122,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		}
 		if (achievement.unlocked && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
 			unlockedStack.push(achievement);
-			newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
 
 			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
 			set_achievementsNonce(v => v + 1);
@@ -151,7 +141,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				achievement.informations = informations || {};
 				if (unlocked) {
 					unlockedStack.push(achievement);
-					newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+					newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
 				}
 			}
 		}

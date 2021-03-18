@@ -5,20 +5,15 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect}					from	'react';
-import	Image									from	'next/image';
-import	{motion}								from	'framer-motion';
-import	FlipMove								from	'react-flip-move';
-import	axios									from	'axios';
-import	AchievementCard							from	'components/AchievementCard';
-import	useWeb3									from	'contexts/useWeb3';
-import	useAchievements							from	'contexts/useAchievements';
-import	Badge, {getBadgeList}					from	'components/Badges';
-
-const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k] < b[k]) ? -1 : 0));
-const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0 : 1].push(i), acc), [[], []]);
-const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
-const fetcher = url => axios.get(url).then(res => res.data);
+import	{useState, useEffect}							from	'react';
+import	Image											from	'next/image';
+import	{motion}										from	'framer-motion';
+import	FlipMove										from	'react-flip-move';
+import	AchievementCard									from	'components/AchievementCard';
+import	useWeb3											from	'contexts/useWeb3';
+import	useAchievements									from	'contexts/useAchievements';
+import	Badge, {getBadgeList}							from	'components/Badges';
+import	{fetcher, sortBy, partition, hasIntersection}	from	'utils'
 
 function	SectionAchievements(props) {
 	const	{achievements} = useAchievements();
@@ -176,6 +171,13 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 function	Page(props) {
 	const	{achievements, claims} = useAchievements();
 	const	achievementsList = achievements || props.achievementsList;
+	const	[unlockedCount, set_unlockedCount] = useState(claims?.length || 0);
+
+	useEffect(() => {
+		if (achievements) {
+			set_unlockedCount(achievements.filter(e => e.unlocked).length)
+		}
+	}, [achievements]);
 
 	return (
 		<div className={'w-full pt-16 px-6 md:px-12 lg:px-16 xl:px-24'}>
@@ -186,10 +188,10 @@ function	Page(props) {
 					<SectionWalletConnect />
 				</section>
 				<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full pb-4'} suppressHydrationWarning>
-					<SectionAchievementProgress unlocked={claims?.length || 0} myAchievements={achievementsList} />
+					<SectionAchievementProgress unlocked={unlockedCount} myAchievements={achievements || achievementsList} />
 				</section>
 
-				<SectionAchievements type={'Achievements'} achievements={achievementsList} />
+				<SectionAchievements type={'Achievements'} achievements={achievements || achievementsList} />
 			</div>
 		</div>
 	)

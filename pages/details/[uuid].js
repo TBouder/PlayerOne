@@ -10,6 +10,7 @@ import	Image								from	'next/image';
 import	{motion}							from	'framer-motion';
 import	axios								from	'axios';
 import	Badge								from	'components/Badges';
+import	{fetcher, randomInteger}				from	'utils';
 
 let easing = [0.175, 0.85, 0.42, 0.96];
 
@@ -43,9 +44,6 @@ const headerVariants = {
 	  transition: { duration: 0.2, ease: easing }
 	}
 };
-
-const	fetcher = url => axios.get(url).then(res => res.data);
-const	randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 function	PageHeader({achievement}) {
 	return (

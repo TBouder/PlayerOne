@@ -5,7 +5,6 @@
 **	@Filename:				checkAirdrop.js
 ******************************************************************************/
 
-import	axios			from	'axios';
 import	{toAddress} 	from	'achievements/helpers'
 
 /******************************************************************************
@@ -14,20 +13,14 @@ import	{toAddress} 	from	'achievements/helpers'
 ******************************************************************************/
 async function	checkAirdrop(provider, userAddress, walletData, args) {
 	const	{block, address} = args;
+	const	transactions = walletData?.erc20;
 	let		informations = undefined;
-	let		transactions = [];
 
-	if (walletData === undefined || (walletData && walletData.erc20 === undefined)) {
-		const	responseERC20 = await axios.get(`https://api.etherscan.io/api?module=account&action=tokentx&address=${userAddress}&startblock=${block}&endblock=999999999&sort=asc&apikey=${process.env.ETHERSCAN_KEY}`).then(e => e.data).catch(e => console.dir(e))
-		if (responseERC20.status !== '1') {
-			console.dir(responseERC20);
-			return false;
-		}
-		transactions = responseERC20.result;
-	} else {
-		transactions = walletData.erc20;
+	if (transactions === undefined) {
+		return {unlocked: false, informations: informations};
 	}
-	const	result = transactions.some((each) => {
+
+	const	result = transactions.filter(each => each.blockNumber >= block).some((each) => {
 		if (toAddress(each.from) === toAddress(address) && toAddress(each.to) === toAddress(userAddress)) {
 			informations = {
 				blockNumber: each.blockNumber,

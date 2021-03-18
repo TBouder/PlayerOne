@@ -12,9 +12,7 @@ import	{useToasts}											from	'react-toast-notifications';
 import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 import	useLocalStorage										from	'hook/useLocalStorage';
-
-const	fetcher = url => axios.get(url).then(res => res.data);
-const	toAddress = ethers.utils.getAddress;
+import	{fetcher, toAddress}								from	'utils';
 
 const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 const	fetchERC20 = address => fetcher(`https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
