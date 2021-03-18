@@ -157,7 +157,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			try {
 				const	signer = provider.getSigner();
 				const	signature = await signer._signTypedData(domain, types, value);
-				console.log(signature)
 				callback(signature);
 			} catch (error) {
 				addToast(error.message, {appearance: 'error'});

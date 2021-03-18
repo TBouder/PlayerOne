@@ -6,6 +6,7 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
+import	useSWR												from	'swr';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
@@ -45,6 +46,15 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	**	claims: lists the claims for this user
 	**************************************************************************/
 	const	[claims, set_claims] = useState();
+
+	/**************************************************************************
+	**	pool: size of the pool of adresse which have interacted with this
+	**	playground
+	**************************************************************************/
+	const	{data: poolSize} = useSWR(
+		`${process.env.API_URI}/addresses/count`,
+		fetcher,
+	);
 
 	useEffect(async () => {
 		if (achievements === undefined && (achievementsList === undefined || achievementsList.length === 0)) {
@@ -161,6 +171,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			children={children}
 			value={{
 				claims,
+				poolSize: poolSize || 0,
 				achievements,
 				set_achievements,
 				achievementsNonce,

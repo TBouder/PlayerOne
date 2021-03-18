@@ -12,8 +12,9 @@ import	{motion}							from	'framer-motion';
 import	{ethers}							from	'ethers';
 import	jazzicon							from	'@metamask/jazzicon';
 import	useWeb3								from	'contexts/useWeb3';
+import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
-import	{fetcher}							from	'utils';
+import	{fetcher, toAddress}				from	'utils';
 
 let easing = [0.175, 0.85, 0.42, 0.96];
 
@@ -92,6 +93,12 @@ function	PageHeader({achievement}) {
 }
 
 function	SectionStatus({achievement, numberOfClaims, currentAddressClaim}) {
+	const	{poolSize} = useAchievements();
+
+	function	formatPercent(amount) {
+		return (new Intl.NumberFormat('fr-FR', {style: 'percent', maximumFractionDigits: 1}).format(amount))
+	}
+
 	return (
 		<section aria-labelledby="profile-overview-title">
 			<div className="rounded-lg bg-white overflow-hidden shadow">
@@ -121,9 +128,9 @@ function	SectionStatus({achievement, numberOfClaims, currentAddressClaim}) {
 							</div>
 						</div>
 						<div className="mt-5 flex justify-center sm:mt-0">
-							<a href="#" className="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+							{currentAddressClaim ? null : <a href="#" className="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
 								{'Claim reward'}
-							</a>
+							</a>}
 						</div>
 					</div>
 				</div>
@@ -139,7 +146,7 @@ function	SectionStatus({achievement, numberOfClaims, currentAddressClaim}) {
 					</div>
 
 					<div className="px-6 py-5 text-sm font-medium text-center">
-						<span className="text-gray-900">{'100% '}</span>
+						<span className="text-gray-900">{`${poolSize > 0 ? formatPercent(numberOfClaims / poolSize) : '100%'} `}</span>
 						<span className="text-gray-600">{'Ratio'}</span>
 					</div>
 				</div>
@@ -167,7 +174,7 @@ function	Leader({claim}) {
 		}
 		try {
 			const	signer = ethers.utils.verifyTypedData(claimDomain, claimTypes, JSON.parse(claim.message), claim.signature);
-			set_validSignature(signer === claim.address);
+			set_validSignature(toAddress(signer) === toAddress(claim.address));
 		} catch(e) {
 			set_validSignature(false);
 		}
