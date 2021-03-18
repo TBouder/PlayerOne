@@ -66,7 +66,8 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 					_achievement.claim = {
 						id: achievementClaim.nonce,
 						count: 100,
-						level: null
+						level: null,
+						data: achievementClaim
 					}
 				}
 				return _achievement;

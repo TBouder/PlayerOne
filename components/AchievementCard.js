@@ -96,18 +96,20 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 		};
 
 		try {
-			const	signature = await actions.sign(claimDomain, claimTypes, claimMessage);
-			await axios.post(`${process.env.API_URI}/claim`, {
-				achievementUUID: achievement.UUID,
-				address: address,
-				signature: signature
-			});
-			set_claimData({
-				id: randomID,
-				count: randomCount,
-				level: randomLevel
+			actions.sign(claimDomain, claimTypes, claimMessage, (signature) => {
+				axios.post(`${process.env.API_URI}/claim`, {
+					achievementUUID: achievement.UUID,
+					address: address,
+					signature: signature,
+					message: JSON.stringify(claimMessage)
+				});
+				set_claimData({
+					id: randomID,
+					count: randomCount,
+					level: randomLevel
+				})
+				set_isClaimed(true);
 			})
-			set_isClaimed(true);
 		} catch (error) {
 			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return console.error(error.message);
