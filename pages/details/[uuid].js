@@ -8,48 +8,12 @@
 import	{useRef, useState, useEffect}		from	'react';
 import	{useRouter}							from	'next/router';
 import	useSWR								from	'swr';
-import	{motion}							from	'framer-motion';
 import	{ethers}							from	'ethers';
 import	jazzicon							from	'@metamask/jazzicon';
 import	useWeb3								from	'contexts/useWeb3';
 import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
 import	{fetcher, toAddress}				from	'utils';
-
-let easing = [0.175, 0.85, 0.42, 0.96];
-
-const textVariants = {
-	initial: {y: 100, opacity: 0, zIndex: 10},
-	exit: {
-		y: 100,
-		opacity: 0,
-	  	zIndex: 10,
-		transition: {
-			duration: 0.3,
-			ease: easing
-		}
-	},
-  	enter: {
-		y: 0,
-		opacity: 1,
-	  	zIndex: 10,
-	  	transition: {
-			duration: 0.35,
-			ease: easing
-		}
-	}
-};
-const headerVariants = {
-	initial: { scale: 0.98, y: 30, opacity: 0, zIndex: 1 },
-	enter: { scale: 1, y: 0, opacity: 1, zIndex: 1, transition: { duration: 0.35, ease: easing } },
-	exit: {
-	  scale: 0.98,
-	  y: 30,
-	  opacity: 0,
-	  zIndex: 1,
-	  transition: { duration: 0.2, ease: easing }
-	}
-};
 
 const	claimDomain = {
 	name: 'Degen Achievement',
@@ -242,6 +206,8 @@ function	PageContent({achievement, claims, currentAddressClaim}) {
 
 
 function	Page(props) {
+	const	headerRef = useRef();
+	const	contentRef = useRef();
 	const	{address} = useWeb3();
 
 	/**************************************************************************
@@ -282,20 +248,24 @@ function	Page(props) {
 	**	data from swr.
 	**************************************************************************/
 	useEffect(() => {
-		set_achievement(data.achievement)
-		set_claims(data.claims)
+		set_achievement(data.achievement);
+		set_claims(data.claims);
 	}, [data])
+
+	useEffect(() => {
+		setTimeout(() => headerRef.current.className = `${headerRef.current.className} headerAnimOnMount`, 0);
+		setTimeout(() => contentRef.current.className = `${contentRef.current.className} contentAnimOnMount`, 0);
+	}, [])
+
 
 	return (
 		<div className={'bg-gray-50 min-h-screen'}>
-			<motion.div initial="exit" animate="enter" exit="exit">
-				<motion.div variants={headerVariants}>
-					<PageHeader achievement={achievement} />
-				</motion.div>
-				<motion.div variants={textVariants}>
-					<PageContent achievement={achievement} claims={claims} currentAddressClaim={currentAddressClaim} />
-				</motion.div>
-			</motion.div>
+			<div ref={headerRef} className={'headerAnim'}>
+				<PageHeader achievement={achievement} />
+			</div>
+			<div ref={contentRef} className={'contentAnim'}>
+				<PageContent achievement={achievement} claims={claims} currentAddressClaim={currentAddressClaim} />
+			</div>
 		</div>
 	)
 }

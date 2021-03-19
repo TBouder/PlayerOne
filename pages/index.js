@@ -7,7 +7,6 @@
 
 import	{useState, useEffect}							from	'react';
 import	Image											from	'next/image';
-import	{motion}										from	'framer-motion';
 import	FlipMove										from	'react-flip-move';
 import	AchievementCard									from	'components/AchievementCard';
 import	useWeb3											from	'contexts/useWeb3';
@@ -68,20 +67,18 @@ function	SectionAchievements(props) {
 					</div>
 				</div>
 			</div>
-			<motion.div initial={'initial'} animate={'enter'} exit={'exit'}>
-				<FlipMove
-					enterAnimation={'fade'}
-					leaveAnimation={'fade'}
-					maintainContainerHeight
-					className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'}>
-					{(achievementList).map((each) => (
-						<AchievementCard
-							key={each.UUID}
-							hidden={each.hidden}
-							{...each} />
-					))}
-				</FlipMove>
-			</motion.div>
+			<FlipMove
+				enterAnimation={'fade'}
+				leaveAnimation={'fade'}
+				maintainContainerHeight
+				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'}>
+				{(achievementList).map((each) => (
+					<AchievementCard
+						key={each.UUID}
+						hidden={each.hidden}
+						{...each} />
+				))}
+			</FlipMove>
 		</section>
 	);
 }

@@ -9,7 +9,6 @@ import	React, {useState}			from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
-import	{AnimatePresence}			from	'framer-motion';
 import	{ToastProvider}				from	'react-toast-notifications';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
 import	{AchievementsContextApp}	from	'contexts/useAchievements';
@@ -38,18 +37,16 @@ function	AppWrapper(props) {
 			</Head>
 			<div>
 				<div id={'app'} className={'flex'}>
-					<AnimatePresence exitBeforeEnter>
-						<div className={'w-full'} key={router.pathname}>
-							<TopMenu />
-							<div style={{marginTop: 52}}>
-								<Component
-									key={router.route}
-									element={props.element}
-									router={props.router}
-									{...pageProps} />
-							</div>
+					<div className={'w-full'} key={router.pathname}>
+						<TopMenu />
+						<div style={{marginTop: 52}}>
+							<Component
+								key={router.route}
+								element={props.element}
+								router={props.router}
+								{...pageProps} />
 						</div>
-					</AnimatePresence>
+					</div>
 				</div>
 			</div>
 			<div id={'portal-root'} />
