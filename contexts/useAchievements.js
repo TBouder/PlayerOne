@@ -54,6 +54,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	const	{data: poolSize} = useSWR(
 		`${process.env.API_URI}/addresses/count`,
 		fetcher,
+		{focusThrottleInterval: 1000 * 10}
 	);
 
 	useEffect(async () => {

@@ -8,32 +8,11 @@
 import	{useRef, useState, useEffect}		from	'react';
 import	{useRouter}							from	'next/router';
 import	useSWR								from	'swr';
-import	{ethers}							from	'ethers';
-import	jazzicon							from	'@metamask/jazzicon';
 import	useWeb3								from	'contexts/useWeb3';
 import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
-import	{fetcher, toAddress}				from	'utils';
-
-const	claimDomain = {
-	name: 'Degen Achievement',
-	version: '1',
-	chainId: 1,
-	verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-};
-const	claimTypes = {
-	Achievement: [
-		{name: 'action', type: 'string'},
-		{name: 'title', type: 'string'},
-		{name: 'unlock', type: 'Unlock'}
-	],
-	Unlock: [
-		{name: 'blockNumber', type: 'string'},
-		{name: 'hash', type: 'string'},
-		{name: 'timestamp', type: 'string'},
-		{name: 'details', type: 'string'}
-	],
-};
+import	Leaderboard							from	'components/DetailsLeaderboard';
+import	{fetcher}							from	'utils';
 
 function	PageHeader({achievement}) {
 	return (
@@ -119,84 +98,23 @@ function	SectionStatus({achievement, numberOfClaims, currentAddressClaim}) {
 	);
 }
 
-function jsNumberForAddress(address) {
-	const addr = address.slice(2, 10);
-	const seed = parseInt(addr, 16);
-	return seed;
-}
+function	PageContent(props) {
+	const	[numberOfClaims, set_numberOfClaims] = useState(props.numberOfClaims);
 
-function	Leader({claim}) {
-	const	jazziconRef = useRef();
-	const	[validSignature, set_validSignature] = useState(true);
-	const	numericRepresentation = jsNumberForAddress(claim.address);
-
-	useEffect(() => {
-		if (typeof(window) !== 'undefined') {
-			if (jazziconRef.current.childNodes[0])
-				jazziconRef.current.removeChild(jazziconRef.current.childNodes[0]); 
-			jazziconRef.current.appendChild(jazzicon(64, numericRepresentation))
-		}
-		try {
-			const	signer = ethers.utils.verifyTypedData(claimDomain, claimTypes, JSON.parse(claim.message), claim.signature);
-			set_validSignature(toAddress(signer) === toAddress(claim.address));
-		} catch(e) {
-			set_validSignature(false);
-		}
-	}, [])
-
-	return (
-		<li className={'py-4'}>
-			<div className={'flex space-x-8'}>
-				<div className={'flex-shrink-0'}>
-					<div className={'w-16 h-16 rounded-full'} ref={jazziconRef} />
-				</div>
-				<div className={'flex-1 min-w-0'}>
-					<p className={'text-sm font-medium text-gray-900 truncate'}>
-						{claim.address}
-					</p>
-					<p className={'text-xs text-gray-500 truncate mt-1'}>
-						{`${new Date(claim.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})} - # ${claim.nonce}`}
-					</p>
-					<div className={'w-full mt-2 bg-gray-100 py-1 px-2 rounded '}>
-						<code className={'text-xs font-medium text-gray-900 break-all whitespace-pre-wrap inline'}>
-							{claim.signature}
-							{validSignature ? <svg className={'w-4 h-4 text-green-600 inline ml-1'} style={{marginBottom: 2}} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg> : null}
-						</code>
-					</div>
-				</div>
-			</div>
-		</li>
-	);
-}
-
-function	PageContent({achievement, claims, currentAddressClaim}) {
 	return (
 		<main className="-mt-24 pb-8">
 			<div className="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
 				<div className="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8">
 					<div className="grid grid-cols-1 gap-4 lg:col-span-3">
 						<SectionStatus
-							achievement={achievement}
-							numberOfClaims={claims?.length || 0}
-							currentAddressClaim={currentAddressClaim} />
+							achievement={props.achievement}
+							numberOfClaims={numberOfClaims}
+							currentAddressClaim={props.currentAddressClaim} />
 
-						<section aria-labelledby="leaderboard">
-							<div className="rounded-lg bg-white overflow-hidden shadow">
-							<div className="p-6">
-								<h2 className="text-base font-medium text-gray-900" id="leaderboard">{'Leaderboard'}</h2>
-								<div className="flow-root mt-6">
-								<ul className="-my-5 divide-y divide-gray-200">
-									{claims.map((claim) => <Leader key={`leader_${claim.address}`} claim={claim} />)}
-								</ul>
-								</div>
-								<div className="mt-6">
-								<a href="#" className="w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-									View all
-								</a>
-								</div>
-							</div>
-							</div>
-						</section>
+						<Leaderboard
+							claims={props.claims}
+							set_numberOfClaims={set_numberOfClaims}
+							achievementUUID={props.achievementUUID} />
 					</div>
 				</div>
 			</div>
@@ -206,8 +124,6 @@ function	PageContent({achievement, claims, currentAddressClaim}) {
 
 
 function	Page(props) {
-	const	headerRef = useRef();
-	const	contentRef = useRef();
 	const	{address} = useWeb3();
 
 	/**************************************************************************
@@ -222,6 +138,7 @@ function	Page(props) {
 	**************************************************************************/
 	const	[achievement, set_achievement] = useState(props.achievement);
 	const	[claims, set_claims] = useState(props.claims);
+	const	[numberOfClaims, set_numberOfClaims] = useState(props?.claims.length || 0);
 
 	/**************************************************************************
 	**	Then, we need to hydrate the default page's informations, aka data,
@@ -231,7 +148,12 @@ function	Page(props) {
 	const	{data} = useSWR(
 		router?.query?.uuid ? `${process.env.API_URI}/achievement/withclaims/${router.query.uuid}` : null,
 		fetcher,
-		{initialData: {achievement: props.achievement, claims: props.claims}}
+		{
+			initialData: {achievement: props.achievement, claims: props.claims},
+			revalidateOnMount: false,
+			revalidateOnFocus: false,
+			revalidateOnReconnect: false
+		}
 	);
 
 	/**************************************************************************
@@ -240,7 +162,12 @@ function	Page(props) {
 	**************************************************************************/
 	const	{data: currentAddressClaim} = useSWR(
 		address && router?.query?.uuid ? `${process.env.API_URI}/claim/${router.query.uuid}/${address}` : null,
-		fetcher
+		fetcher,
+		{
+			shouldRetryOnError: false,
+			revalidateOnMount: true,
+			revalidateOnReconnect: true
+		}
 	);
 
 	/**************************************************************************
@@ -250,8 +177,14 @@ function	Page(props) {
 	useEffect(() => {
 		set_achievement(data.achievement);
 		set_claims(data.claims);
+		set_numberOfClaims(data.claims.length);
 	}, [data])
 
+	/**************************************************************************
+	**	Used for the animations
+	**************************************************************************/
+	const	headerRef = useRef();
+	const	contentRef = useRef();
 	useEffect(() => {
 		setTimeout(() => headerRef.current.className = `${headerRef.current.className} headerAnimOnMount`, 0);
 		setTimeout(() => contentRef.current.className = `${contentRef.current.className} contentAnimOnMount`, 0);
@@ -264,7 +197,12 @@ function	Page(props) {
 				<PageHeader achievement={achievement} />
 			</div>
 			<div ref={contentRef} className={'contentAnim'}>
-				<PageContent achievement={achievement} claims={claims} currentAddressClaim={currentAddressClaim} />
+				<PageContent
+					achievementUUID={router?.query?.uuid}
+					achievement={achievement}
+					claims={claims}
+					numberOfClaims={numberOfClaims}
+					currentAddressClaim={currentAddressClaim} />
 			</div>
 		</div>
 	)
