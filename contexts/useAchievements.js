@@ -74,12 +74,8 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				const	achievementClaim = addressClaims.find(e => e.achievementUUID === achievement.UUID);
 				if (achievementClaim) {
 					_achievement.unlocked = true
-					_achievement.claim = {
-						id: achievementClaim.nonce,
-						count: 100,
-						level: null,
-						data: achievementClaim
-					}
+					_achievement.claimed = !!achievementClaim
+					_achievement.claim = achievementClaim
 				}
 				return _achievement;
 			})

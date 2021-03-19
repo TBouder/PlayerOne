@@ -15,7 +15,7 @@ import	Badge, {getBadgeList}							from	'components/Badges';
 import	{fetcher, sortBy, partition, hasIntersection}	from	'utils'
 
 function	SectionAchievements(props) {
-	const	{achievements} = useAchievements();
+	const	{achievements, set_achievements} = useAchievements();
 	const	[achievementList, set_achievementList] = useState(achievements || props.achievements);
 	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
 	const	[nonce, set_nonce] = useState(0);
@@ -76,7 +76,17 @@ function	SectionAchievements(props) {
 					<AchievementCard
 						key={each.UUID}
 						hidden={each.hidden}
-						{...each} />
+						achievement={each}
+						unlocked={each.unlocked}
+						informations={each.informations}
+						onUpdate={(updatedAchievement) => {
+							const	_achievements = achievements;
+							const	index = _achievements.findIndex(e => e.UUID === each.UUID);
+							if (index !== -1) {
+								_achievements[index] = updatedAchievement;
+								set_achievements(_achievements);
+							}
+						}} />
 				))}
 			</FlipMove>
 		</section>

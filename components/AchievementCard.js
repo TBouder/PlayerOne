@@ -11,7 +11,6 @@ import	axios										from	'axios';
 import	{useToasts}									from	'react-toast-notifications';
 import	useWeb3										from	'contexts/useWeb3';
 import	{getStrategy}								from	'achievements/helpers';
-import	{randomInteger, randomItem}					from	'utils';
 
 const	claimDomain = {
 	name: 'Degen Achievement',
@@ -33,23 +32,46 @@ const	claimTypes = {
 	],
 };
 
-const	AchievementCard = forwardRef((achievement, ref) => {
+function	BottomInformation({onClaim, claim, isUnlocked}) {
+	if (claim) {
+		return (
+			<div className={'flex space-x-1 text-sm text-gray-500'}>
+				<span>{'Unlocked'}</span>
+				<span aria-hidden={'true'}>&middot;</span>
+				<time dateTime={claim.date}>
+					{new Date(claim.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}
+				</time>
+			</div>
+		)	
+	} else if (!isUnlocked) {
+		return (
+			<div className={'flex space-x-1 text-sm text-gray-500'}>
+				<p>{'Locked'}</p>
+			</div>
+		)
+	} else if (isUnlocked) {
+		return (
+			<p className={'text-sm font-medium text-teal-600'}>
+				<button href={'#'} className={'hover:underline'} onClick={onClaim}>
+					{'Claim'}
+				</button>
+			</p>
+		);
+	}
+	return (
+		<div className={'flex space-x-1 text-sm text-gray-500'}>
+			<span>&nbsp;</span>
+		</div>
+	)
+}
+
+const	AchievementCard = forwardRef((props, ref) => {
 	const	cardRef = useRef();
-	const	{informations} = achievement;
 	const	{addToast} = useToasts();
 	const	{provider, address, actions, walletData} = useWeb3();
 
-	const	[numberOfClaims, set_numberOfClaims] = useState(achievement.numberOfClaims);
-	const	[isUnlocked, set_isUnlocked] = useState(achievement.unlocked);
-	const	[isClaimed, set_isClaimed] = useState(achievement.claimed);
-	const	[claimData, set_claimData] = useState(achievement.claim);
-	const	[informationsData, set_informationsData] = useState(informations);
-
-	useEffect(() => set_numberOfClaims(achievement.numberOfClaims), [achievement.numberOfClaims]);
-	useEffect(() => set_isUnlocked(achievement.unlocked), [achievement.unlocked]);
-	useEffect(() => set_isClaimed(achievement.claimed), [achievement.claimed]);
-	useEffect(() => set_claimData(achievement.claim), [achievement.claim]);
-	useEffect(() => set_informationsData(informations || {}), [informations]);
+	const	[achievement, set_achievement] = useState(props.achievement);
+	useEffect(() => set_achievement(props.achievement), [props.informations, props.unlocked]);
 
 	useEffect(() => {
 		if (cardRef.current.className.indexOf('cardAnimOnMount') === -1) {
@@ -79,63 +101,37 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 			return console.error(`Achievement is not unlocked`);
 		}
 
-		const	randomCount = randomInteger(1, 999999);
-		const	randomID = randomInteger(1, randomCount);
-		const	randomLevel = randomItem([null, null, null, null, null, 'cooper', 'cooper', 'cooper', 'cooper', 'silver', 'silver', 'gold'])
 		const	claimMessage = {
 			action: 'Claiming',
 			title: achievement.title,
 			unlock: {
-				blockNumber: String(informationsData.blockNumber),
-				hash: String(informationsData.hash),
-				timestamp: String(informationsData.timestamp),
-				details: String(informationsData.details),
+				blockNumber: String(achievement.informations.blockNumber),
+				hash: String(achievement.informations.hash),
+				timestamp: String(achievement.informations.timestamp),
+				details: String(achievement.informations.details),
 			}
 		};
 
 		try {
-			actions.sign(claimDomain, claimTypes, claimMessage, (signature) => {
-				axios.post(`${process.env.API_URI}/claim`, {
+			actions.sign(claimDomain, claimTypes, claimMessage, async (signature) => {
+				const response = await axios.post(`${process.env.API_URI}/claim`, {
 					achievementUUID: achievement.UUID,
 					address: address,
 					signature: signature,
 					message: JSON.stringify(claimMessage)
 				});
-				set_claimData({
-					id: randomID,
-					count: randomCount,
-					level: randomLevel
-				})
-				set_isClaimed(true);
+				const	updatedAchievement = response.data.achievement;
+				updatedAchievement.informations = achievement.informations;
+				updatedAchievement.claim = response.data.claim;
+				updatedAchievement.claimed = true;
+				updatedAchievement.unlocked = true;
+				set_achievement(updatedAchievement);
+				props.onUpdate(updatedAchievement);
 			})
 		} catch (error) {
 			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return console.error(error.message);
 		}
-	}
-	function	renderClaimButton() {
-		if (isUnlocked && !claimData?.data) {
-			return (
-				<p className={'text-sm font-medium text-teal-600'}>
-					<button href={'#'} className={'hover:underline'} onClick={onClaim}>
-						{'Claim'}
-					</button>
-				</p>
-			);
-		}
-		if (isUnlocked && claimData?.data) {
-			return (
-				<span className={'flex flex-row items-center'}>
-					<p className={'text-sm font-medium text-teal-600'}>
-						{'Claimed !'}
-					</p>
-					<p className={'ml-2 text-xs font-light text-gray-400'}>
-						{`(${claimData?.data.nonce} / ${numberOfClaims})`}
-					</p>
-				</span>
-			);
-		}
-		return null;
 	}
 
 	return (
@@ -144,10 +140,10 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 				<div
 					ref={ref}
 					className={'flex w-full lg:w-auto h-auto lg:h-96'}
-					style={isUnlocked ? {} : {filter: 'grayscale(1)'}}>
+					style={achievement.unlocked ? {} : {filter: 'grayscale(1)'}}>
 					<div className={`
 						flex flex-row lg:flex-col rounded-lg shadow-lg overflow-hidden w-full h-full cursor-pointer
-						${isUnlocked ? 'transition-transform transform-gpu hover:scale-102 shine' : ''}
+						${achievement.unlocked ? 'transition-transform transform-gpu hover:scale-102 shine' : ''}
 					`}>
 						<div
 							className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
@@ -158,7 +154,7 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 								{achievement.icon}
 							</div>
 						</div>
-						<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white ${isUnlocked && isClaimed ? claimData?.level : ''}`}>
+						<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white`}>
 							<div className={'flex-1'}>
 								<div className={'block'}>
 									<p className={'text-xl font-semibold text-gray-900'}>
@@ -171,13 +167,10 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 							</div>
 							<div className={'flex items-center mt-6'}>
 								<div className={''}>
-									{renderClaimButton()}
-									<div className={'flex space-x-1 text-sm text-gray-500'}>
-										{!isUnlocked ? <button className={'hover:underline'}>{'Unlock'}</button> : null}
-										{isUnlocked ? <span>{'Unlocked'}</span> : null}
-										{isUnlocked ? <span aria-hidden={'true'}>&middot;</span> : null}
-										{isUnlocked && claimData?.data.date ? <time dateTime={claimData.data.date}>{new Date(claimData.data.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
-									</div>
+									<BottomInformation
+										onClaim={onClaim}
+										claim={achievement.claim}
+										isUnlocked={achievement.unlocked} />
 								</div>
 							</div>
 						</div>
