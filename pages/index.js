@@ -30,7 +30,7 @@ function	SectionAchievements(props) {
 		if (achievements && nonce > 0) {
 			const	[inList, outList] = partition(achievements, e => hasIntersection(e.badges, badgeList));
 			const	sortByUnlocked = sortBy(inList, 'unlocked');
-			set_achievementList([...sortByUnlocked, ...outList.map(e => ({...e, hidden: true}))]);
+			set_achievementList([...sortByUnlocked.map(e => ({...e, hidden: false})), ...outList.map(e => ({...e, hidden: true}))]);
 		}
 	}, [nonce]);
 

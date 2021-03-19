@@ -52,8 +52,10 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 	useEffect(() => set_informationsData(informations || {}), [informations]);
 
 	useEffect(() => {
-		setTimeout(() => cardRef.current.className = `${cardRef.current.className} cardAnimOnMount`, 0);
-	}, [])
+		if (cardRef.current.className.indexOf('cardAnimOnMount') === -1) {
+			setTimeout(() => cardRef.current.className = `${cardRef.current.className} cardAnimOnMount`, 0);
+		}
+	}, [achievement.hidden])
 
 	async function	onClaim(e) {
 		e.stopPropagation();
