@@ -39,11 +39,13 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 	const	{addToast} = useToasts();
 	const	{provider, address, actions, walletData} = useWeb3();
 
+	const	[numberOfClaims, set_numberOfClaims] = useState(achievement.numberOfClaims);
 	const	[isUnlocked, set_isUnlocked] = useState(achievement.unlocked);
 	const	[isClaimed, set_isClaimed] = useState(achievement.claimed);
 	const	[claimData, set_claimData] = useState(achievement.claim);
 	const	[informationsData, set_informationsData] = useState(informations);
 
+	useEffect(() => set_numberOfClaims(achievement.numberOfClaims), [achievement.numberOfClaims]);
 	useEffect(() => set_isUnlocked(achievement.unlocked), [achievement.unlocked]);
 	useEffect(() => set_isClaimed(achievement.claimed), [achievement.claimed]);
 	useEffect(() => set_claimData(achievement.claim), [achievement.claim]);
@@ -109,11 +111,8 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 			return console.error(error.message);
 		}
 	}
-	function	onClaimed() {
-		
-	}
 	function	renderClaimButton() {
-		if (isUnlocked && !isClaimed) {
+		if (isUnlocked && !claimData?.data) {
 			return (
 				<p className={'text-sm font-medium text-teal-600'}>
 					<button href={'#'} className={'hover:underline'} onClick={onClaim}>
@@ -122,16 +121,14 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 				</p>
 			);
 		}
-		if (isUnlocked && isClaimed) {
+		if (isUnlocked && claimData?.data) {
 			return (
 				<span className={'flex flex-row items-center'}>
 					<p className={'text-sm font-medium text-teal-600'}>
-						<button href={'#'} className={'hover:underline'} onClick={onClaimed}>
-							{'Claimed !'}
-						</button>
+						{'Claimed !'}
 					</p>
 					<p className={'ml-2 text-xs font-light text-gray-400'}>
-						{`(${claimData?.id} / ${claimData?.count})`}
+						{`(${claimData?.data.nonce} / ${numberOfClaims})`}
 					</p>
 				</span>
 			);
@@ -147,8 +144,8 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 					className={'flex w-full lg:w-auto h-auto lg:h-96'}
 					style={isUnlocked ? {} : {filter: 'grayscale(1)'}}>
 					<div className={`
-						flex flex-row lg:flex-col rounded-lg shadow-lg overflow-hidden w-full h-full
-						${isUnlocked ? 'transition-transform transform-gpu hover:scale-102 cursor-pointer shine' : ''}
+						flex flex-row lg:flex-col rounded-lg shadow-lg overflow-hidden w-full h-full cursor-pointer
+						${isUnlocked ? 'transition-transform transform-gpu hover:scale-102 shine' : ''}
 					`}>
 						<div
 							className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
@@ -177,7 +174,7 @@ const	AchievementCard = forwardRef((achievement, ref) => {
 										{!isUnlocked ? <button className={'hover:underline'}>{'Unlock'}</button> : null}
 										{isUnlocked ? <span>{'Unlocked'}</span> : null}
 										{isUnlocked ? <span aria-hidden={'true'}>&middot;</span> : null}
-										{isUnlocked && informationsData?.timestamp ? <time dateTime={informationsData.timestamp}>{new Date(informationsData.timestamp).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
+										{isUnlocked && claimData?.data.date ? <time dateTime={claimData.data.date}>{new Date(claimData.data.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
 									</div>
 								</div>
 							</div>
