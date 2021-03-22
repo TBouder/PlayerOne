@@ -7,10 +7,12 @@
 
 import	{useState, useEffect, useRef, forwardRef}	from	'react';
 import	Link										from	'next/link';
+import	{ethers}									from	'ethers';
 import	axios										from	'axios';
 import	{useToasts}									from	'react-toast-notifications';
 import	useWeb3										from	'contexts/useWeb3';
 import	{getStrategy}								from	'achievements/helpers';
+import	{fetcher}									from	'utils';
 
 const	claimDomain = {
 	name: 'Degen Achievement',
@@ -45,7 +47,7 @@ function	BottomInformation({onClaim, claim, isUnlocked}) {
 		)	
 	} else if (!isUnlocked) {
 		return (
-			<div className={'flex space-x-1 text-sm text-gray-500'}>
+			<div className={'flex space-x-1 text-sm text-gray-500'} onClick={onClaim}>
 				<p>{'Locked'}</p>
 			</div>
 		)
@@ -82,7 +84,6 @@ const	AchievementCard = forwardRef((props, ref) => {
 	async function	onClaim(e) {
 		e.stopPropagation();
 		e.preventDefault();
-
 		const	strategy = achievement.strategy;
 		if (!strategy?.name) {
 			addToast(`No strategy`, {appearance: 'error'});
@@ -101,33 +102,86 @@ const	AchievementCard = forwardRef((props, ref) => {
 			return console.error(`Achievement is not unlocked`);
 		}
 
-		const	claimMessage = {
-			action: 'Claiming',
-			title: achievement.title,
-			unlock: {
-				blockNumber: String(achievement.informations.blockNumber),
-				hash: String(achievement.informations.hash),
-				timestamp: String(achievement.informations.timestamp),
-				details: String(achievement.informations.details),
-			}
-		};
-
 		try {
-			actions.sign(claimDomain, claimTypes, claimMessage, async (signature) => {
-				const response = await axios.post(`${process.env.API_URI}/claim`, {
-					achievementUUID: achievement.UUID,
-					address: address,
-					signature: signature,
-					message: JSON.stringify(claimMessage)
-				});
-				const	updatedAchievement = response.data.achievement;
-				updatedAchievement.informations = achievement.informations;
-				updatedAchievement.claim = response.data.claim;
-				updatedAchievement.claimed = true;
-				updatedAchievement.unlocked = true;
-				set_achievement(updatedAchievement);
-				props.onUpdate(updatedAchievement);
-			})
+
+			const	gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
+			const	averageGasPrice = (gasPrice.average / 10);
+			addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
+
+			const response = await axios.post(`${process.env.API_URI}/claim`, {
+				achievementUUID: achievement.UUID,
+				address: address,
+				signature: 'signature',
+				message: ''
+			});
+			addToast(`Claim registered on the backend`, {appearance: 'info'});
+
+			const signatureResponse = await axios.post(`${process.env.API_URI}/claim/signature`, {
+				achievementUUID: achievement.UUID,
+				address: address,
+			});
+			addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
+
+			const	signature = signatureResponse.data.signature;
+			const	tokenAddress = signatureResponse.data.contractAddress;
+			const	validator = signatureResponse.data.validator;
+			const	amount = signatureResponse.data.amount;
+			const	deadline = signatureResponse.data.deadline;
+			const	r = signature.slice(0, 66);
+			const	s = '0x' + signature.slice(66, 130);
+			const	v = parseInt(signature.slice(130, 132), 16) + 27;
+
+			const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+			const	signer = provider.getSigner();
+			const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
+			contract.functions.claim(
+				validator,
+				address,
+				amount,
+				deadline,
+				v,
+				r,
+				s,
+				{gasPrice: averageGasPrice * 1000000000}
+			);
+
+
+			// const	updatedAchievement = response.data.achievement;
+			// updatedAchievement.informations = achievement.informations;
+			// updatedAchievement.claim = response.data.claim;
+			// updatedAchievement.claimed = true;
+			// updatedAchievement.unlocked = true;
+			// set_achievement(updatedAchievement);
+			// props.onUpdate(updatedAchievement);
+
+			if (false) {//old claim
+	
+				const	claimMessage = {
+					action: 'Claiming',
+					title: achievement.title,
+					unlock: {
+						blockNumber: String(achievement.informations.blockNumber),
+						hash: String(achievement.informations.hash),
+						timestamp: String(achievement.informations.timestamp),
+						details: String(achievement.informations.details),
+					}
+				};
+				actions.sign(claimDomain, claimTypes, claimMessage, async (signature) => {
+					const response = await axios.post(`${process.env.API_URI}/claim`, {
+						achievementUUID: achievement.UUID,
+						address: address,
+						signature: signature,
+						message: JSON.stringify(claimMessage)
+					});
+					const	updatedAchievement = response.data.achievement;
+					updatedAchievement.informations = achievement.informations;
+					updatedAchievement.claim = response.data.claim;
+					updatedAchievement.claimed = true;
+					updatedAchievement.unlocked = true;
+					set_achievement(updatedAchievement);
+					props.onUpdate(updatedAchievement);
+				})
+			}
 		} catch (error) {
 			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return console.error(error.message);

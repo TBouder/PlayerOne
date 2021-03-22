@@ -12,6 +12,8 @@ export const fetcher = url => axios.get(url).then(res => res.data);
 
 export const toAddress = ethers.utils.getAddress;
 
+export const bigNumber = ethers.BigNumber;
+
 export const sortBy = (arr, k) => arr.concat().sort((b, a) => (a[k] > b[k]) ? 1 : ((a[k] < b[k]) ? -1 : 0));
 
 export const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria(i) ? 0 : 1].push(i), acc), [[], []]);

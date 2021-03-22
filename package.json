@@ -24,6 +24,7 @@
     "axios": "^0.21.1",
     "dotenv-webpack": "^7.0.2",
     "enc-utils": "^3.0.0",
+    "eth-permit": "^0.1.9",
     "ethers": "^5.0.32",
     "next": "10.0.9",
     "nprogress": "^0.2.0",
@@ -34,7 +35,8 @@
     "react-toast-notifications": "^2.4.3",
     "styled-components": "^5.2.1",
     "swr": "^0.5.3",
-    "tailwindcss": "^2.0.3"
+    "tailwindcss": "^2.0.3",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.10",

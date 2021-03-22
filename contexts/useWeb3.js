@@ -12,7 +12,10 @@ import	{useToasts}											from	'react-toast-notifications';
 import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 import	useLocalStorage										from	'hook/useLocalStorage';
-import	{fetcher, toAddress}								from	'utils';
+import	{fetcher, toAddress, bigNumber}						from	'utils';
+import	{signERC2612Permit}									from	'dependencies/eth-permit';
+
+// const { signERC2612Permit } = require("eth-permit");
 
 const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 const	fetchERC20 = address => fetcher(`https://api.etherscan.io/api?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`);
@@ -165,6 +168,43 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		}
 	}
 
+	async function	permitMint() {
+		function  getNonce(provider, tokenAddress) {
+			const ERC20_ABI = ["function getNonce(address validator, address requestor) public view returns (uint256)"];
+			const	contractNonce = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+			return contractNonce.functions.getNonce;
+		  }
+		  
+		const	CONTRACT_ADDRESS = '0xdb2D1792d7BB2f44599B692D93c5D6C4B9C130A2';
+		const	OWNER_ADDRES = '0x99024878Cbd7eea4661F5E49A22BB9410c847a74';
+		const	RECIPIENT_ADDRESS = '0x9E63B020ae098E73cF201EE1357EDc72DFEaA518';
+
+		const	nonce = await getNonce(provider, CONTRACT_ADDRESS)(OWNER_ADDRES, RECIPIENT_ADDRESS);
+		console.log(nonce)
+		const	result = await signERC2612Permit(
+			provider,
+			CONTRACT_ADDRESS,
+			OWNER_ADDRES,
+			RECIPIENT_ADDRESS,
+			"1000000000000000000", //1 eth worth
+			null,
+			bigNumber.from(nonce.toString()).toHexString()
+		);
+		console.log(result)
+
+		// const	BLA = await token.methods.permit(
+		// 	senderAddress,
+		// 	spender,
+		// 	value,
+		// 	result.deadline,
+		// 	result.v,
+		// 	result.r,
+		// 	result.s
+		// ).send({from: address});
+
+		// console.log(BLA)
+	}
+
 	return (
 		<Web3Context.Provider
 			children={children}
@@ -177,7 +217,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				walletData,
 				provider,
 				actions: {
-					sign
+					sign,
+					permitMint
 				}
 			}} />
 	)
