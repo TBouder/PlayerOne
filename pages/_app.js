@@ -12,7 +12,9 @@ import	Head						from	'next/head';
 import	{ToastProvider}				from	'react-toast-notifications';
 import	{Web3ContextApp}			from	'contexts/useWeb3';
 import	{AchievementsContextApp}	from	'contexts/useAchievements';
+import	useUi, {UIApp}						from	'contexts/useUI';
 import	TopMenu						from	'components/TopMenu';
+import	Confetti from 'react-dom-confetti'
 
 import	'style/Default.css'
 import	'tailwindcss/tailwind.css';
@@ -23,6 +25,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
+	const	{confetti} = useUi();
 
 	return (
 		<>
@@ -49,6 +52,13 @@ function	AppWrapper(props) {
 					</div>
 				</div>
 			</div>
+			<div id={'portal-confetti'}>
+				<div
+					className={'absolute pointer-events-none'}
+					style={{top: confetti.get.y, left: confetti.get.x}}>
+					<Confetti active={confetti.get.active} config={confetti.config} />
+				</div>
+			</div>
 			<div id={'portal-root'} />
 		</>
 	);
@@ -65,19 +75,21 @@ function	MyApp(props) {
 
 	return (
 		<ToastProvider autoDismiss>
-			<Web3ContextApp
-				set_shouldReset={() => set_shouldReset(true)}>
-				<AchievementsContextApp
-					shouldReset={shouldReset}
-					set_shouldReset={value => set_shouldReset(value)}
-					achievementsList={achievementsList}>
-				<AppWrapper
-					Component={Component}
-					pageProps={{...pageProps, achievementsList}}
-					element={props.element}
-					router={props.router} />
-				</AchievementsContextApp>
-			</Web3ContextApp>
+			<UIApp>
+				<Web3ContextApp
+					set_shouldReset={() => set_shouldReset(true)}>
+					<AchievementsContextApp
+						shouldReset={shouldReset}
+						set_shouldReset={value => set_shouldReset(value)}
+						achievementsList={achievementsList}>
+					<AppWrapper
+						Component={Component}
+						pageProps={{...pageProps, achievementsList}}
+						element={props.element}
+						router={props.router} />
+					</AchievementsContextApp>
+				</Web3ContextApp>
+			</UIApp>
 		</ToastProvider>
 	);
 }

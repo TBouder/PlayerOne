@@ -12,10 +12,13 @@ import	AchievementCard									from	'components/AchievementCard';
 import	useWeb3											from	'contexts/useWeb3';
 import	useAchievements									from	'contexts/useAchievements';
 import	useInterval										from	'hook/useInterval';
-import	{fetcher, sleep}										from	'utils'
+import	{fetcher}										from	'utils'
 import	{faCoins, faParachuteBox, faGasPump, faShapes, faUniversity, faAward, faMedal}								from	'@fortawesome/free-solid-svg-icons'
 import	{FontAwesomeIcon}								from	'@fortawesome/react-fontawesome'
-import useHover from 'hook/useHover';
+import	useHover from 'hook/useHover';
+import	useEventListener from 'hook/useEventListener';
+import Confetti from 'react-dom-confetti'
+import useUI from 'contexts/useUI';
 
 function	SectionAchievements(props) {
 	const	{achievements, set_achievements} = useAchievements();
@@ -199,16 +202,23 @@ const	ItemBannerUniswap = forwardRef((props, ref) => {
 	return (
 		<div ref={ref} className={`${props.defaultClassName} bannerInitialState`}>
 			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
-			<div className={'pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
+			<div className={'col-span-2 pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
 				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
 					<span className={'block'}>{'Like a Unicorn'}</span>
 				</h2>
 				<p className={'mt-4 text-lg text-white text-opacity-80'}>
 					{'Receive an airdrop from Uniswap'}
 				</p>
-				<button className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-uniswap-pink font-medium etext-white hover:bg-teal-50 hover:text-teal-700'}>{'Claim this achievement !'}</button>
+				<button
+					onClick={({clientX, clientY}) => {
+						props.confetti.set({active: true, x: clientX, y: clientY});
+						setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
+					}}
+					className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-uniswap-pink font-medium etext-white cursor-pointer'}>
+					{'Claim this achievement !'}
+				</button>
 			</div>
-			<div className={'flex justify-center items-center px-6 sm:px-16'}>
+			<div className={'flex justify-center items-center col-span-1'}>
 				<Image
 					src={'/uniswap.svg'}
 					alt={'uniswap'}
@@ -223,16 +233,23 @@ const	ItemBannerSponsor = forwardRef((props, ref) => {
 	return (
 		<div id={'bannerRef-Sponsor'} ref={ref} className={`${props.defaultClassName} bannerInitialStateOff`}>
 			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
-			<div className={'pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
+			<div className={'col-span-2 pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
 				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
 					<span className={'block'}>{'Sponsor'}</span>
 				</h2>
 				<p className={'mt-4 text-lg text-white text-opacity-80'}>
 					{'Send us token, and become one of our sponsor.'}
 				</p>
-				<button className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-teal-700 font-medium etext-white hover:bg-teal-50 hover:text-teal-700'}>{'Claim this achievement !'}</button>
+				<button
+					onClick={({clientX, clientY}) => {
+						props.confetti.set({active: true, x: clientX, y: clientY});
+						setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
+					}}
+					className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-teal-700 font-medium etext-white hover:bg-teal-50 hover:text-teal-700 cursor-pointer'}>
+						{'Claim this achievement !'}
+				</button>
 			</div>
-			<div className={'flex justify-center items-center px-6 sm:px-16'}>
+			<div className={'flex justify-center items-center col-span-1'}>
 				<FontAwesomeIcon
 					style={{width: 160, height: 160}}
 					className={'text-white'}
@@ -245,12 +262,13 @@ const	ItemBannerSponsor = forwardRef((props, ref) => {
 
 function	SectionBanner() {
 	let		intervalStep = 0;
+	const	{confetti} = useUI();
 	const	firstBannerRef = useRef();
 	const	secondBannerRef = useRef();
 	const	thirdBannerRef = useRef();
 	const	[hoverRef, isHover] = useHover()
-	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-2 gap-4';
-	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-2 gap-4';
+	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-3 gap-4';
+	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-3 gap-4';
 
 	useInterval(() => {
 		if (!isHover)
@@ -259,13 +277,13 @@ function	SectionBanner() {
 
 	function	triggerStep() {
 		if (intervalStep === 20) {
-			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-out-left`, 0);
+			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-out-left pointer-event-none`, 0);
 			intervalStep++;
 		} else if (intervalStep === 21) {
 			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-in-right`, 0);
 			intervalStep++;
 		} else if (intervalStep === 41) {
-			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-out-left`, 0);
+			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-out-left pointer-event-none`, 0);
 			intervalStep++;
 		} else if (intervalStep === 42) {
 			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-in-right`, 0);
@@ -277,8 +295,14 @@ function	SectionBanner() {
 
 	return (
 		<section ref={hoverRef} id={'preview'} aria-label={'preview'} className={'w-full mt-12 relative'} style={{height: 310}}>
-			<ItemBannerUniswap ref={firstBannerRef} defaultClassName={firstClassName} />
-			<ItemBannerSponsor ref={secondBannerRef} defaultClassName={secondClassName} />
+			<ItemBannerUniswap
+				ref={firstBannerRef}
+				defaultClassName={firstClassName}
+				confetti={confetti} />
+			<ItemBannerSponsor
+				ref={secondBannerRef}
+				defaultClassName={secondClassName}
+				confetti={confetti} />
 			{/* <ItemBannerUniswap /> */}
 		</section>
 	);

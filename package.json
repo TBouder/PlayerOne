@@ -32,6 +32,7 @@
     "react": "17.0.1",
     "react-alice-carousel": "^2.4.0",
     "react-dom": "^17.0.1",
+    "react-dom-confetti": "^0.2.0",
     "react-flip-move": "^3.0.4",
     "react-slick": "^0.28.1",
     "react-toast-notifications": "^2.4.3",
