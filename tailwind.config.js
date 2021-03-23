@@ -46,6 +46,10 @@ module.exports = {
         'yearn': {
           600: 'rgba(0, 106, 227, 0.2)',
           800: 'rgba(0, 106, 227, 1)',
+        },
+        'bitcoin': {
+          initial: '#f7931a',
+          darker: '#DF5820',
         }
       },
       scale: {

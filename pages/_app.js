@@ -54,7 +54,7 @@ function	AppWrapper(props) {
 			</div>
 			<div id={'portal-confetti'}>
 				<div
-					className={'absolute pointer-events-none'}
+					className={'absolute pointer-events-none z-50'}
 					style={{top: confetti.get.y, left: confetti.get.x}}>
 					<Confetti active={confetti.get.active} config={confetti.config} />
 				</div>

@@ -5,20 +5,18 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect, forwardRef, useRef}							from	'react';
+import	{useState, useEffect}							from	'react';
 import	Image											from	'next/image';
 import	FlipMove										from	'react-flip-move';
+import	{
+	faCoins, faParachuteBox, faGasPump, faShapes,
+	faUniversity, faAward}						from	'@fortawesome/free-solid-svg-icons'
+import	{FontAwesomeIcon}								from	'@fortawesome/react-fontawesome'
 import	AchievementCard									from	'components/AchievementCard';
+import	SectionBanner									from	'components/SectionBanner';
 import	useWeb3											from	'contexts/useWeb3';
 import	useAchievements									from	'contexts/useAchievements';
-import	useInterval										from	'hook/useInterval';
 import	{fetcher}										from	'utils'
-import	{faCoins, faParachuteBox, faGasPump, faShapes, faUniversity, faAward, faMedal}								from	'@fortawesome/free-solid-svg-icons'
-import	{FontAwesomeIcon}								from	'@fortawesome/react-fontawesome'
-import	useHover from 'hook/useHover';
-import	useEventListener from 'hook/useEventListener';
-import Confetti from 'react-dom-confetti'
-import useUI from 'contexts/useUI';
 
 function	SectionAchievements(props) {
 	const	{achievements, set_achievements} = useAchievements();
@@ -47,7 +45,7 @@ function	SectionAchievements(props) {
 				enterAnimation={'fade'}
 				leaveAnimation={'fade'}
 				maintainContainerHeight
-				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 3xl:grid-cols-7'}>
+				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'}>
 				{(achievementList).map((each) => (
 					<AchievementCard
 						key={each.UUID}
@@ -73,10 +71,7 @@ function	PageHeader() {
 	return (
 		<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
 			<div className={'lg:text-center'}>
-				<h2 className={'text-base text-teal-600 font-semibold tracking-wide uppercase'}>
-					{'Achievements'}
-				</h2>
-				<p className={'mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 text-gradient sm:text-4xl'}>
+				<p className={'text-3xl leading-8 font-extrabold tracking-tight text-gray-900 text-gradient sm:text-4xl'}>
 					{'No more unknow. So much wow.'}
 				</p>
 				<p className={'mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto'}>
@@ -198,116 +193,6 @@ function	SectionCollections() {
 	);
 }
 
-const	ItemBannerUniswap = forwardRef((props, ref) => {
-	return (
-		<div ref={ref} className={`${props.defaultClassName} bannerInitialState`}>
-			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
-			<div className={'col-span-2 pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
-				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
-					<span className={'block'}>{'Like a Unicorn'}</span>
-				</h2>
-				<p className={'mt-4 text-lg text-white text-opacity-80'}>
-					{'Receive an airdrop from Uniswap'}
-				</p>
-				<button
-					onClick={({clientX, clientY}) => {
-						props.confetti.set({active: true, x: clientX, y: clientY});
-						setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
-					}}
-					className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-uniswap-pink font-medium etext-white cursor-pointer'}>
-					{'Claim this achievement !'}
-				</button>
-			</div>
-			<div className={'flex justify-center items-center col-span-1'}>
-				<Image
-					src={'/uniswap.svg'}
-					alt={'uniswap'}
-					width={220}
-					height={220} />
-			</div>
-		</div>
-	);
-});
-
-const	ItemBannerSponsor = forwardRef((props, ref) => {
-	return (
-		<div id={'bannerRef-Sponsor'} ref={ref} className={`${props.defaultClassName} bannerInitialStateOff`}>
-			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
-			<div className={'col-span-2 pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
-				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
-					<span className={'block'}>{'Sponsor'}</span>
-				</h2>
-				<p className={'mt-4 text-lg text-white text-opacity-80'}>
-					{'Send us token, and become one of our sponsor.'}
-				</p>
-				<button
-					onClick={({clientX, clientY}) => {
-						props.confetti.set({active: true, x: clientX, y: clientY});
-						setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
-					}}
-					className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-teal-700 font-medium etext-white hover:bg-teal-50 hover:text-teal-700 cursor-pointer'}>
-						{'Claim this achievement !'}
-				</button>
-			</div>
-			<div className={'flex justify-center items-center col-span-1'}>
-				<FontAwesomeIcon
-					style={{width: 160, height: 160}}
-					className={'text-white'}
-					icon={faMedal} />
-			</div>
-		</div>
-	);
-});
-
-
-function	SectionBanner() {
-	let		intervalStep = 0;
-	const	{confetti} = useUI();
-	const	firstBannerRef = useRef();
-	const	secondBannerRef = useRef();
-	const	thirdBannerRef = useRef();
-	const	[hoverRef, isHover] = useHover()
-	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-3 gap-4';
-	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-3 gap-4';
-
-	useInterval(() => {
-		if (!isHover)
-			triggerStep();
-	}, 400, true, [isHover]);
-
-	function	triggerStep() {
-		if (intervalStep === 20) {
-			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-out-left pointer-event-none`, 0);
-			intervalStep++;
-		} else if (intervalStep === 21) {
-			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-in-right`, 0);
-			intervalStep++;
-		} else if (intervalStep === 41) {
-			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-out-left pointer-event-none`, 0);
-			intervalStep++;
-		} else if (intervalStep === 42) {
-			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-in-right`, 0);
-			intervalStep = 0;
-		} else {
-			intervalStep++;
-		}
-	}
-
-	return (
-		<section ref={hoverRef} id={'preview'} aria-label={'preview'} className={'w-full mt-12 relative'} style={{height: 310}}>
-			<ItemBannerUniswap
-				ref={firstBannerRef}
-				defaultClassName={firstClassName}
-				confetti={confetti} />
-			<ItemBannerSponsor
-				ref={secondBannerRef}
-				defaultClassName={secondClassName}
-				confetti={confetti} />
-			{/* <ItemBannerUniswap /> */}
-		</section>
-	);
-}
-
 function	Page(props) {
 	const	{achievements, claims} = useAchievements();
 	const	achievementsList = achievements || props.achievementsList;
@@ -320,14 +205,14 @@ function	Page(props) {
 	}, [achievements]);
 
 	return (
-		<div className={'w-full pt-16 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
+		<div className={'w-full pt-8 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
 			<div className={'py-6 bg-white'}>
 				<PageHeader />
 
-				<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full pt-12'} suppressHydrationWarning>
+				<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full pt-4'} suppressHydrationWarning>
 					<SectionWalletConnect />
 				</section>
-				<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full pb-4'} suppressHydrationWarning>
+				<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full'} suppressHydrationWarning>
 					<SectionAchievementProgress unlocked={unlockedCount} myAchievements={achievements || achievementsList} />
 				</section>
 

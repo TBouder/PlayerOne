@@ -518,12 +518,23 @@ input[type=number] {
 	opacity: 1;
 }
 .bannerInitialStateOff {
-	transform: translateX(1000);
+	/* transform: translateX(1000); */
 	opacity: 0;
 	pointer-events: none;
 }
+.bannerStateOffLeft {
+	transform: translateX(-1000);
+	opacity: 0;
+	pointer-events: none;
+	z-index: 0;
+}
 .uniswapGradient {
+	background-color: rgb(255, 0, 122);
 	background: radial-gradient(174.47% 188.91% at 1.84% 0%, rgb(255, 0, 122) 0%, rgb(33, 114, 229) 100%) repeat scroll 0% 0%, rgb(237, 238, 242) none repeat scroll 0% 0%;
+}
+.wbtcGradient {
+	background-color: #f7931a;
+	background: linear-gradient(to bottom right, #f7931a, #DF5820);
 }
 
 
