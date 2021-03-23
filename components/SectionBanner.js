@@ -59,7 +59,7 @@ function	SectionBanner() {
 
 	return (
 		<section id={'preview'} aria-label={'preview'} className={'w-full mt-12'}>
-			<div ref={hoverRef} style={{height: 310}} className={'relative'}>
+			<div ref={hoverRef} style={{height: 310}} className={'relative z-10'}>
 				<ItemBannerUniswap
 					id={'firstBannerRef'}
 					ref={firstBannerRef}
