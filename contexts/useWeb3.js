@@ -190,6 +190,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			bigNumber.from(nonce.toString()).toHexString()
 		);
 	}
+	// console.log(ethers.utils.id("Claim(address validator,address requestor,uint256 achievement,uint256 amount,uint256 validatorNonce,uint256 deadline)"))
 
 	return (
 		<Web3Context.Provider

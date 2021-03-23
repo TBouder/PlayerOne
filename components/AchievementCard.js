@@ -132,7 +132,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 			const	s = '0x' + signature.slice(66, 130);
 			const	v = parseInt(signature.slice(130, 132), 16) + 27;
 
-			const	ERC20_ABI = ["function claim(address validator, address requestor, bytes32 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+			const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
 			const	signer = provider.getSigner();
 			const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
 			contract.functions.claim(
