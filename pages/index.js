@@ -5,20 +5,21 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useState, useEffect}							from	'react';
+import	{useState, useEffect, forwardRef, useRef}							from	'react';
 import	Image											from	'next/image';
 import	FlipMove										from	'react-flip-move';
 import	AchievementCard									from	'components/AchievementCard';
 import	useWeb3											from	'contexts/useWeb3';
 import	useAchievements									from	'contexts/useAchievements';
-import	Badge, {getBadgeList}							from	'components/Badges';
-import	{fetcher, sortBy, partition, hasIntersection}	from	'utils'
+import	useInterval										from	'hook/useInterval';
+import	{fetcher, sleep}										from	'utils'
+import	{faCoins, faParachuteBox, faGasPump, faShapes, faUniversity, faAward, faMedal}								from	'@fortawesome/free-solid-svg-icons'
+import	{FontAwesomeIcon}								from	'@fortawesome/react-fontawesome'
+import useHover from 'hook/useHover';
 
 function	SectionAchievements(props) {
 	const	{achievements, set_achievements} = useAchievements();
 	const	[achievementList, set_achievementList] = useState(achievements || props.achievements);
-	const	[badgeList, set_badgeList] = useState([...new Set(getBadgeList())]);
-	const	[nonce, set_nonce] = useState(0);
 
 	useEffect(() => {
 		if (achievements) {
@@ -26,45 +27,17 @@ function	SectionAchievements(props) {
 		}
 	}, [achievements]);
 
-	useEffect(() => {
-		if (achievements && nonce > 0) {
-			const	[inList, outList] = partition(achievements, e => hasIntersection(e.badges, badgeList));
-			const	sortByUnlocked = sortBy(inList, 'unlocked');
-			set_achievementList([...sortByUnlocked.map(e => ({...e, hidden: false})), ...outList.map(e => ({...e, hidden: true}))]);
-		}
-	}, [nonce]);
-
-	if (!achievementList ||achievementList.length === 0) {
+	if (!achievementList || achievementList.length === 0) {
 		return null;
 	}
 	return (
-		<section className={'mt-12'} aria-label={`achievements`}>
-			<div className={'mb-5'}>
-				<div className={'pb-5 border-b border-gray-200'}>
-					<h3 className={'text-lg leading-6 font-medium text-gray-400'}>
-						{`Achievements`}
-					</h3>
-					<div className={'mt-2'}>
-						{getBadgeList().map((t) => (
-							<Badge
-								key={t}
-								type={t}
-								defaultSelected
-								onClick={() => {
-									const	_badgeList = badgeList;
-									const	_index = _badgeList.indexOf(t);
-									if (_index > -1) {
-										_badgeList.splice(_index, 1);
-									} else {
-										_badgeList.push(t);
-									}
-									set_badgeList(_badgeList); 
-									set_nonce(n => n + 1);
-								}}
-								/>
-							)
-						)}
-					</div>
+		<section className={'mt-16'} aria-label={`achievements`}>
+			<div className={'pb-8 flex flex-row'}>
+				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
+					{`Featured Achievements`}
+				</h3>
+				<div className={'bg-red-400 ml-2 rounded inline opacity-100'}>
+					<p className={'text-white text-xs px-1.5 py-0.5 pt-1 font-semibold'}>{achievementList.length}</p>
 				</div>
 			</div>
 			<FlipMove
@@ -175,6 +148,142 @@ function	SectionAchievementProgress({unlocked, myAchievements}) {
 	)
 }
 
+function	ItemCollection({selected, faIcon, title, onClick}) {
+	if (selected) {
+		return (
+			<div className={'rounded-lg bg-teal-700 overflow-hidden w-full h-full transition-colors'}>
+				<div className={'flex flex-col justify-center items-center p-4'}>
+					<FontAwesomeIcon style={{width: 24, height: 24}} className={'mt-8 text-white'} icon={faIcon} />
+					<p className={'mt-6 text-white font-medium'}>{title}</p>
+				</div>
+			</div>
+		);
+	}
+	return (
+		<div className={'rounded-lg bg-gray-200 overflow-hidden w-full h-full cursor-pointer group transition-colors'} onClick={onClick}>
+			<div className={'flex flex-col justify-center items-center p-4'}>
+				<FontAwesomeIcon
+					style={{width: 24, height: 24}}
+					className={'mt-8 text-gray-400 group-hover:animate-shake group-hover:text-teal-700 transition-colors'} icon={faIcon} />
+				<p className={'mt-6 text-gray-400 font-medium'}>{title}</p>
+			</div>
+		</div>
+	);
+}
+function	SectionCollections() {
+	const	[selec, set_selec] = useState(0);
+
+	return (
+		<section id={'collections'} aria-label={'collections'} className={'w-full pt-16'}>
+			<div className={'pb-8 w-full flex justify-between'}>
+				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
+					{`Browse the collections`}
+				</h3>
+				<h3 className={'text-sm leading-6 font-normal text-teal-700 text-opacity-60 cursor-pointer hover:text-opacity-100 hover:underline'}>
+					{`See all`}
+				</h3>
+			</div>
+			<div className={'grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8'}>
+				<ItemCollection selected={selec === 0} onClick={() => set_selec(0)} faIcon={faAward} title={'All'} />
+				<ItemCollection selected={selec === 1} onClick={() => set_selec(1)} faIcon={faShapes} title={'Ecosystem'} />
+				<ItemCollection selected={selec === 2} onClick={() => set_selec(2)} faIcon={faCoins} title={'ERC-20'} />
+				<ItemCollection selected={selec === 3} onClick={() => set_selec(3)} faIcon={faParachuteBox} title={'Airdrops'} />
+				<ItemCollection selected={selec === 4} onClick={() => set_selec(4)} faIcon={faGasPump} title={'Fees'} />
+				<ItemCollection selected={selec === 5} onClick={() => set_selec(5)} faIcon={faUniversity} title={'DeFI'} />
+			</div>
+		</section>
+	);
+}
+
+const	ItemBannerUniswap = forwardRef((props, ref) => {
+	return (
+		<div ref={ref} className={`${props.defaultClassName} bannerInitialState`}>
+			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
+			<div className={'pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
+				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
+					<span className={'block'}>{'Like a Unicorn'}</span>
+				</h2>
+				<p className={'mt-4 text-lg text-white text-opacity-80'}>
+					{'Receive an airdrop from Uniswap'}
+				</p>
+				<button className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-uniswap-pink font-medium etext-white hover:bg-teal-50 hover:text-teal-700'}>{'Claim this achievement !'}</button>
+			</div>
+			<div className={'flex justify-center items-center px-6 sm:px-16'}>
+				<Image
+					src={'/uniswap.svg'}
+					alt={'uniswap'}
+					width={220}
+					height={220} />
+			</div>
+		</div>
+	);
+});
+
+const	ItemBannerSponsor = forwardRef((props, ref) => {
+	return (
+		<div id={'bannerRef-Sponsor'} ref={ref} className={`${props.defaultClassName} bannerInitialStateOff`}>
+			<ul className={'circles pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
+			<div className={'pt-8 pb-8 px-6 sm:pt-16 sm:px-16 lg:py-16 lg:pr-0'}>
+				<h2 className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-4xl'}>
+					<span className={'block'}>{'Sponsor'}</span>
+				</h2>
+				<p className={'mt-4 text-lg text-white text-opacity-80'}>
+					{'Send us token, and become one of our sponsor.'}
+				</p>
+				<button className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-teal-700 font-medium etext-white hover:bg-teal-50 hover:text-teal-700'}>{'Claim this achievement !'}</button>
+			</div>
+			<div className={'flex justify-center items-center px-6 sm:px-16'}>
+				<FontAwesomeIcon
+					style={{width: 160, height: 160}}
+					className={'text-white'}
+					icon={faMedal} />
+			</div>
+		</div>
+	);
+});
+
+
+function	SectionBanner() {
+	let		intervalStep = 0;
+	const	firstBannerRef = useRef();
+	const	secondBannerRef = useRef();
+	const	thirdBannerRef = useRef();
+	const	[hoverRef, isHover] = useHover()
+	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-2 gap-4';
+	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-2 gap-4';
+
+	useInterval(() => {
+		if (!isHover)
+			triggerStep();
+	}, 400, true, [isHover]);
+
+	function	triggerStep() {
+		if (intervalStep === 20) {
+			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-out-left`, 0);
+			intervalStep++;
+		} else if (intervalStep === 21) {
+			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-in-right`, 0);
+			intervalStep++;
+		} else if (intervalStep === 41) {
+			setTimeout(() => secondBannerRef.current.className = `${secondClassName} animate-slide-out-left`, 0);
+			intervalStep++;
+		} else if (intervalStep === 42) {
+			setTimeout(() => firstBannerRef.current.className = `${firstClassName} animate-slide-in-right`, 0);
+			intervalStep = 0;
+		} else {
+			intervalStep++;
+		}
+	}
+
+	return (
+		<section ref={hoverRef} id={'preview'} aria-label={'preview'} className={'w-full mt-12 relative'} style={{height: 310}}>
+			<ItemBannerUniswap ref={firstBannerRef} defaultClassName={firstClassName} />
+			<ItemBannerSponsor ref={secondBannerRef} defaultClassName={secondClassName} />
+			{/* <ItemBannerUniswap /> */}
+		</section>
+	);
+}
+
 function	Page(props) {
 	const	{achievements, claims} = useAchievements();
 	const	achievementsList = achievements || props.achievementsList;
@@ -187,7 +296,7 @@ function	Page(props) {
 	}, [achievements]);
 
 	return (
-		<div className={'w-full pt-16 px-6 md:px-12 lg:px-16 xl:px-24'}>
+		<div className={'w-full pt-16 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
 			<div className={'py-6 bg-white'}>
 				<PageHeader />
 
@@ -197,6 +306,10 @@ function	Page(props) {
 				<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full pb-4'} suppressHydrationWarning>
 					<SectionAchievementProgress unlocked={unlockedCount} myAchievements={achievements || achievementsList} />
 				</section>
+
+				<SectionBanner />
+
+				<SectionCollections />
 
 				<SectionAchievements type={'Achievements'} achievements={achievements || achievementsList} />
 			</div>

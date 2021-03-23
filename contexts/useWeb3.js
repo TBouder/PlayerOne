@@ -180,7 +180,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		const	RECIPIENT_ADDRESS = '0x9E63B020ae098E73cF201EE1357EDc72DFEaA518';
 
 		const	nonce = await getNonce(provider, CONTRACT_ADDRESS)(OWNER_ADDRES, RECIPIENT_ADDRESS);
-		console.log(nonce)
 		const	result = await signERC2612Permit(
 			provider,
 			CONTRACT_ADDRESS,
@@ -190,19 +189,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			null,
 			bigNumber.from(nonce.toString()).toHexString()
 		);
-		console.log(result)
-
-		// const	BLA = await token.methods.permit(
-		// 	senderAddress,
-		// 	spender,
-		// 	value,
-		// 	result.deadline,
-		// 	result.v,
-		// 	result.r,
-		// 	result.s
-		// ).send({from: address});
-
-		// console.log(BLA)
 	}
 
 	return (

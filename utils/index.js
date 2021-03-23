@@ -31,3 +31,7 @@ export const	removeFromArray = (arr, key,  item) => {
 	}
 	return arr;
 }
+export const	sleep = (milliseconds) => {
+	return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
+  

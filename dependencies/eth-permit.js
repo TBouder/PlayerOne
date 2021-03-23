@@ -65,11 +65,8 @@ export const signERC2612Permit = async (provider, token, validator, requestor, v
 		deadline: deadline || MAX_INT,
 	};
 	const domain = await getDomain(provider, token);
-	console.log(domain)
 	const typedData = createTypedERC2612Data(message, domain);
-	console.log(typedData)
 	const sig = await signData(provider, validator, typedData);
-	console.log(sig)
 
 	return {...sig, ...message};
 };

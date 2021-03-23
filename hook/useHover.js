@@ -15,15 +15,15 @@ export default function useHover() {
 	
 	const callbackRef = useCallback((node) => {
 		if (ref.current) {
-			ref.current.removeEventListener("mouseover", handleMouseOver);
-			ref.current.removeEventListener("mouseout", handleMouseOut);
+			ref.current.removeEventListener("mouseenter", handleMouseOver);
+			ref.current.removeEventListener("mouseleave", handleMouseOut);
 		}
   
 		ref.current = node;
   
 		if (ref.current) {
-			ref.current.addEventListener("mouseover", handleMouseOver);
-			ref.current.addEventListener("mouseout", handleMouseOut);
+			ref.current.addEventListener("mouseenter", handleMouseOver);
+			ref.current.addEventListener("mouseleave", handleMouseOut);
 		}
 	}, [handleMouseOver, handleMouseOut]);
   

@@ -93,13 +93,13 @@ const	AchievementCard = forwardRef((props, ref) => {
 		const	strategyFunc = getStrategy(strategy.name);
 		if (!strategyFunc) {
 			addToast(`No strategy function`, {appearance: 'error'});
-			return console.error(`No strategy function`);
+			// return console.error(`No strategy function`);
 		}
 
 		const	{unlocked} = await strategyFunc(provider, address, walletData, strategy?.args);
 		if (!unlocked) {
 			addToast(`Achievement is not unlocked`, {appearance: 'error'});
-			return console.error(`Achievement is not unlocked`);
+			// return console.error(`Achievement is not unlocked`);
 		}
 
 		try {
@@ -125,18 +125,20 @@ const	AchievementCard = forwardRef((props, ref) => {
 			const	signature = signatureResponse.data.signature;
 			const	tokenAddress = signatureResponse.data.contractAddress;
 			const	validator = signatureResponse.data.validator;
+			const	achievementHash = signatureResponse.data.achievement;
 			const	amount = signatureResponse.data.amount;
 			const	deadline = signatureResponse.data.deadline;
 			const	r = signature.slice(0, 66);
 			const	s = '0x' + signature.slice(66, 130);
 			const	v = parseInt(signature.slice(130, 132), 16) + 27;
 
-			const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+			const	ERC20_ABI = ["function claim(address validator, address requestor, bytes32 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
 			const	signer = provider.getSigner();
 			const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
 			contract.functions.claim(
 				validator,
 				address,
+				achievementHash,
 				amount,
 				deadline,
 				v,
