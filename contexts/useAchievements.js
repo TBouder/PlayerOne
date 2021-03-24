@@ -288,11 +288,14 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	
 		callback({status: 'SEND_TRANSACTION'})
 		if (transactionResponse.wait) {
-			const	receipt = await transactionResponse.wait(1);
-			if (receipt && receipt.status === 1) {
-				callback({status: 'SUCCESS'})
-			} else {
-				callback({status: 'ERROR'})
+			try {
+				const	receipt = await transactionResponse.wait(1);
+				if (receipt && receipt.status === 1) {
+					return callback({status: 'SUCCESS'});
+				}
+				return callback({status: 'ERROR'});
+			} catch(error) {
+				return addToast(`Transaction reverted`, {appearance: 'error'});
 			}
 		}
 	}
