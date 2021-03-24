@@ -6,7 +6,7 @@
 ******************************************************************************/
 
 import	{ethers}				from	'ethers';
-import	{bigNumber, toAddress} 	from	'achievements/helpers'
+import	{bigNumber, toAddress} 	from	'utils'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address had a specific amount of some ERC20

@@ -5,7 +5,7 @@
 **	@Filename:				erc20Amount copy.js
 ******************************************************************************/
 
-import	{bigNumber, toAddress} 	from	'achievements/helpers'
+import	{bigNumber, toAddress} 	from	'utils'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address has paid more than X since block Y

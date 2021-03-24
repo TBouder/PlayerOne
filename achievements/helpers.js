@@ -5,16 +5,12 @@
 **	@Filename:				helpers.js
 ******************************************************************************/
 
-import	{ethers}				from	'ethers';
 import	checkYearnDaiExploit	from	'achievements/checkYearnDaiExploit';
 import	checkERC20Amount		from	'achievements/checkERC20Amount';
 import	checkGasPrice			from	'achievements/checkGasPrice';
 import	checkAirdrop			from	'achievements/checkAirdrop';
 import	checkWalletLogin		from	'achievements/checkWalletLogin';
-
-export const	bigNumber = ethers.BigNumber;
-export const	address = ethers.utils.getAddress;
-export const	toAddress = ethers.utils.getAddress;
+import	checkSponsoring			from	'achievements/checkSponsoring';
 
 export function getStrategy(strategy) {
 	if (strategy === 'checkYearnDaiExploit') {
@@ -27,22 +23,8 @@ export function getStrategy(strategy) {
 		return checkWalletLogin;
 	} else if (strategy === 'checkGasPrice') {
 		return checkGasPrice;
+	} else if (strategy === 'checkSponsoring') {
+		return checkSponsoring;
 	}
 	return undefined;
 }
-
-
-// export function executeStrategy(provider, address, walletData, strategy) {
-// 	if (strategy.name === 'checkYearnDaiExploit') {
-// 		return checkYearnDaiExploit(provider, address, walletData, ...strategy.arguments);
-// 	} else if (strategy.name === 'checkERC20Amount') {
-// 		return checkERC20Amount(provider, address, walletData, ...strategy.arguments);
-// 	} else if (strategy.name === 'checkAirdrop') {
-// 		return checkAirdrop(provider, address, walletData, ...strategy.arguments);
-// 	} else if (strategy.name === 'checkWalletLogin') {
-// 		return checkWalletLogin(provider, address, walletData, ...strategy.arguments);
-// 	} else if (strategy.name === 'checkGasPrice') {
-// 		return checkGasPrice(provider, address, walletData, ...strategy.arguments);
-// 	}
-// 	return {unlocked: false, informations: undefined};
-// }

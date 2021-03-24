@@ -5,7 +5,7 @@
 **	@Filename:				checkAirdrop.js
 ******************************************************************************/
 
-import	{toAddress} 	from	'achievements/helpers'
+import	{toAddress} 	from	'utils'
 
 /******************************************************************************
 ** _DETAILS_: Check if a specific address got an airdrop from a specific

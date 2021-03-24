@@ -11,6 +11,7 @@ import	{ethers}						from	'ethers';
 export const fetcher = url => axios.get(url).then(res => res.data);
 
 export const toAddress = ethers.utils.getAddress;
+export const address = ethers.utils.getAddress;
 
 export const bigNumber = ethers.BigNumber;
 
