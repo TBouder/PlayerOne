@@ -7,12 +7,10 @@
 
 import	{useState, useEffect, useRef, forwardRef}	from	'react';
 import	Link										from	'next/link';
-import	{ethers}									from	'ethers';
-import	axios										from	'axios';
 import	{useToasts}									from	'react-toast-notifications';
-import	useWeb3										from	'contexts/useWeb3';
 import	{getStrategy}								from	'achievements/helpers';
-import	{fetcher}									from	'utils';
+import	useWeb3										from	'contexts/useWeb3';
+import	useAchievements								from	'contexts/useAchievements';
 
 function	BottomInformation({onClaim, claim, isUnlocked}) {
 	if (claim) {
@@ -50,7 +48,8 @@ function	BottomInformation({onClaim, claim, isUnlocked}) {
 const	AchievementCard = forwardRef((props, ref) => {
 	const	cardRef = useRef();
 	const	{addToast} = useToasts();
-	const	{provider, address, actions, walletData} = useWeb3();
+	const	{provider, address, walletData} = useWeb3();
+	const	{actions} = useAchievements();
 
 	const	[achievement, set_achievement] = useState(props.achievement);
 	useEffect(() => set_achievement(props.achievement), [props.informations, props.unlocked]);
@@ -83,58 +82,9 @@ const	AchievementCard = forwardRef((props, ref) => {
 		}
 
 		try {
-
-			const	gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
-			const	averageGasPrice = (gasPrice.average / 10);
-			addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
-
-			const response = await axios.post(`${process.env.API_URI}/claim`, {
-				achievementUUID: achievement.UUID,
-				address: address,
-				signature: 'signature',
-				message: ''
-			});
-			addToast(`Claim registered on the backend`, {appearance: 'info'});
-
-			const signatureResponse = await axios.post(`${process.env.API_URI}/claim/signature`, {
-				achievementUUID: achievement.UUID,
-				address: address,
-			});
-			addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
-
-			const	signature = signatureResponse.data.signature;
-			const	tokenAddress = signatureResponse.data.contractAddress;
-			const	validator = signatureResponse.data.validator;
-			const	achievementHash = signatureResponse.data.achievement;
-			const	amount = signatureResponse.data.amount;
-			const	deadline = signatureResponse.data.deadline;
-			const	r = signature.slice(0, 66);
-			const	s = '0x' + signature.slice(66, 130);
-			const	v = parseInt(signature.slice(130, 132), 16) + 27;
-
-			const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
-			const	signer = provider.getSigner();
-			const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-			contract.functions.claim(
-				validator,
-				address,
-				achievementHash,
-				amount,
-				deadline,
-				v,
-				r,
-				s,
-				{gasPrice: averageGasPrice * 1000000000}
-			);
-
-
-			// const	updatedAchievement = response.data.achievement;
-			// updatedAchievement.informations = achievement.informations;
-			// updatedAchievement.claim = response.data.claim;
-			// updatedAchievement.claimed = true;
-			// updatedAchievement.unlocked = true;
-			// set_achievement(updatedAchievement);
-			// props.onUpdate(updatedAchievement);
+			actions.claim(achievement.key, (props) => {
+				addToast(props.status, {appearance: 'info'});
+			})
 		} catch (error) {
 			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return console.error(error.message);
@@ -142,7 +92,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 	}
 
 	return (
-		<Link href={`/details/${achievement.UUID}`}>
+		<Link href={`/details/${achievement.key}`}>
 			<div ref={cardRef} className={achievement.hidden ? 'not-visible' : 'cardAnim visible'}>
 				<div
 					ref={ref}

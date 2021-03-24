@@ -48,14 +48,14 @@ function	SectionAchievements(props) {
 				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'}>
 				{(achievementList).map((each) => (
 					<AchievementCard
-						key={each.UUID}
+						key={each.key}
 						hidden={each.hidden}
 						achievement={each}
 						unlocked={each.unlocked}
 						informations={each.informations}
 						onUpdate={(updatedAchievement) => {
 							const	_achievements = achievements;
-							const	index = _achievements.findIndex(e => e.UUID === each.UUID);
+							const	index = _achievements.findIndex(e => e.key === each.key);
 							if (index !== -1) {
 								_achievements[index] = updatedAchievement;
 								set_achievements(_achievements);

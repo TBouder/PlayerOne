@@ -114,7 +114,7 @@ function	PageContent(props) {
 						<Leaderboard
 							claims={props.claims}
 							set_numberOfClaims={set_numberOfClaims}
-							achievementUUID={props.achievementUUID} />
+							achievementKey={props.key} />
 					</div>
 				</div>
 			</div>
@@ -146,7 +146,7 @@ function	Page(props) {
 	**	`claims` (the list of all the claims).
 	**************************************************************************/
 	const	{data} = useSWR(
-		router?.query?.uuid ? `${process.env.API_URI}/achievement/withclaims/${router.query.uuid}` : null,
+		router?.query?.key ? `${process.env.API_URI}/achievement/withclaims/${router.query.key}` : null,
 		fetcher,
 		{
 			initialData: {achievement: props.achievement, claims: props.claims},
@@ -161,7 +161,7 @@ function	Page(props) {
 	**	display some useful informations
 	**************************************************************************/
 	const	{data: currentAddressClaim} = useSWR(
-		address && router?.query?.uuid ? `${process.env.API_URI}/claim/${router.query.uuid}/${address}` : null,
+		address && router?.query?.key ? `${process.env.API_URI}/claim/${router.query.key}/${address}` : null,
 		fetcher,
 		{
 			shouldRetryOnError: false,
@@ -198,7 +198,7 @@ function	Page(props) {
 			</div>
 			<div ref={contentRef} className={'contentAnim'}>
 				<PageContent
-					achievementUUID={router?.query?.uuid}
+					achievementKey={router?.query?.key}
 					achievement={achievement}
 					claims={claims}
 					numberOfClaims={numberOfClaims}
@@ -210,13 +210,13 @@ function	Page(props) {
 
 export async function getStaticPaths() {
 	const	achievementsList = await fetcher(`${process.env.API_URI}/achievements`)
-	const	achievements = achievementsList.map((achievement) => ({params: {achievement, uuid: achievement.UUID}}))
+	const	achievements = achievementsList.map((achievement) => ({params: {achievement, key: achievement.key}}))
 
 	return	{paths: achievements, fallback: false}
 }
 
 export async function getStaticProps({params}) {
-	const	{achievement, claims} = await fetcher(`${process.env.API_URI}/achievement/withclaims/${params.uuid}`)
+	const	{achievement, claims} = await fetcher(`${process.env.API_URI}/achievement/withclaims/${params.key}`)
 
 	return {props: {achievement, claims}}
 }

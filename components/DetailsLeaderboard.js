@@ -104,7 +104,7 @@ function	LeaderBoard(props) {
 	**	Adding a swr method to re-fetch the claims on focus/reconnect
 	**************************************************************************/
 	const	{data} = useSWR(
-		props.achievementUUID ? `${process.env.API_URI}/claims/achievement/${props.achievementUUID}` : null,
+		props.achievementKey ? `${process.env.API_URI}/claims/achievement/${props.achievementKey}` : null,
 		fetcher,
 		{
 			initialData: claims,

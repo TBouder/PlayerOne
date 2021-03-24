@@ -75,7 +75,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			const	addressClaims = await fetcher(`${process.env.API_URI}/claims/address/${address}`);
 			const	_achievements = achievements.map((achievement) => {
 				const	_achievement = {...achievement};
-				const	achievementClaim = addressClaims.find(e => e.achievementUUID === achievement.UUID);
+				const	achievementClaim = addressClaims.find(e => e.achievementKey === achievement.key);
 				if (achievementClaim) {
 					_achievement.unlocked = true
 					_achievement.claimed = !!achievementClaim
@@ -190,10 +190,8 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		achievement.informations = informations || {};
 		return achievement;
 	}
-	async function	claimAchievement(achievementUUID, callback = () => null) {
-		// const	shouldDisplayToast = process.env.NODE_ENV === 'development';
-		const	shouldDisplayToast = false;
-		const	achievement = achievements.find(e => e.UUID === achievementUUID);
+	async function	claimAchievement(achievementKey, callback = () => null) {
+		const	achievement = achievements.find(e => e.key === achievementKey);
 		const	isUnlocked = (await checkAchievement(achievement)).unlocked;
 		if (isUnlocked) {
 			return callback({status: 'SUCCESS'});
@@ -209,9 +207,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		if (chainID !== 1 || chainID !== '0x1') {
 			gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
 			averageGasPrice = (gasPrice.average / 10);
-			if (shouldDisplayToast) {
-				addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
-			}
+			addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
 		}
 
 		/**********************************************************************
@@ -224,17 +220,16 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		let	signatureResponse = undefined;
 		try {
 			signatureResponse = await axios.post(`${process.env.API_URI}/claim/signature`, {
-				achievementUUID: achievement.UUID,
+				achievementKey: achievement.key,
 				address: address,
 			});
 			callback({status: 'GET_SIGNATURE'})
-			if (shouldDisplayToast) {
-				addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
-			}
+			addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
 		} catch (error) {
-			if (shouldDisplayToast) {
-				addToast(`You cannot claim this achievement`, {appearance: 'error'});
+			if (error?.response?.data?.error === 'achievement already claimed') {
+				return callback({status: 'SUCCESS'});
 			}
+			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return callback({status: 'ERROR'});
 		}
 

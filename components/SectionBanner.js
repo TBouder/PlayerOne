@@ -60,9 +60,9 @@ function	SectionBanner() {
 		}
 	}
 
-	function	onClaimAchievement(achievementUUID, callback) {
+	function	onClaimAchievement(achievementKey, callback) {
 		set_isClaiming(true);
-		actions.claim(achievementUUID, (props) => {
+		actions.claim(achievementKey, (props) => {
 			if (props.status === 'ERROR' || props.status === 'SUCCESS') {
 				set_isClaiming(false);
 			}
@@ -74,22 +74,22 @@ function	SectionBanner() {
 		<section id={'preview'} aria-label={'preview'} className={'w-full mt-12'}>
 			<div ref={hoverRef} className={'relative h-72 md:h-77.5'}>
 				<ItemBannerUniswap
-					id={'firstBannerRef'}
+					id={'Like a unicorn'}
 					ref={firstBannerRef}
 					defaultClassName={firstClassName}
-					onClaim={(callback) => onClaimAchievement('d63b6d4b-811e-4f13-8a51-506628294683', callback)}
+					onClaim={(callback) => onClaimAchievement('73676514052504261986825330636986845718420318140825453794724876113850676774808', callback)}
 					confetti={confetti} />
 				<ItemBannerSponsor
-					id={'secondBannerRef'}
+					id={'Sponsor'}
 					ref={secondBannerRef}
 					defaultClassName={secondClassName}
-					onClaim={(callback) => onClaimAchievement('48cbd64e-a50c-4ce2-96cf-ab548d476b8c', callback)}
+					onClaim={(callback) => onClaimAchievement('10129071317085928672231597343656140796863069368282823987076694473609354742003', callback)}
 					confetti={confetti} />
 				<ItemBannerWBTC
-					id={'thirdBannerRef'}
+					id={'One coin to rule them all'}
 					ref={thirdBannerRef}
 					defaultClassName={thirdClassName}
-					onClaim={(callback) => onClaimAchievement('95adcf07-d866-4f21-aa01-33f2a84415fa', callback)}
+					onClaim={(callback) => onClaimAchievement('85104516872644109789153651723214403976812994108384631455702337152374087380959', callback)}
 					confetti={confetti} />
 			</div>
 			<div className={'w-full flex flex-row justify-center items-center h-12'}>
