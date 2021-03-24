@@ -96,6 +96,7 @@ function	SectionBanner() {
 				<div
 					className={'flex justify-center items-center p-2 cursor-pointer'}
 					onClick={() => {
+						set_isClaiming(false);
 						if (currentStep === 1) {
 							secondBannerRef.current.className = `${secondClassName} animate-slide-out-left bannerStateOffLeft`;
 							setTimeout(() => set_intervalStep(62), 400);
@@ -108,6 +109,7 @@ function	SectionBanner() {
 				<div
 					className={'flex justify-center items-center p-2 mx-2 cursor-pointer'}
 					onClick={() => {
+						set_isClaiming(false);
 						if (currentStep === 0) {
 							set_intervalStep(20);
 						} else if (currentStep === 2) {
@@ -120,6 +122,7 @@ function	SectionBanner() {
 				<div
 					className={'flex justify-center items-center p-2 cursor-pointer'}
 					onClick={() => {
+						set_isClaiming(false);
 						if (currentStep === 0) {
 							firstBannerRef.current.className = `${firstClassName} animate-slide-out-left bannerStateOffLeft`;
 							setTimeout(() => set_intervalStep(42), 400);
