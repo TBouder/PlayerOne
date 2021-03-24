@@ -99,13 +99,13 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		**	⚠️ Alchemy is prefered because of it's archive node.
 		**	⚠️ We should add some fallback for the web3provider
 		******************************************************************/
-		const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
+		const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
+		// const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 		// 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 
 		if (_providerType === walletType.METAMASK) {
-			const	_provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
-			// const	_provider = new ethers.providers.Web3Provider(web3Provider)
-			// await _provider.send('eth_requestAccounts');
+			const	_provider = new ethers.providers.Web3Provider(web3Provider)
+			await _provider.send('eth_requestAccounts');
 			const	signer = await _provider.getSigner();
 			const	address = await signer.getAddress();
 			const	_chainID = (await _provider.getNetwork()).chainId;
