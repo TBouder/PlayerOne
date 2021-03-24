@@ -10,25 +10,28 @@ import	ItemBannerSponsor					from	'components/ItemBanners/Sponsor';
 import	ItemBannerUniswap					from	'components/ItemBanners/Uniswap';
 import	ItemBannerWBTC						from	'components/ItemBanners/WBTC';
 import	useUI								from	'contexts/useUI';
+import	useAchievements						from	'contexts/useAchievements';
 import	useInterval							from	'hook/useInterval';
 import	useHover							from	'hook/useHover';
 
 function	SectionBanner() {
 	const	{confetti} = useUI();
+	const	{actions} = useAchievements();
 	const	firstBannerRef = useRef();
 	const	secondBannerRef = useRef();
 	const	thirdBannerRef = useRef();
 	const	[hoverRef, isHover] = useHover();
 	const	[intervalStep, set_intervalStep] = useState(0);
 	const	[currentStep, set_currentStep] = useState(0);
+	const	[isClaiming, set_isClaiming] = useState(false);
 	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-3 gap-4';
 	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-3 gap-4';
 	const	thirdClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full wbtcGradient grid grid-cols-3 gap-4';
 
 	useInterval(() => {
-		if (!isHover)
+		if (!isHover && !isClaiming)
 			triggerStep(currentStep, intervalStep);
-	}, 400, true, [isHover]);
+	}, 400, true, [isHover, isClaiming]);
 
 	function	triggerStep(_currentStep, _intervalStep) {
 		if (_intervalStep === 20) {
@@ -57,6 +60,16 @@ function	SectionBanner() {
 		}
 	}
 
+	function	onClaimAchievement(achievementUUID, callback) {
+		set_isClaiming(true);
+		actions.claim(achievementUUID, (props) => {
+			if (props.status === 'ERROR' || props.status === 'SUCCESS') {
+				set_isClaiming(false);
+			}
+			callback(props);
+		})
+	}
+
 	return (
 		<section id={'preview'} aria-label={'preview'} className={'w-full mt-12'}>
 			<div ref={hoverRef} className={'relative h-72 md:h-77.5'}>
@@ -64,16 +77,19 @@ function	SectionBanner() {
 					id={'firstBannerRef'}
 					ref={firstBannerRef}
 					defaultClassName={firstClassName}
+					onClaim={(callback) => onClaimAchievement('d63b6d4b-811e-4f13-8a51-506628294683', callback)}
 					confetti={confetti} />
 				<ItemBannerSponsor
 					id={'secondBannerRef'}
 					ref={secondBannerRef}
 					defaultClassName={secondClassName}
+					onClaim={(callback) => onClaimAchievement('48cbd64e-a50c-4ce2-96cf-ab548d476b8c', callback)}
 					confetti={confetti} />
 				<ItemBannerWBTC
 					id={'thirdBannerRef'}
 					ref={thirdBannerRef}
 					defaultClassName={thirdClassName}
+					onClaim={(callback) => onClaimAchievement('95adcf07-d866-4f21-aa01-33f2a84415fa', callback)}
 					confetti={confetti} />
 			</div>
 			<div className={'w-full flex flex-row justify-center items-center h-12'}>

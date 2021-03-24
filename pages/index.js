@@ -205,7 +205,7 @@ function	Page(props) {
 	}, [achievements]);
 
 	return (
-		<div className={'w-full pt-8 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
+		<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
 			<div className={'py-6 bg-white'}>
 				<PageHeader />
 

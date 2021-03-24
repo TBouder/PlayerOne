@@ -7,6 +7,9 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	useSWR												from	'swr';
+import	{ethers}											from	'ethers';
+import	axios												from	'axios';
+import	{useToasts}											from	'react-toast-notifications';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
@@ -14,7 +17,8 @@ import	{fetcher, removeFromArray, sortBy}					from	'utils';
 
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
-	const	{address, provider, walletData} = useWeb3();
+	const	{addToast} = useToasts();
+	const	{address, provider, walletData, chainID} = useWeb3();
 
 	/**************************************************************************
 	**	achievements: matches the local state to handle the achievements on the
@@ -163,6 +167,136 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		}
 	}
 
+	async function	checkAchievement(achievement) {
+		if (!achievement) {
+			return null;
+		}
+		if (achievement.unlocked) {
+			return achievement;
+		}
+
+		achievement.unlocked = false;
+		achievement.informations = {};
+		if (!achievement?.strategy?.name) {
+			return null;
+		}
+
+		const	strategy = getStrategy(achievement.strategy.name);
+		if (strategy === undefined) {
+			return null;
+		}
+		const	{unlocked, informations} = await strategy(provider, address, walletData, achievement?.strategy?.args);
+		achievement.unlocked = unlocked;
+		achievement.informations = informations || {};
+		return achievement;
+	}
+	async function	claimAchievement(achievementUUID, callback = () => null) {
+		// const	shouldDisplayToast = process.env.NODE_ENV === 'development';
+		const	shouldDisplayToast = false;
+		const	achievement = achievements.find(e => e.UUID === achievementUUID);
+		const	isUnlocked = (await checkAchievement(achievement)).unlocked;
+		if (isUnlocked) {
+			return callback({status: 'SUCCESS'});
+		}
+
+		/**********************************************************************
+		**	Only for ropsten / testnets
+		**	We need to get the gasPrice to provide an actual price estimation
+		**********************************************************************/
+		let	gasPrice = undefined;
+		let	averageGasPrice = undefined;
+
+		if (chainID !== 1 || chainID !== '0x1') {
+			gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
+			averageGasPrice = (gasPrice.average / 10);
+			if (shouldDisplayToast) {
+				addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
+			}
+		}
+
+		/**********************************************************************
+		**	We need the backend to generate a claim.
+		**	Note: the backend will ask, to the smartcontract, is the user can
+		**	claim the achievement (not already claimed), then check if the
+		**	user matches the requirements (verification with the specific
+		**	strategy)
+		**********************************************************************/
+		let	signatureResponse = undefined;
+		try {
+			signatureResponse = await axios.post(`${process.env.API_URI}/claim/signature`, {
+				achievementUUID: achievement.UUID,
+				address: address,
+			});
+			callback({status: 'GET_SIGNATURE'})
+			if (shouldDisplayToast) {
+				addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
+			}
+		} catch (error) {
+			if (shouldDisplayToast) {
+				addToast(`You cannot claim this achievement`, {appearance: 'error'});
+			}
+			return callback({status: 'ERROR'});
+		}
+
+		/**********************************************************************
+		**	Creating the claim transaction
+		**********************************************************************/
+		const	signature = signatureResponse.data.signature;
+		const	tokenAddress = signatureResponse.data.contractAddress;
+		const	validator = signatureResponse.data.validator;
+		const	achievementHash = signatureResponse.data.achievement;
+		const	amount = signatureResponse.data.amount;
+		const	deadline = signatureResponse.data.deadline;
+		const	r = signature.slice(0, 66);
+		const	s = '0x' + signature.slice(66, 130);
+		const	v = parseInt(signature.slice(130, 132), 16) + 27;
+
+		/**********************************************************************
+		**	Accessing the contract
+		**********************************************************************/
+		const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+		const	signer = provider.getSigner();
+		const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
+		let		transactionResponse = undefined;
+
+		try {
+			if (averageGasPrice) {
+				transactionResponse = await contract.functions.claim(
+					validator, address, achievementHash, amount, deadline,
+					v, r, s,
+					{gasPrice: averageGasPrice * 1000000000}
+				);
+			} else {
+				transactionResponse = await contract.functions.claim(
+					validator, address, achievementHash, amount, deadline,
+					v, r, s
+				);
+			}
+		} catch (error) {
+			if (error?.error?.message) {
+				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
+				if (errorMessage === 'Achievement already unlocked') {
+					return callback({status: 'SUCCESS'});
+				} else {
+					addToast(errorMessage, {appearance: 'error'});
+				}
+			} else {
+				addToast(`Impossible to perform the tx`, {appearance: 'error'});
+			}
+			return callback({status: 'ERROR'});
+		}
+	
+		callback({status: 'SEND_TRANSACTION'})
+		if (transactionResponse.wait) {
+			const	receipt = await transactionResponse.wait(1);
+			if (receipt && receipt.status === 1) {
+				callback({status: 'SUCCESS'})
+			} else {
+				callback({status: 'ERROR'})
+			}
+		}
+	}
+
 	return (
 		<AchievementsContext.Provider
 			children={children}
@@ -173,6 +307,10 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				set_achievements,
 				achievementsNonce,
 				achievementsCheckProgress,
+				actions: {
+					check: checkAchievement,
+					claim: claimAchievement
+				}
 			}} />
 	)
 }

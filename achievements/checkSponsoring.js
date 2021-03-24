@@ -18,7 +18,7 @@ async function	checkSponsoring(provider, userAddress, walletData, args) {
 	if (transactions === undefined || transactions.length === 0) {
 		return {unlocked: false, informations: informations};
 	}
-	const	_transactions = transactions.filter(each => toAddress(each.to) === toAddress(addressTo));
+	const	_transactions = transactions.filter((each) => toAddress(each.to) === toAddress(addressTo));
 
 	if (_transactions.length === 0) {
 		return {unlocked: false, informations: informations};

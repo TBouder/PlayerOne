@@ -44,7 +44,7 @@ function	TopMenu() {
 	useOnClickOutside(refOutside, () => set_open(false));
 
 	return (
-		<div className={'w-full py-2 px-4 fixed top-0 left-0 z-10 bg-white bg-opacity-90 pointer-events-none'}>
+		<div className={'w-full py-2 px-4 fixed top-0 left-0 bg-white bg-opacity-90 pointer-events-none z-50'}>
 			<div className={'max-w-screen-2xl mx-auto flex justify-between items-center px-6 md:px-12 lg:px-12 xl:px-12'}>
 				<div className={'relative flex flex-row items-center text-left z-50 pointer-events-auto'}>
 					{router.pathname !== '/' ? <Link href={'/'} passHref>

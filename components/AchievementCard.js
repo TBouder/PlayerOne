@@ -14,26 +14,6 @@ import	useWeb3										from	'contexts/useWeb3';
 import	{getStrategy}								from	'achievements/helpers';
 import	{fetcher}									from	'utils';
 
-const	claimDomain = {
-	name: 'Degen Achievement',
-	version: '1',
-	chainId: 1,
-	verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-};
-const	claimTypes = {
-	Achievement: [
-		{name: 'action', type: 'string'},
-		{name: 'title', type: 'string'},
-		{name: 'unlock', type: 'Unlock'}
-	],
-	Unlock: [
-		{name: 'blockNumber', type: 'string'},
-		{name: 'hash', type: 'string'},
-		{name: 'timestamp', type: 'string'},
-		{name: 'details', type: 'string'}
-	],
-};
-
 function	BottomInformation({onClaim, claim, isUnlocked}) {
 	if (claim) {
 		return (
@@ -155,35 +135,6 @@ const	AchievementCard = forwardRef((props, ref) => {
 			// updatedAchievement.unlocked = true;
 			// set_achievement(updatedAchievement);
 			// props.onUpdate(updatedAchievement);
-
-			if (false) {//old claim
-	
-				const	claimMessage = {
-					action: 'Claiming',
-					title: achievement.title,
-					unlock: {
-						blockNumber: String(achievement.informations.blockNumber),
-						hash: String(achievement.informations.hash),
-						timestamp: String(achievement.informations.timestamp),
-						details: String(achievement.informations.details),
-					}
-				};
-				actions.sign(claimDomain, claimTypes, claimMessage, async (signature) => {
-					const response = await axios.post(`${process.env.API_URI}/claim`, {
-						achievementUUID: achievement.UUID,
-						address: address,
-						signature: signature,
-						message: JSON.stringify(claimMessage)
-					});
-					const	updatedAchievement = response.data.achievement;
-					updatedAchievement.informations = achievement.informations;
-					updatedAchievement.claim = response.data.claim;
-					updatedAchievement.claimed = true;
-					updatedAchievement.unlocked = true;
-					set_achievement(updatedAchievement);
-					props.onUpdate(updatedAchievement);
-				})
-			}
 		} catch (error) {
 			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
 			return console.error(error.message);

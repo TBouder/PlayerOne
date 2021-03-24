@@ -8,6 +8,7 @@
 import	{forwardRef}					from	'react';
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
 import	{faBitcoin}						from	'@fortawesome/free-brands-svg-icons';
+import	HelperButton					from	'components/ItemBanners/HelperButton';
 
 const	ItemBannerWBTC = forwardRef((props, ref) => {
 	return (
@@ -21,14 +22,11 @@ const	ItemBannerWBTC = forwardRef((props, ref) => {
 					{'Get at least 0.001 wBTC in your wallet.'}
 				</p>
 				<div className={'flex md:block justify-center items-center'}>
-					<button
-						onClick={({clientX, clientY}) => {
-							props.confetti.set({active: true, x: clientX, y: clientY});
-							setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
-						}}
-						className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-bitcoin-initial hover:text-bitcoin-darker font-medium cursor-pointer'}>
-							{'Claim this achievement !'}
-					</button>
+					<HelperButton
+						bgColor={'bg-bitcoin-initial'}
+						textColor={'text-bitcoin-initial'}
+						onClaim={props.onClaim}
+						confetti={props.confetti} />
 				</div>
 			</div>
 			<div className={'hidden md:flex justify-center items-center col-span-1'}>

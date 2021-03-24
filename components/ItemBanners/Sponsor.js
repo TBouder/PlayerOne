@@ -8,6 +8,7 @@
 import	{forwardRef}					from	'react';
 import	{faMedal}						from	'@fortawesome/free-solid-svg-icons'
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
+import	HelperButton					from	'components/ItemBanners/HelperButton';
 
 const	ItemBannerSponsor = forwardRef((props, ref) => {
 	return (
@@ -21,14 +22,11 @@ const	ItemBannerSponsor = forwardRef((props, ref) => {
 					{'Send us token, and become one of our sponsor.'}
 				</p>
 				<div className={'flex md:block justify-center items-center'}>
-					<button
-						onClick={({clientX, clientY}) => {
-							props.confetti.set({active: true, x: clientX, y: clientY});
-							setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
-						}}
-						className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-teal-700 font-medium hover:bg-teal-50 hover:text-teal-700 cursor-pointer'}>
-							{'Claim this achievement !'}
-					</button>
+					<HelperButton
+						bgColor={'bg-teal-700'}
+						textColor={'text-teal-700'}
+						onClaim={props.onClaim}
+						confetti={props.confetti} />
 				</div>
 			</div>
 			<div className={'justify-center items-center col-span-1 hidden md:flex'}>

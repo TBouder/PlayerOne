@@ -5,8 +5,9 @@
 **	@Filename:				Uniswap.js
 ******************************************************************************/
 
-import	{forwardRef}					from	'react';
-import	Image							from	'next/image';
+import	{forwardRef}			from	'react';
+import	Image					from	'next/image';
+import	HelperButton			from	'components/ItemBanners/HelperButton';
 
 const	ItemBannerUniswap = forwardRef((props, ref) => {
 	return (
@@ -20,14 +21,11 @@ const	ItemBannerUniswap = forwardRef((props, ref) => {
 					{'Receive an airdrop from Uniswap'}
 				</p>
 				<div className={'flex md:block justify-center items-center'}>
-					<button
-						onClick={({clientX, clientY}) => {
-							props.confetti.set({active: true, x: clientX, y: clientY});
-							setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
-						}}
-						className={'mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white text-uniswap-pink font-medium cursor-pointer'}>
-						{'Claim this achievement !'}
-					</button>
+					<HelperButton
+						bgColor={'bg-uniswap-pink'}
+						textColor={'text-uniswap-pink'}
+						onClaim={props.onClaim}
+						confetti={props.confetti} />
 				</div>
 			</div>
 			<div className={'hidden md:flex justify-center items-center col-span-1'}>

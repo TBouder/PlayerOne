@@ -22,7 +22,7 @@ function	fetchTx(baseUri, address) {
 };
 
 function	etherscanBaseDomain(chainID = 1) {
-	if (chainID === 3) {
+	if (chainID === 3 || chainID === '0x3') {
 		return (`https://api-ropsten.etherscan.io/api`);
 	}
 	return (`https://api.etherscan.io/api`);
@@ -152,7 +152,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		set_provider(_provider);
 		set_providerType(_walletType);
 		set_address(toAddress(_account));
-		set_chainID(_chainID);
+		set_chainID(parseInt(_chainID, 16));
 
 		fetchERC20(etherscanBaseDomain(_chainID), _account).then((walletDataERC20) => {
 			set_walletData(wc => ({
@@ -172,7 +172,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	function	onChangeAccount(_chainID = chainID, _account) {
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_address(toAddress(_account));
-		set_chainID(_chainID);
+		set_chainID(parseInt(_chainID, 16));
 		set_shouldReset();
 
 		fetchERC20(etherscanBaseDomain(_chainID), _account).then((walletDataERC20) => {
@@ -191,7 +191,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		});
 	}
 	async function	onChangeChain(_chainID) {
-		set_chainID(_chainID)
+		set_chainID(parseInt(_chainID, 16))
 		if (providerType === walletType.METAMASK) {
 			const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 			const	_provider = new ethers.providers.Web3Provider(web3Provider);
@@ -202,7 +202,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			set_walletData({erc20: undefined, transactions: undefined, ready: false});
 			set_provider(_provider);
 			set_address(toAddress(address));
-			set_chainID(_chainID);
 			set_shouldReset();
 	
 			fetchERC20(etherscanBaseDomain(_chainID), address).then((walletDataERC20) => {
@@ -220,6 +219,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				}));
 			});
 
+			ethereum.removeAllListeners()
 			ethereum.on('accountsChanged', accounts => onChangeAccount(undefined, accounts[0]));
 			ethereum.on('disconnect', () => disconnect());
 			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID));
@@ -260,6 +260,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				walletType,
 				walletData,
 				provider,
+				chainID,
 				actions: {
 					sign,
 				}
