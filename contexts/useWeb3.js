@@ -201,18 +201,18 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 
 			set_walletData({erc20: undefined, transactions: undefined, ready: false});
 			set_provider(_provider);
-			set_address(toAddress(_account));
+			set_address(toAddress(address));
 			set_chainID(_chainID);
 			set_shouldReset();
 	
-			fetchERC20(etherscanBaseDomain(_chainID), _account).then((walletDataERC20) => {
+			fetchERC20(etherscanBaseDomain(_chainID), address).then((walletDataERC20) => {
 				set_walletData(wc => ({
 					transactions: wc.transactions,
 					erc20: walletDataERC20.result || [],
 					ready: Boolean(wc.transactions && walletDataERC20.result)
 				}));
 			});
-			fetchTx(etherscanBaseDomain(_chainID), _account).then((walletDataTransactions) => {
+			fetchTx(etherscanBaseDomain(_chainID), address).then((walletDataTransactions) => {
 				set_walletData(wc => ({
 					transactions: walletDataTransactions.result || [],
 					erc20: wc.erc20,

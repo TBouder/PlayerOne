@@ -172,7 +172,7 @@ function	SectionCollections() {
 	const	[selec, set_selec] = useState(0);
 
 	return (
-		<section id={'collections'} aria-label={'collections'} className={'w-full pt-16'}>
+		<section id={'collections'} aria-label={'collections'} className={'w-full pt-8'}>
 			<div className={'pb-8 w-full flex justify-between'}>
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Browse the collections`}
