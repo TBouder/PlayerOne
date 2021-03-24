@@ -513,12 +513,16 @@ input[type=number] {
 	opacity: 1;
 }
 
+
+/******************************************************************************
+**	Feature banner
+******************************************************************************/
 .bannerInitialState {
 	transform: translateX(0);
 	opacity: 1;
 }
 .bannerInitialStateOff {
-	/* transform: translateX(1000); */
+	transform: translateX(1000);
 	opacity: 0;
 	pointer-events: none;
 }

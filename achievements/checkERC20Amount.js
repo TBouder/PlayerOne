@@ -16,7 +16,6 @@ const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
 
 async function	checkERC20Amount(provider, userAddress, walletData, args) {
 	const	{address, value} = args;
-
 	const	erc20Json = new ethers.Contract(address, ERC20_ABI, provider);
 	const	bigValue = bigNumber.from(value);
 	const	transactions = walletData?.erc20;
@@ -27,7 +26,6 @@ async function	checkERC20Amount(provider, userAddress, walletData, args) {
 	try {
 		balanceRightNow = await erc20Json.balanceOf(userAddress);
 	} catch (error) {
-		console.dir(error)
 		return {unlocked: false, informations: undefined};
 	}
 

@@ -58,6 +58,7 @@ module.exports = {
       },
       height: {
         '50vh': '50vh',
+        '77.5': '310px',
       },
       screens: {
         '3xl': '1800px',

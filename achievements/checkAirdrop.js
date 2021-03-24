@@ -12,7 +12,7 @@ import	{toAddress} 	from	'achievements/helpers'
 **		address
 ******************************************************************************/
 async function	checkAirdrop(provider, userAddress, walletData, args) {
-	const	{block, address} = args;
+	const	{startBlock, address} = args;
 	const	transactions = walletData?.erc20;
 	let		informations = undefined;
 
@@ -20,7 +20,7 @@ async function	checkAirdrop(provider, userAddress, walletData, args) {
 		return {unlocked: false, informations: informations};
 	}
 
-	const	result = transactions.filter(each => each.blockNumber >= block).some((each) => {
+	const	result = transactions.filter(each => each.blockNumber >= startBlock).some((each) => {
 		if (toAddress(each.from) === toAddress(address) && toAddress(each.to) === toAddress(userAddress)) {
 			informations = {
 				blockNumber: each.blockNumber,
