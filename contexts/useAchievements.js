@@ -18,7 +18,7 @@ import	{fetcher, removeFromArray, sortBy}					from	'utils';
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
 	const	{addToast} = useToasts();
-	const	{address, provider, walletData, chainID} = useWeb3();
+	const	{address, provider, walletData, chainID, actions} = useWeb3();
 
 	/**************************************************************************
 	**	achievements: matches the local state to handle the achievements on the
@@ -265,50 +265,12 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		/**********************************************************************
 		**	Accessing the contract
 		**********************************************************************/
-		const	ERC20_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
-		const	signer = provider.getSigner();
-		const	contract = new ethers.Contract(tokenAddress, ERC20_ABI, signer);
-		let		transactionResponse = undefined;
-
-		try {
-			if (averageGasPrice) {
-				transactionResponse = await contract.functions.claim(
-					validator, address, achievementHash, amount, deadline,
-					v, r, s,
-					{gasPrice: averageGasPrice * 1000000000}
-				);
-			} else {
-				transactionResponse = await contract.functions.claim(
-					validator, address, achievementHash, amount, deadline,
-					v, r, s
-				);
-			}
-		} catch (error) {
-			if (error?.error?.message) {
-				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
-				if (errorMessage === 'Achievement already unlocked') {
-					return callback({status: 'SUCCESS'});
-				} else {
-					addToast(errorMessage, {appearance: 'error'});
-				}
-			} else {
-				addToast(`Impossible to perform the tx`, {appearance: 'error'});
-			}
-			return callback({status: 'ERROR'});
-		}
-	
-		callback({status: 'SEND_TRANSACTION'})
-		if (transactionResponse.wait) {
-			try {
-				const	receipt = await transactionResponse.wait(1);
-				if (receipt && receipt.status === 1) {
-					return callback({status: 'SUCCESS'});
-				}
-				return callback({status: 'ERROR'});
-			} catch(error) {
-				return addToast(`Transaction reverted`, {appearance: 'error'});
-			}
-		}
+		actions.claim(
+			tokenAddress,
+			[validator, address, achievementHash, amount, deadline, v, r, s],
+			averageGasPrice ? {gasPrice: averageGasPrice * 1000000000} : undefined,
+			callback
+		);
 	}
 
 	return (

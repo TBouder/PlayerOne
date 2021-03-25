@@ -24,7 +24,7 @@ function	SectionAchievements(props) {
 		return null;
 	}
 	return (
-		<section className={'mt-16'} aria-label={`achievements`}>
+		<section className={'mt-16 z-10'} aria-label={`achievements`}>
 			<div className={'pb-8 flex flex-row'}>
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Featured Achievements`}

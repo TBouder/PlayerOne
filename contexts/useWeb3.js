@@ -8,8 +8,8 @@
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	{ethers}											from	'ethers';
 import	{useToasts}											from	'react-toast-notifications';
-import	WalletConnect										from	'@walletconnect/client';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
+import	WalletConnectProvider								from	'@walletconnect/web3-provider';
 import	useLocalStorage										from	'hook/useLocalStorage';
 import	{fetcher, toAddress}								from	'utils';
 
@@ -34,7 +34,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
 	const	[nonce, set_nonce] = useState(0);
 	const	[provider, set_provider] = useState(undefined);
-	const	[connector, set_connector] = useState(undefined);
 	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
@@ -45,14 +44,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**************************************************************************/
 	useEffect(() => {
 		if (nonce === 0) {
-			if (providerType === walletType.METAMASK) {
-				connect(walletType.METAMASK);
-				set_nonce(n => n + 1);
-			} else {
-				set_address('');
-				set_providerType(walletType.NONE);
-				set_nonce(n => n + 1);
-			}
+			connect(providerType);
+			set_nonce(n => n + 1);
 		} else {
 			set_nonce(n => n + 1);
 		}
@@ -70,7 +63,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			return console.error(error);
 		}
 		set_provider(undefined);
-		set_connector(undefined);
 		set_providerType(walletType.NONE);
 		set_chainID(-1);
 		set_address('');
@@ -107,36 +99,35 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			const	_provider = new ethers.providers.Web3Provider(web3Provider)
 			await _provider.send('eth_requestAccounts');
 			const	signer = await _provider.getSigner();
-			const	address = await signer.getAddress();
+			const	_address = await signer.getAddress();
 			const	_chainID = (await _provider.getNetwork()).chainId;
 
-			onConnect(_provider, walletType.METAMASK, _chainID, address);
-			ethereum.on('accountsChanged', accounts => onChangeAccount(undefined, accounts[0]));
+			onConnect(_provider, walletType.METAMASK, _chainID, _address);
+			ethereum.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
 			ethereum.on('disconnect', () => disconnect());
-			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID));
+			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID, walletType.METAMASK));
 		} else if (_providerType === walletType.WALLET_CONNECT) {
-			const _connector = new WalletConnect({bridge: "https://bridge.walletconnect.org", qrcodeModal: QRCodeModal});
-
-			/******************************************************************
-			**	In order to prevent undefined behaviors, we kill the session
-			**	if the user tries to create a new one's with an existing one
-			**	already existing.
-			******************************************************************/
-			if (_connector.connected)
-				await _connector.killSession();
-			await _connector.createSession();
-			set_connector(_connector)
-
-			_connector.on('connect', (err, d) => {
-				if (err) {
-					addToast(err, {appearance: 'error'});
-					return console.error(err)
-				}
-				const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
-				onConnect(_provider, walletType.WALLET_CONNECT, d.params[0].chainId, d.params[0].accounts[0]);
+			const wcProvider = new WalletConnectProvider({
+				rpc: {
+					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
+					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
+				},
+				bridge: 'https://bridge.walletconnect.org',
+				qrcodeModal: QRCodeModal
 			});
-			_connector.on('disconnect', () => disconnect());
-			_connector.on('session_update', (_, d) => onChangeAccount(d.params[0].chainId, d.params[0].accounts[0]));
+			await wcProvider.enable();
+
+			const	_provider = new ethers.providers.Web3Provider(wcProvider)
+			const	signer = await _provider.getSigner();
+			const	_address = await signer.getAddress();
+			const	_chainID = (await _provider.getNetwork()).chainId;
+
+			onConnect(_provider, walletType.WALLET_CONNECT, _chainID, _address);
+			_provider.provider.on('connect', accounts => onChangeAccount(accounts[0]));
+			_provider.provider.on('disconnect', () => disconnect());
+			_provider.provider.on('chainChanged', newChainID => onChangeChain(newChainID, walletType.WALLET_CONNECT));
+			_provider.provider.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
+			_provider.provider.on('wc_sessionUpdate', newChainID => onChangeChain(newChainID, walletType.WALLET_CONNECT));
 		}
 	}
 
@@ -170,20 +161,19 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			}));
 		});
 	}
-	function	onChangeAccount(_chainID = chainID, _account) {
+	async function	onChangeAccount(_account) {
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_address(toAddress(_account));
-		set_chainID(parseInt(_chainID, 16));
 		set_shouldReset();
 
-		fetchERC20(etherscanBaseDomain(_chainID), _account).then((walletDataERC20) => {
+		fetchERC20(etherscanBaseDomain(chainID), _account).then((walletDataERC20) => {
 			set_walletData(wc => ({
 				transactions: wc.transactions,
 				erc20: walletDataERC20.result || [],
 				ready: Boolean(wc.transactions && walletDataERC20.result)
 			}));
 		});
-		fetchTx(etherscanBaseDomain(_chainID), _account).then((walletDataTransactions) => {
+		fetchTx(etherscanBaseDomain(chainID), _account).then((walletDataTransactions) => {
 			set_walletData(wc => ({
 				transactions: walletDataTransactions.result || [],
 				erc20: wc.erc20,
@@ -191,28 +181,28 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			}));
 		});
 	}
-	async function	onChangeChain(_chainID) {
-		set_chainID(parseInt(_chainID, 16))
-		if (providerType === walletType.METAMASK) {
+	async function	onChangeChain(_chainID, wallet, _provider = provider) {
+		if (wallet === walletType.METAMASK) {
 			const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 			const	_provider = new ethers.providers.Web3Provider(web3Provider);
 			await _provider.send('eth_requestAccounts');
 			const	signer = await _provider.getSigner();
-			const	address = await signer.getAddress();
+			const	_address = await signer.getAddress();
 
 			set_walletData({erc20: undefined, transactions: undefined, ready: false});
 			set_provider(_provider);
-			set_address(toAddress(address));
+			set_chainID(parseInt(_chainID, 16))
+			set_address(toAddress(_address));
 			set_shouldReset();
-	
-			fetchERC20(etherscanBaseDomain(_chainID), address).then((walletDataERC20) => {
+
+			fetchERC20(etherscanBaseDomain(_chainID), _address).then((walletDataERC20) => {
 				set_walletData(wc => ({
 					transactions: wc.transactions,
 					erc20: walletDataERC20.result || [],
 					ready: Boolean(wc.transactions && walletDataERC20.result)
 				}));
 			});
-			fetchTx(etherscanBaseDomain(_chainID), address).then((walletDataTransactions) => {
+			fetchTx(etherscanBaseDomain(_chainID), _address).then((walletDataTransactions) => {
 				set_walletData(wc => ({
 					transactions: walletDataTransactions.result || [],
 					erc20: wc.erc20,
@@ -224,6 +214,23 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			ethereum.on('accountsChanged', accounts => onChangeAccount(undefined, accounts[0]));
 			ethereum.on('disconnect', () => disconnect());
 			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID));
+		} else if (wallet === walletType.WALLET_CONNECT) {
+			const wcProvider = new WalletConnectProvider({
+				chainId: _chainID,
+				rpc: {
+					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
+					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
+				},
+				bridge: 'https://bridge.walletconnect.org',
+				qrcodeModal: QRCodeModal
+			});
+			await wcProvider.enable();
+			const	_provider = new ethers.providers.Web3Provider(wcProvider)
+			const	signer = await _provider.getSigner();
+			const	_address = await signer.getAddress();
+			set_chainID(_chainID);
+			onConnect(_provider, walletType.WALLET_CONNECT, _chainID, _address);
+			set_shouldReset();
 		}
 	}
 
@@ -231,21 +238,53 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**	Web3 actions
 	**************************************************************************/
 	async function	sign(domain, types, value, callback = () => null) {
-		if (providerType === walletType.WALLET_CONNECT) {
-			connector.signPersonalMessage([address, JSON.stringify({domain, types, value})])
-			.then(result => callback(result))
-			.catch((error) => {
-				addToast(error, {appearance: 'error'});
-				console.error(error)
-			})
-		} else if (providerType === walletType.METAMASK) {
+		try {
+			const	signer = provider.getSigner();
+			const	signature = await signer._signTypedData(domain, types, value);
+			callback(signature);
+		} catch (error) {
+			addToast(error.message, {appearance: 'error'});
+			console.error(error)
+		}
+	}
+	async function	claim(tokenAddress, txPayload, gasPrice, callback = () => null) {
+		const	CLAIM_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+		const	signer = provider.getSigner();
+		const	contract = new ethers.Contract(tokenAddress, CLAIM_ABI, signer);
+		let		transactionResponse = undefined;
+
+		try {
+			if (gasPrice && walletType === walletType.METAMASK) {
+				transactionResponse = await contract.functions.claim(...txPayload, gasPrice);
+			} else {
+				transactionResponse = await contract.functions.claim(...txPayload);
+			}
+		} catch (error) {
+			console.log(txPayload)
+
+			if (error?.error?.message) {
+				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
+				if (errorMessage === 'Achievement already unlocked') {
+					return callback({status: 'SUCCESS'});
+				} else {
+					addToast(errorMessage, {appearance: 'error'});
+				}
+			} else {
+				addToast(`Impossible to perform the tx`, {appearance: 'error'});
+			}
+			return callback({status: 'ERROR'});
+		}
+	
+		callback({status: 'SEND_TRANSACTION'})
+		if (transactionResponse.wait) {
 			try {
-				const	signer = provider.getSigner();
-				const	signature = await signer._signTypedData(domain, types, value);
-				callback(signature);
-			} catch (error) {
-				addToast(error.message, {appearance: 'error'});
-				console.error(error)
+				const	receipt = await transactionResponse.wait(1);
+				if (receipt && receipt.status === 1) {
+					return callback({status: 'SUCCESS'});
+				}
+				return callback({status: 'ERROR'});
+			} catch(error) {
+				return addToast(`Transaction reverted`, {appearance: 'error'});
 			}
 		}
 	}
@@ -264,6 +303,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				chainID,
 				actions: {
 					sign,
+					claim
 				}
 			}} />
 	)

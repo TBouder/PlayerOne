@@ -15,7 +15,7 @@ import	{
 function	ItemCollection({selected, faIcon, title, onClick}) {
 	if (selected) {
 		return (
-			<div className={'rounded-lg bg-teal-700 overflow-hidden w-full h-full transition-colors'}>
+			<div className={'rounded-lg bg-teal-700 overflow-hidden w-full h-full transition-colors z-10'}>
 				<div className={'flex flex-col justify-center items-center p-4'}>
 					<FontAwesomeIcon style={{width: 24, height: 24}} className={'mt-8 text-white'} icon={faIcon} />
 					<p className={'mt-6 text-white font-medium'}>{title}</p>
@@ -24,7 +24,7 @@ function	ItemCollection({selected, faIcon, title, onClick}) {
 		);
 	}
 	return (
-		<div className={'rounded-lg bg-gray-200 overflow-hidden w-full h-full cursor-pointer group transition-colors'} onClick={onClick}>
+		<div className={'rounded-lg bg-gray-200 overflow-hidden w-full h-full cursor-pointer group transition-colors z-10'} onClick={onClick}>
 			<div className={'flex flex-col justify-center items-center p-4'}>
 				<FontAwesomeIcon
 					style={{width: 24, height: 24}}
@@ -38,7 +38,7 @@ function	SectionCollections() {
 	const	[selec, set_selec] = useState(0);
 
 	return (
-		<section id={'collections'} aria-label={'collections'} className={'w-full pt-8'}>
+		<section id={'collections'} aria-label={'collections'} className={'w-full pt-8 z-10'}>
 			<div className={'pb-8 w-full flex justify-between'}>
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Browse the collections`}

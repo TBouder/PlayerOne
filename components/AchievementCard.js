@@ -184,7 +184,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 				ref={ref}
 				className={'flex w-full lg:w-auto'}
 				style={props.claimed || props.unlocked ? {} : {filter: 'grayscale(1)'}}>
-				<div className={'flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine shadow-lg rounded-lg'}>
+				<div className={'flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine shadow-lg rounded-lg bg-white'}>
 					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
 						<div
