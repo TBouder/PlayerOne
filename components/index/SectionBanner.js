@@ -16,7 +16,7 @@ import	useHover							from	'hook/useHover';
 
 function	SectionBanner() {
 	const	{confetti} = useUI();
-	const	{actions} = useAchievements();
+	const	{actions, claimsAsMapping} = useAchievements();
 	const	firstBannerRef = useRef();
 	const	secondBannerRef = useRef();
 	const	thirdBannerRef = useRef();
@@ -60,7 +60,7 @@ function	SectionBanner() {
 		}
 	}
 
-	function	onClaimAchievement(achievementKey, callback) {
+	function	onClaim(achievementKey, callback) {
 		set_isClaiming(true);
 		actions.claim(achievementKey, (props) => {
 			if (props.status === 'ERROR' || props.status === 'SUCCESS') {
@@ -76,20 +76,23 @@ function	SectionBanner() {
 				<ItemBannerUniswap
 					id={'Like a unicorn'}
 					ref={firstBannerRef}
+					defaultUnlocked={claimsAsMapping['73676514052504261986825330636986845718420318140825453794724876113850676774808']}
 					defaultClassName={firstClassName}
-					onClaim={(callback) => onClaimAchievement('73676514052504261986825330636986845718420318140825453794724876113850676774808', callback)}
+					onClaim={(callback) => onClaim('73676514052504261986825330636986845718420318140825453794724876113850676774808', callback)}
 					confetti={confetti} />
 				<ItemBannerSponsor
 					id={'Sponsor'}
 					ref={secondBannerRef}
 					defaultClassName={secondClassName}
-					onClaim={(callback) => onClaimAchievement('10129071317085928672231597343656140796863069368282823987076694473609354742003', callback)}
+					defaultUnlocked={claimsAsMapping['10129071317085928672231597343656140796863069368282823987076694473609354742003']}
+					onClaim={(callback) => onClaim('10129071317085928672231597343656140796863069368282823987076694473609354742003', callback)}
 					confetti={confetti} />
 				<ItemBannerWBTC
 					id={'One coin to rule them all'}
 					ref={thirdBannerRef}
 					defaultClassName={thirdClassName}
-					onClaim={(callback) => onClaimAchievement('85104516872644109789153651723214403976812994108384631455702337152374087380959', callback)}
+					defaultUnlocked={claimsAsMapping['85104516872644109789153651723214403976812994108384631455702337152374087380959']}
+					onClaim={(callback) => onClaim('85104516872644109789153651723214403976812994108384631455702337152374087380959', callback)}
 					confetti={confetti} />
 			</div>
 			<div className={'w-full flex flex-row justify-center items-center h-12'}>

@@ -25,6 +25,7 @@ const	ItemBannerWBTC = forwardRef((props, ref) => {
 					<HelperButton
 						bgColor={'bg-bitcoin-initial'}
 						textColor={'text-bitcoin-initial'}
+						defaultUnlocked={props.defaultUnlocked}
 						onClaim={props.onClaim}
 						confetti={props.confetti} />
 				</div>

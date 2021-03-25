@@ -50,6 +50,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	**	claims: lists the claims for this user
 	**************************************************************************/
 	const	[claims, set_claims] = useState();
+	const	[claimsAsMapping, set_claimsAsMapping] = useState({});
 
 	/**************************************************************************
 	**	pool: size of the pool of adresse which have interacted with this
@@ -73,6 +74,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	useEffect(async () => {
 		if (address && claims === undefined && achievements !== undefined) {
 			const	addressClaims = await fetcher(`${process.env.API_URI}/claims/address/${address}`);
+			const	_claimsAsMapping = {};
 			const	_achievements = achievements.map((achievement) => {
 				const	_achievement = {...achievement};
 				const	achievementClaim = addressClaims.find(e => e.achievementKey === achievement.key);
@@ -85,6 +87,9 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			})
 
 			set_claims(addressClaims || []);
+
+			addressClaims.forEach(e => {_claimsAsMapping[e.achievement] = true;});
+			set_claimsAsMapping(_claimsAsMapping);
 			set_achievements(sortBy(_achievements, 'unlocked'));
 			set_achievementsNonce(n => n + 1);
 			set_achievementsCheckProgress({checking: false, progress: addressClaims.length, total: _achievements.length});
@@ -97,6 +102,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
 			set_achievements(achievementsList.map(e => ({...e})));
 			set_claims(undefined);
+			set_claimsAsMapping({});
 			set_achievementsNonce(n => n + 1);
 			set_shouldReset(false);
 		}
@@ -300,6 +306,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			children={children}
 			value={{
 				claims,
+				claimsAsMapping,
 				poolSize: poolSize || 0,
 				achievements,
 				set_achievements,

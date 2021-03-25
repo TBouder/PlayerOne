@@ -5,14 +5,25 @@
 **	@Filename:				HelperButton.js
 ******************************************************************************/
 
-import	{useState}			from	'react';
+import	{useState, useEffect, useRef}			from	'react';
 
 function HelperButton(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
-	const	[buttonStatus, set_buttonStatus] = useState(0);
+	const	[buttonStatus, set_buttonStatus] = useState(props.defaultUnlocked ? 2 : 0);
+	const	buttonRef = useRef();
+
+	useEffect(() => {
+		if (props.defaultUnlocked) {
+			set_buttonStatus(2);
+			const	elementPosition = buttonRef.current.getBoundingClientRect();
+			props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
+			setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
+		}
+	}, [props.defaultUnlocked])
 
 	return (
 		<button
+			ref={buttonRef}
 			onClick={({clientX, clientY}) => {
 				if (buttonStatus === STATUS.PENDING) {
 					return;
