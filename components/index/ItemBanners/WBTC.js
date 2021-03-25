@@ -8,7 +8,7 @@
 import	{forwardRef}					from	'react';
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
 import	{faBitcoin}						from	'@fortawesome/free-brands-svg-icons';
-import	HelperButton					from	'components/ItemBanners/HelperButton';
+import	HelperButton					from	'components/index/ItemBanners/HelperButton';
 
 const	ItemBannerWBTC = forwardRef((props, ref) => {
 	return (

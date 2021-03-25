@@ -6,9 +6,9 @@
 ******************************************************************************/
 
 import	{useState, useRef}					from	'react';
-import	ItemBannerSponsor					from	'components/ItemBanners/Sponsor';
-import	ItemBannerUniswap					from	'components/ItemBanners/Uniswap';
-import	ItemBannerWBTC						from	'components/ItemBanners/WBTC';
+import	ItemBannerSponsor					from	'components/index/ItemBanners/Sponsor';
+import	ItemBannerUniswap					from	'components/index/ItemBanners/Uniswap';
+import	ItemBannerWBTC						from	'components/index/ItemBanners/WBTC';
 import	useUI								from	'contexts/useUI';
 import	useAchievements						from	'contexts/useAchievements';
 import	useInterval							from	'hook/useInterval';
