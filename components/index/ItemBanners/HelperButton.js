@@ -9,17 +9,17 @@ import	{useState, useEffect, useRef}			from	'react';
 
 function HelperButton(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
-	const	[buttonStatus, set_buttonStatus] = useState(props.defaultUnlocked ? 2 : 0);
+	const	[buttonStatus, set_buttonStatus] = useState(props.defaultClaimed ? 2 : 0);
 	const	buttonRef = useRef();
 
 	useEffect(() => {
-		if (props.defaultUnlocked) {
+		if (props.defaultClaimed) {
 			set_buttonStatus(2);
 			const	elementPosition = buttonRef.current.getBoundingClientRect();
 			props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
 			setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
 		}
-	}, [props.defaultUnlocked])
+	}, [props.defaultClaimed])
 
 	return (
 		<button

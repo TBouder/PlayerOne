@@ -76,7 +76,7 @@ function	SectionBanner() {
 				<ItemBannerUniswap
 					id={'Like a unicorn'}
 					ref={firstBannerRef}
-					defaultUnlocked={claimsAsMapping['73676514052504261986825330636986845718420318140825453794724876113850676774808']}
+					defaultClaimed={claimsAsMapping['73676514052504261986825330636986845718420318140825453794724876113850676774808']}
 					defaultClassName={firstClassName}
 					onClaim={(callback) => onClaim('73676514052504261986825330636986845718420318140825453794724876113850676774808', callback)}
 					confetti={confetti} />
@@ -84,14 +84,14 @@ function	SectionBanner() {
 					id={'Sponsor'}
 					ref={secondBannerRef}
 					defaultClassName={secondClassName}
-					defaultUnlocked={claimsAsMapping['10129071317085928672231597343656140796863069368282823987076694473609354742003']}
+					defaultClaimed={claimsAsMapping['10129071317085928672231597343656140796863069368282823987076694473609354742003']}
 					onClaim={(callback) => onClaim('10129071317085928672231597343656140796863069368282823987076694473609354742003', callback)}
 					confetti={confetti} />
 				<ItemBannerWBTC
 					id={'One coin to rule them all'}
 					ref={thirdBannerRef}
 					defaultClassName={thirdClassName}
-					defaultUnlocked={claimsAsMapping['85104516872644109789153651723214403976812994108384631455702337152374087380959']}
+					defaultClaimed={claimsAsMapping['85104516872644109789153651723214403976812994108384631455702337152374087380959']}
 					onClaim={(callback) => onClaim('85104516872644109789153651723214403976812994108384631455702337152374087380959', callback)}
 					confetti={confetti} />
 			</div>

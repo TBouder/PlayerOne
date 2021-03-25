@@ -138,6 +138,16 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			return;
 		}
+		if (claimsAsMapping[achievement.key] && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
+			unlockedStack.push(achievement);
+			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
+
+			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
+			set_achievementsNonce(v => v + 1);
+			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress, total: v.total}));
+			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+			return
+		}
 		if (achievement.unlocked && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
 			unlockedStack.push(achievement);
 			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
@@ -199,8 +209,8 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	async function	claimAchievement(achievementKey, callback = () => null) {
 		const	achievement = achievements.find(e => e.key === achievementKey);
 		const	isUnlocked = (await checkAchievement(achievement)).unlocked;
-		if (isUnlocked) {
-			return callback({status: 'SUCCESS'});
+		if (!isUnlocked) {
+			return callback({status: 'ERROR'});
 		}
 
 		/**********************************************************************

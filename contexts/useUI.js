@@ -5,7 +5,7 @@
 **	@Filename:				useUI.js
 ******************************************************************************/
 
-import	{useState, useEffect, useContext, createContext}	from	'react';
+import	{useState, useContext, createContext}	from	'react';
 
 const	UI = createContext();
 export const UIApp = ({children}) => {

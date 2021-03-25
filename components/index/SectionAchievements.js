@@ -11,7 +11,7 @@ import	AchievementCard									from	'components/AchievementCard';
 import	useAchievements									from	'contexts/useAchievements';
 
 function	SectionAchievements(props) {
-	const	{achievements, set_achievements} = useAchievements();
+	const	{achievements, set_achievements, claimsAsMapping} = useAchievements();
 	const	[achievementList, set_achievementList] = useState(achievements || props.achievements);
 
 	useEffect(() => {
@@ -44,6 +44,7 @@ function	SectionAchievements(props) {
 						hidden={each.hidden}
 						achievement={each}
 						unlocked={each.unlocked}
+						claimed={claimsAsMapping[each.key]}
 						informations={each.informations}
 						onUpdate={(updatedAchievement) => {
 							const	_achievements = achievements;
