@@ -98,7 +98,7 @@ function	ClaimableButtom(props) {
 				})
 			}}
 			disabled={buttonStatus === STATUS.PENDING}
-			className={`relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm border-t border-transparent rounded-bl-lg ${buttonStatus === STATUS.UNLOCKED ? 'font-medium text-gradient' : 'text-gray-700 font-normal'} ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : 'cursor-pointer'}`}>
+			className={`relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm border-t border-transparent ${buttonStatus === STATUS.UNLOCKED ? 'font-medium text-gradient' : 'text-gray-700 font-normal'} ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : 'cursor-pointer'}`}>
 			<p className={'flex items-center'} style={buttonStatus === STATUS.PENDING ? {opacity: 1} : {opacity: 1} }>
 				{buttonStatus === STATUS.UNLOCKED ?
 					<>
@@ -185,8 +185,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 				className={'flex w-full lg:w-auto'}
 				style={props.claimed || props.unlocked ? {} : {filter: 'grayscale(1)'}}>
 				<div className={'flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine shadow-lg rounded-lg'}>
-					<div
-						className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
+					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
 						<div
 							className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl'}
@@ -194,42 +193,41 @@ const	AchievementCard = forwardRef((props, ref) => {
 							{achievement.icon}
 						</div>
 					</div>
-					<div className={`flex-1 px-3`}>
-						<div className={'flex flex-col items-center text-center'}>
+					<div className={`flex flex-col h-full w-full`}>
+						<div className={'flex flex-col items-center text-center px-3 mb-12'}>
 							<h3 className={'mt-3 text-gray-900 text-base font-medium'}>{achievement.title}</h3>
 							<dl className={'mt-2 flex-grow flex flex-col justify-between'}>
 								<dd className={'text-gray-500 text-sm'}>{achievement.description}</dd>
 							</dl>
 						</div>
-					</div>
-					<div className={'mt-12 flex'}>
-						{props.claimed ?
-							<div
-							className={'w-0 flex-1 flex'}
-							onClick={(e) => {
-								e.preventDefault();
-								confetti.set({active: true, x: e.pageX, y: e.pageY});
-								setTimeout(() => confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
-							}}>
-								<div className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gradient border-t border-transparent rounded-bl-lg font-medium '}>
-									<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="url(#gradient)"><linearGradient id="gradient"><stop offset="0%" stopColor={'rgba(20,184,166,1)'} /><stop offset="50%" stopColor={'rgba(139,92,246,1)'} /><stop offset="100%" stopColor={'rgba(236,72,153,1)'} /></linearGradient><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-									</svg>
-									<span className={'ml-2'}>{'Unlocked'}</span>
+						<div className={'flex mt-auto'}>
+							{props.claimed ?
+								<div
+								className={'w-0 flex-1 flex'}
+								onClick={(e) => {
+									e.preventDefault();
+									confetti.set({active: true, x: e.pageX, y: e.pageY});
+									setTimeout(() => confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
+								}}>
+									<div className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gradient border-t border-transparent font-medium '}>
+										<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="url(#gradient)"><linearGradient id="gradient"><stop offset="0%" stopColor={'rgba(20,184,166,1)'} /><stop offset="50%" stopColor={'rgba(139,92,246,1)'} /><stop offset="100%" stopColor={'rgba(236,72,153,1)'} /></linearGradient><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+										</svg>
+										<span className={'ml-2'}>{'Unlocked'}</span>
+									</div>
 								</div>
-							</div>
-						:
-						props.unlocked ?
-							<ClaimableButtom onClaim={onClaim} confetti={confetti} />
-						:
-							<div className={'w-0 flex-1 flex'}>
-								<a
-									href={'mailto:janecooper@example.com'}
-									className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 border-t border-transparent rounded-bl-lg cursor-not-allowed bg-gray-200'}>
-									<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-									<span className={'ml-2'}>{'Locked'}</span>
-								</a>
-							</div>
-						}
+							:
+							props.unlocked ?
+								<ClaimableButtom onClaim={onClaim} confetti={confetti} />
+							:
+								<div className={'w-full flex-1 flex'}>
+									<a
+										className={'relative -mr-px w-full flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 border-t border-transparent cursor-not-allowed bg-gray-200'}>
+										<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+										<span className={'ml-2'}>{'Locked'}</span>
+									</a>
+								</div>
+							}
+						</div>
 					</div>
 				</div>
 			</div>
