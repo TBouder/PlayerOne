@@ -288,6 +288,43 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			}
 		}
 	}
+	async function	swapOnSushiswap(tokenAddress = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F", txPayload, callback = () => null) {
+		addToast(`This path is not completed yet`, {appearance: 'warning'});
+
+		const	CLAIM_ABI = ["function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)"];
+		const	signer = provider.getSigner();
+		const	contract = new ethers.Contract(tokenAddress, CLAIM_ABI, signer);
+		let		transactionResponse = undefined;
+
+		try {
+			transactionResponse = await contract.functions.swapETHForExactTokens(...txPayload, {value: txPayload[0]});
+		} catch (error) {
+			if (error?.error?.message) {
+				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
+				if (errorMessage === 'Achievement already unlocked') {
+					return callback({status: 'SUCCESS'});
+				} else {
+					addToast(errorMessage, {appearance: 'error'});
+				}
+			} else {
+				addToast(`Impossible to perform the tx`, {appearance: 'error'});
+			}
+			return callback({status: 'ERROR'});
+		}
+	
+		callback({status: 'SEND_TRANSACTION'})
+		if (transactionResponse.wait) {
+			try {
+				const	receipt = await transactionResponse.wait(1);
+				if (receipt && receipt.status === 1) {
+					return callback({status: 'SUCCESS'});
+				}
+				return callback({status: 'ERROR'});
+			} catch(error) {
+				return addToast(`Transaction reverted`, {appearance: 'error'});
+			}
+		}
+	}
 
 	return (
 		<Web3Context.Provider
@@ -303,7 +340,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				chainID,
 				actions: {
 					sign,
-					claim
+					claim,
+					swapOnSushiswap
 				}
 			}} />
 	)
