@@ -20,16 +20,9 @@ import	Badge								from	'components/Badges';
 import	Leaderboard							from	'components/DetailsLeaderboard';
 import	{fetcher}							from	'utils';
 
-// What: ASSY is a DeFi token index allowing to gain exposure to Aave, Synthetix, Sushiswap and Yfi with a single token. Portfolio allocation between each token is managed automatically & dynamically to maximize returns by increasing (or decreasing) exposure to the most (or least) performing assets.
-
-// Challenge: own at least 50 ASSY 
-
-// Technical explanation: checking on chain if your address own (or has owned) 50 ASSY
-
-
 const graphFetcher = query => request('https://api.thegraph.com/subgraphs/name/zippoxer/sushiswap-subgraph-fork', query)
 
-function	ClaimableButtom(props) {
+function	ClaimableButton(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
 	const	[buttonStatus, set_buttonStatus] = useState(0);
 	const	buttonRef = useRef();
@@ -113,7 +106,7 @@ function	StatusButton(props) {
 	}
 	if (props.unlocked) {
 		return (
-			<ClaimableButtom onClaim={() => null} confetti={confetti} />
+			<ClaimableButton onClaim={() => null} confetti={confetti} />
 		)
 	}
 	return (

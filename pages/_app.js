@@ -41,7 +41,7 @@ function	AppWrapper(props) {
 			</Head>
 			<div>
 				<div id={'app'} className={'flex'}>
-					<div className={'w-full'} key={router.pathname}>
+					<div className={'w-full overflow-x-hidden'} key={router.pathname}>
 						<TopMenu />
 						<div id={'chainIDWarning'} suppressHydrationWarning>
 							{chainID === 1 ?

@@ -13,7 +13,7 @@ import	SectionProgress									from	'components/index/SectionProgress';
 import	SectionCollections								from	'components/index/SectionCollections';
 import	SectionAchievements								from	'components/index/SectionAchievements';
 import	useAchievements									from	'contexts/useAchievements';
-import	{fetcher}										from	'utils'
+import	{fetcher, slugify}										from	'utils'
 
 function	Page(props) {
 	const	{achievements, claims} = useAchievements();
@@ -22,9 +22,11 @@ function	Page(props) {
 
 	useEffect(() => {
 		if (achievements) {
+			console.dir(achievements.map(e => slugify(e.title)))
 			set_unlockedCount(achievements.filter(e => e.unlocked).length)
 		}
 	}, [achievements]);
+
 
 	return (
 		<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto'}>
