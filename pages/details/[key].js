@@ -29,22 +29,6 @@ import	{fetcher}							from	'utils';
 
 const graphFetcher = query => request('https://api.thegraph.com/subgraphs/name/zippoxer/sushiswap-subgraph-fork', query)
 
-// function App () {
-//   const { data, error } = useSWR(
-//     `{
-//       Movie(title: "Inception") {
-//         releaseDate
-//         actors {
-//           name
-//         }
-//       }
-//     }`,
-//     fetcher
-//   )
-//   // ...
-// }
-
-
 function	ClaimableButtom(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
 	const	[buttonStatus, set_buttonStatus] = useState(0);
@@ -210,7 +194,7 @@ function	Swap() {
 						value={swapToken0}
 						onChange={(e) => {
 							set_swapToken0(e.target.value);
-							set_swapToken1(e.target.value * sushiPair.token1Price);
+							set_swapToken1(e.target.value * (sushiswapData.pair?.token1Price));
 						}}
 						className={'focus:ring-teal-500 focus:border-teal-500 block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md'}
 						placeholder={'0.00'}
@@ -238,7 +222,7 @@ function	Swap() {
 						value={swapToken1}
 						onChange={(e) => {
 							set_swapToken1(e.target.value);
-							set_swapToken0(e.target.value * sushiPair.token0Price);
+							set_swapToken0(e.target.value * (sushiswapData.pair?.token0Price));
 						}}
 						placeholder={'0.00'}
 						aria-describedby={'price-assy-currency'} />
