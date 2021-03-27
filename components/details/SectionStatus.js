@@ -34,10 +34,10 @@ function	SectionQuickStats({numberOfClaims}) {
 	);
 }
 
-function	SectionCollections({collections}) {
+function	SectionCollections({collections, className}) {
 	return (
-		<section aria-label={'collections'} className={'flex flex-row'}>
-			<div className={'flow-root ml-24'}>
+		<section aria-label={'collections'} className={`${className} flex-row`}>
+			<div className={'flow-root ml-0 md:ml-24'}>
 				{collections.map((e, i) => <Badge key={`${e}_${i}`} defaultSelected disable type={e} />)}
 			</div>
 		</section>
@@ -52,10 +52,10 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 					<div className={'sm:flex sm:items-center sm:justify-between'}>
 						<div className={'w-full flex flex-col'}>
 
-							<SectionCollections collections={achievement.badges} />
+							<SectionCollections collections={achievement.badges} className={'hidden md:flex'} />
 
-							<div aria-label={'descriptions'} className={'flex flex-row'}>
-								<div className={'flex flex-row w-1/3 pr-2'}>
+							<div aria-label={'descriptions'} className={'flex flex-col md:flex-row py-4 md:py-0'}>
+								<div className={'flex flex-row w-full md:w-1/3 pr-0 md:pr-2'}>
 									<div className={'flex-shrink-0 -mt-4'}>
 										<div
 											style={{background: achievement.background}}
@@ -63,7 +63,8 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 											{achievement.icon}
 										</div>
 									</div>
-									<div className={'ml-4 mt-1'}>
+									<div className={'ml-4 -mt-2 md:mt-1 '}>
+										<SectionCollections collections={achievement.badges} className={'flex md:hidden'} />
 										<span className={'text-xl font-bold text-gray-900 sm:text-2xl'}>
 											{achievement.title}
 											<p className={'text-sm font-normal text-gray-400 inline ml-2'}>
@@ -75,7 +76,7 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 										</p>
 									</div>
 								</div>
-								<div className={'flex flex-col w-2/3 pl-2 '}>
+								<div className={'flex flex-col w-full md:w-2/3 pl-2 pt-6 md:pt-0'}>
 									<div className={'flex'}>
 										<span className={'text-base font-normal text-gray-800 prose-xl prose-teal'}>
 											<ReactMarkdown>
