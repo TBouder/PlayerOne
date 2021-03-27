@@ -29,6 +29,18 @@ module.exports = {
       'full': '100%',
     },
     extend: {
+      typography: {
+        xl: {
+          css: {
+            a: {
+              fontWeight: '500',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            },
+          },
+        },
+      },
       colors: {
         'uniswap': {
           pink: 'rgb(255, 0, 122)',

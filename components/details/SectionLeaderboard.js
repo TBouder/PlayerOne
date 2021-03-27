@@ -12,26 +12,6 @@ import	useSWR								from	'swr';
 import	useWeb3								from	'contexts/useWeb3';
 import	{fetcher, toAddress}				from	'utils';
 
-const	claimDomain = {
-	name: 'Degen Achievement',
-	version: '1',
-	chainId: 1,
-	verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
-};
-const	claimTypes = {
-	Achievement: [
-		{name: 'action', type: 'string'},
-		{name: 'title', type: 'string'},
-		{name: 'unlock', type: 'Unlock'}
-	],
-	Unlock: [
-		{name: 'blockNumber', type: 'string'},
-		{name: 'hash', type: 'string'},
-		{name: 'timestamp', type: 'string'},
-		{name: 'details', type: 'string'}
-	],
-};
-
 function jsNumberForAddress(address) {
 	const addr = address.slice(2, 10);
 	const seed = parseInt(addr, 16);
@@ -41,7 +21,6 @@ function jsNumberForAddress(address) {
 function	Leader({claim}) {
 	const	{address} = useWeb3();
 	const	jazziconRef = useRef();
-	const	[validSignature, set_validSignature] = useState(true);
 	const	numericRepresentation = jsNumberForAddress(claim.address);
 
 	/**************************************************************************
@@ -53,12 +32,6 @@ function	Leader({claim}) {
 			if (jazziconRef.current.childNodes[0])
 				jazziconRef.current.removeChild(jazziconRef.current.childNodes[0]); 
 			jazziconRef.current.appendChild(jazzicon(64, numericRepresentation))
-		}
-		try {
-			const	signer = ethers.utils.verifyTypedData(claimDomain, claimTypes, JSON.parse(claim.message), claim.signature);
-			set_validSignature(toAddress(signer) === toAddress(claim.address));
-		} catch(e) {
-			set_validSignature(false);
 		}
 	}, [])
 
@@ -81,76 +54,111 @@ function	Leader({claim}) {
 					<p className={'text-xs text-gray-500 truncate mt-1'}>
 						{`${new Date(claim.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})} - # ${claim.nonce}`}
 					</p>
-					<div className={'w-full mt-2 bg-gray-100 py-1 px-2 rounded '}>
-						<code className={'text-xs font-medium text-gray-900 break-all whitespace-pre-wrap inline'}>
-							{claim.signature}
-							{validSignature ? <svg className={'w-4 h-4 text-green-600 inline ml-1'} style={{marginBottom: 2}} xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' /></svg> : null}
-						</code>
-					</div>
 				</div>
 			</div>
 		</li>
 	);
 }
 
-function	LeaderBoard(props) {
+function	SectionLeaderboard(props) {
+	const	[currentSubSection, set_currentSubSection] = useState(0);
 	/**************************************************************************
 	**	Based on the props received we can initialize `claims`, aka the list
 	**	of all the claims).
 	**************************************************************************/
-	const	[claims, set_claims] = useState(props.claims);
+	const	[claims, set_claims] = useState([]);
 
 	/**************************************************************************
 	**	Adding a swr method to re-fetch the claims on focus/reconnect
 	**************************************************************************/
 	const	{data} = useSWR(
-		props.achievementKey ? `${process.env.API_URI}/claims/achievement/${props.achievementKey}` : null,
-		fetcher,
-		{
-			initialData: claims,
-			focusThrottleInterval: 1000 * 10
-		}
+		props.key ? `${process.env.API_URI}/claims/achievement/by-key/${props.key}` : null,
+		fetcher, {focusThrottleInterval: 1000 * 10}
 	);
 
 	/**************************************************************************
 	**	When receiving new data from the swr fetcher, we can update the claims
 	**************************************************************************/
 	useEffect(() => {
-		set_claims(data);
-		
-		//@INFO: Trigger an update on the parent prop to set the number of 
-		//		 claims to `data.length`
-		props.set_numberOfClaims(data.length);
+		set_claims(data || []);
 	}, [data]);
 
 	/**************************************************************************
-	**	Section to render
+	**	Sections to render
 	**************************************************************************/
+	function	Navbar() {
+		return (
+			<div className={'pb-5 border-b border-gray-200 sm:pb-0'}>
+				<div className={'mt-3 sm:mt-4'}>
+					<div className={'sm:hidden'}>
+						<label for={'current-tab'} className={'sr-only'}>Select a tab</label>
+						<select id={'current-tab'} name={'current-tab'} className={'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md'}>
+							<option selected={currentSubSection === 0}>{'Leaderboard'}</option>
+							<option selected={currentSubSection === 1}>{'Technical informations'}</option>
+							<option selected={currentSubSection === 2}>{'Bla'}</option>
+						</select>
+					</div>
+					<div className={'hidden sm:block'}>
+						<nav className={'-mb-px flex space-x-8'}>
+							<button
+								onClick={() => set_currentSubSection(0)}
+								className={`${currentSubSection === 0 ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
+								{'Leaderboard'}
+							</button>
+
+							<button
+								onClick={() => set_currentSubSection(1)}
+								className={`${currentSubSection === 1 ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
+								{'Technical informations'}
+							</button>
+
+							<button
+								onClick={() => set_currentSubSection(2)}
+								className={`${currentSubSection === 2 ? 'border-teal-500 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
+								{'Bla'}
+							</button>
+						</nav>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	function	LeaderBoard() {
+		return (
+			<div className={'flow-root mt-6'}>
+				<ul className={'-my-5 divide-y divide-gray-200'}>
+					{claims.map((claim) => (
+						<Leader
+							key={`leader_${claim.address}`}
+							claim={claim} />
+					))}
+				</ul>
+			</div>
+		);
+	}
+
+	function	Technical() {
+		return (
+			<div className={'flow-root mt-6'}>
+				<pre className={'bg-gray-800 text-white rounded-lg p-6'}>
+					<code>{props.verificationCode}</code>
+				</pre>
+			</div>
+		);
+	}
+
 	return (
 		<section aria-labelledby={'leaderboard'}>
 			<div className={'rounded-lg bg-white overflow-hidden shadow'}>
-				<div className={'p-6'}>
-					<h2 className={'text-base font-medium text-gray-900'} id={'leaderboard'}>
-						{'Leaderboard'}
-					</h2>
-					<div className={'flow-root mt-6'}>
-						<ul className={'-my-5 divide-y divide-gray-200'}>
-							{claims.map((claim) => (
-								<Leader
-									key={`leader_${claim.address}`}
-									claim={claim} />
-							))}
-						</ul>
-					</div>
-					<div className={'mt-6'}>
-						<a href={'#'} className={'w-full flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'}>
-							{'View all'}
-						</a>
-					</div>
+				<div className={'px-6 pb-6'}>
+					<Navbar />
+					{currentSubSection === 0 ? <LeaderBoard /> : null}
+					{currentSubSection === 1 ? <Technical /> : null}
 				</div>
 			</div>
 		</section>
 	);
 }
 
-export default LeaderBoard;
+export default SectionLeaderboard;

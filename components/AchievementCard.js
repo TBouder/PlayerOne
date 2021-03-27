@@ -13,60 +13,6 @@ import	useUI										from	'contexts/useUI';
 import	useWeb3										from	'contexts/useWeb3';
 import	useAchievements								from	'contexts/useAchievements';
 
-function	BottomInformation({onClaim, isUnlocked, isClaimed}) {
-	const	{confetti} = useUI();
-
-	if (isClaimed) {
-		// return (
-		// 	<button
-		// 		onClick={(e) => {
-		// 			e.preventDefault();
-		// 			console.log(e)
-		// 			confetti.set({active: true, x: e.pageX, y: e.pageY});
-		// 			setTimeout(() => confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
-		// 		}}
-		// 		className={'border border-solid border-opacity-0 rounded-lg shadow px-2 py-2 inline-flex items-center text-sm bg-white text-teal-600 font-medium relative cursor-pointer'}>
-		// 		<p>{'Achievement Unlocked'}</p>
-		// 	</button>
-		// );
-		// return (
-		// 	<div className={'flex space-x-1 text-sm text-gray-500'}>
-		// 		<span>{'Unlocked'}</span>
-		// 		<span aria-hidden={'true'}>&middot;</span>
-		// 		<time dateTime={claim.date}>
-		// 			{new Date(claim.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}
-		// 		</time>
-		// 	</div>
-		// )	
-		return (
-			<p className={'text-sm font-medium text-teal-600'}>
-				<button href={'#'} className={'hover:underline'} onClick={onClaim}>
-					{'Unlocked'}
-				</button>
-			</p>
-		);
-	} else if (!isUnlocked) {
-		return (
-			<div className={'flex space-x-1 text-sm text-gray-500'} onClick={onClaim}>
-				<p>{'Locked'}</p>
-			</div>
-		)
-	} else if (isUnlocked) {
-		return (
-			<p className={'text-sm font-medium text-teal-600'}>
-				<button href={'#'} className={'hover:underline'} onClick={onClaim}>
-					{'Claim'}
-				</button>
-			</p>
-		);
-	}
-	return (
-		<div className={'flex space-x-1 text-sm text-gray-500'}>
-			<span>&nbsp;</span>
-		</div>
-	)
-}
-
 function	ClaimableButtom(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
 	const	[buttonStatus, set_buttonStatus] = useState(0);
@@ -177,9 +123,8 @@ const	AchievementCard = forwardRef((props, ref) => {
 	}
 
 
-	/* START OF DESIGN TEST 1 */
 	return (
-		<Link href={`/details/${achievement.key}`}>
+		<Link href={`/details/${achievement.slug}`}>
 			<div
 				ref={ref}
 				className={'flex w-full lg:w-auto'}
@@ -233,105 +178,6 @@ const	AchievementCard = forwardRef((props, ref) => {
 			</div>
 		</Link>
 	)	
-	/* END OF DESIGN TEST 1 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	if (props.claimed) {
-		return (
-			<Link href={`/details/${achievement.key}`}>
-				<div ref={cardRef} className={achievement.hidden ? 'not-visible' : 'cardAnim visible'}>
-					<div ref={ref} className={'flex w-full lg:w-auto h-auto lg:h-96'}>
-						<div className={'flex flex-row lg:flex-col rounded-lg shadow-lg overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine'}>
-							<div
-								className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
-								style={{background: achievement.background}}>
-								<div
-									className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl'}
-									style={{background: 'rgba(255, 255, 255, 0.9)'}}>
-									{achievement.icon}
-								</div>
-							</div>
-							<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white`}>
-								<div className={'flex-1'}>
-									<div className={'block'}>
-										<p className={'text-xl font-semibold text-gray-900'}>
-											{achievement.title}
-										</p>
-										<p className={'mt-3 text-base text-gray-500'}>
-											{achievement.description}
-										</p>
-									</div>
-								</div>
-								<div className={'flex items-center mt-6'}>
-									<div className={''}>
-										<BottomInformation onClaim={() => null} isClaimed isUnlocked />
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</Link>
-		)	
-	}
-
-	return (
-		<Link href={`/details/${achievement.key}`}>
-			<div ref={cardRef} className={achievement.hidden ? 'not-visible' : 'cardAnim visible'}>
-				<div
-					ref={ref}
-					className={'flex w-full lg:w-auto h-auto lg:h-96'}
-					style={achievement.unlocked ? {} : {filter: 'grayscale(1)'}}>
-					<div className={`
-						flex flex-row lg:flex-col rounded-lg shadow-lg overflow-hidden w-full h-full cursor-pointer
-						${achievement.unlocked ? 'transition-transform transform-gpu hover:scale-102 shine' : ''}
-					`}>
-						<div
-							className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-36 w-32 lg:w-full'}
-							style={{background: achievement.background}}>
-							<div
-								className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl'}
-								style={{background: 'rgba(255, 255, 255, 0.9)'}}>
-								{achievement.icon}
-							</div>
-						</div>
-						<div className={`flex-1 p-4 lg:p-6 flex flex-col justify-between bg-white`}>
-							<div className={'flex-1'}>
-								<div className={'block'}>
-									<p className={'text-xl font-semibold text-gray-900'}>
-										{achievement.title}
-									</p>
-									<p className={'mt-3 text-base text-gray-500'}>
-										{achievement.description}
-									</p>
-								</div>
-							</div>
-							<div className={'flex items-center mt-6'}>
-								<div className={''}>
-									<BottomInformation
-										onClaim={onClaim}
-										isClaimed={props.claimed}
-										isUnlocked={props.unlocked} />
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</Link>
-	)
 });
 
 export default AchievementCard;

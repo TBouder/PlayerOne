@@ -40,6 +40,10 @@ export const	removeFromArray = (arr, key,  item) => {
 export const	sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
 }
+
+export function	formatPercent(amount) {
+    return (new Intl.NumberFormat('fr-FR', {style: 'percent', maximumFractionDigits: 1}).format(amount))
+}
   
 export function slugify(str) {
     str = str.replace(/^\s+|\s+$/g, '');

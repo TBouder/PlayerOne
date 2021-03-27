@@ -5,22 +5,7 @@
 **	@Filename:				ClaimableButton.js
 ******************************************************************************/
 
-import	{useRef, useState, useEffect}		from	'react';
-import	{useRouter}							from	'next/router';
-import	useSWR								from	'swr';
-import	{request}							from	'graphql-request';
-import	{ethers}											from	'ethers';
-
-import	{Portal, Transition}				from	'@headlessui/react';
-import	FullConfetti						from	'react-confetti';
-import	useUI								from	'contexts/useUI';
-import	useWeb3								from	'contexts/useWeb3';
-import	useAchievements						from	'contexts/useAchievements';
-import	Badge								from	'components/Badges';
-import	Leaderboard							from	'components/DetailsLeaderboard';
-import	{fetcher}							from	'utils';
-
-const graphFetcher = query => request('https://api.thegraph.com/subgraphs/name/zippoxer/sushiswap-subgraph-fork', query)
+import	{useRef, useState}		from	'react';
 
 function	ClaimableButton(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
@@ -85,3 +70,5 @@ function	ClaimableButton(props) {
 		</button>
 	);
 };
+
+export default ClaimableButton;
