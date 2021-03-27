@@ -23,7 +23,6 @@ import	'tailwindcss/tailwind.css';
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
-// Router.events.on("routeChangeComplete", () => { setTimeout(() => { html.style.height = 'initial' }, 1500); });
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;

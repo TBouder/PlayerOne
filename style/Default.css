@@ -473,6 +473,9 @@ input[type=number] {
 .toWhite {
 	filter: brightness(0) invert(1);
 }
+.super {
+	font-variant: super;
+}
 
 /******************************************************************************
 **	PAGE [UUID].js

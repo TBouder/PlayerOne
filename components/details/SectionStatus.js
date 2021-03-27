@@ -5,7 +5,7 @@
 **	@Filename:				SectionStatus.js
 ******************************************************************************/
 
-import ReactMarkdown from 'react-markdown'
+import	ReactMarkdown						from	'react-markdown';
 import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
 import	SwapOnSushiswap						from	'components/details/SwapOnSushiswap';

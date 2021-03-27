@@ -19,15 +19,6 @@ module.exports = {
       red: colors.red,
       white: colors.white,
     },
-    minWidth: {
-      '0': '0',
-      '2': '0.5rem',
-      '4': '1rem',
-      '1/4': '25%',
-      '1/2': '50%',
-      '3/4': '75%',
-      'full': '100%',
-    },
     extend: {
       typography: {
         xl: {
@@ -67,6 +58,16 @@ module.exports = {
       scale: {
         '101': '1.01',
         '102': '1.02',
+      },
+      minWidth: {
+        '0': '0',
+        '2': '0.5rem',
+        '4': '1rem',
+        '9': '2.25rem',
+        '1/4': '25%',
+        '1/2': '50%',
+        '3/4': '75%',
+        'full': '100%',
       },
       height: {
         '50vh': '50vh',

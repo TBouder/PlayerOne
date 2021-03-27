@@ -21,9 +21,10 @@ function	MainSection(props) {
 					</div>
 					<div className={'grid grid-cols-1 gap-4 lg:col-span-3'}>
 						<Leaderboard
+							strategy={props?.achievement?.strategy}
 							achievementKey={props.achievement.key}
-							verificationCode={props.verificationCode}
-							/>
+							verificationCode={props?.achievement?.informations?.verificationPseudoCode}
+							technicalContext={props?.achievement?.informations?.technicalContext} />
 					</div>
 				</div>
 			</div>
