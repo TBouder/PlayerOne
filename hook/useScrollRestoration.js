@@ -23,7 +23,7 @@ function restoreScrollPos(url) {
     }
 }
 
-export default function useScrollRestoration(router) {
+export default function useScrollRestoration(router, path) {
     useEffect(() => {
         if ('scrollRestoration' in window.history) {
             let shouldScrollRestore = false;
@@ -49,6 +49,12 @@ export default function useScrollRestoration(router) {
             window.addEventListener('beforeunload', onBeforeUnload);
             Router.events.on('routeChangeStart', onRouteChangeStart);
             Router.events.on('routeChangeComplete', onRouteChangeComplete);
+            Router.events.on('routeChangeStart', (newPath) => {
+                if (newPath === path) {
+                    shouldScrollRestore = true;
+                    return true; 
+                }
+            })
             Router.beforePopState(() => {
                 shouldScrollRestore = true;
                 return true;

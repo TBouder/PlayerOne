@@ -29,7 +29,7 @@ function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
 	const	{confetti} = useUi();
 	const	{chainID} = useWeb3();
-	useScrollRestoration(router);
+	useScrollRestoration(router, '/');
 
 
 	return (

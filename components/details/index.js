@@ -75,7 +75,7 @@ function	Page(props) {
 
 
 	return (
-		<div className={'bg-gray-50'}>
+		<div className={'bg-white'}>
 			<div style={{marginTop: -50}}>
 				<div ref={headerRef} className={'headerAnim'}>
 					<PageHeader
