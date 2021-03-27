@@ -72,7 +72,7 @@ function	SectionLeaderboard(props) {
 	**	Adding a swr method to re-fetch the claims on focus/reconnect
 	**************************************************************************/
 	const	{data} = useSWR(
-		props.key ? `${process.env.API_URI}/claims/achievement/by-key/${props.key}` : null,
+		props.achievementKey ? `${process.env.API_URI}/claims/achievement/${props.achievementKey}` : null,
 		fetcher, {focusThrottleInterval: 1000 * 10}
 	);
 

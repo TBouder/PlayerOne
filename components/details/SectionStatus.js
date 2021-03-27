@@ -77,11 +77,11 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 								</div>
 								<div className={'flex flex-col w-2/3 pl-2 '}>
 									<div className={'flex'}>
-										<p className={'text-base font-normal text-gray-800 prose-xl prose-teal'}>
+										<span className={'text-base font-normal text-gray-800 prose-xl prose-teal'}>
 											<ReactMarkdown>
 												{description}
 											</ReactMarkdown>
-										</p>
+										</span>
 									</div>
 									<div>
 										{/* <SwapOnSushiswap /> */}
