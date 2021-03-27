@@ -22,7 +22,6 @@ function	Page(props) {
 
 	useEffect(() => {
 		if (achievements) {
-			console.dir(achievements.map(e => slugify(e.title)))
 			set_unlockedCount(achievements.filter(e => e.unlocked).length)
 		}
 	}, [achievements]);

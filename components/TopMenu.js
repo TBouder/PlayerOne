@@ -47,9 +47,9 @@ function	TopMenu() {
 		<div className={'w-full py-2 px-4 fixed top-0 left-0 bg-white bg-opacity-90 pointer-events-none z-50'}>
 			<div className={'max-w-screen-2xl mx-auto flex justify-between items-center px-6 md:px-12 lg:px-12 xl:px-12'}>
 				<div className={'relative flex flex-row items-center text-left z-50 pointer-events-auto'}>
-					{router.pathname !== '/' ? <Link href={'/'} passHref>
+					{router.pathname !== '/' ? <p onClick={() => router.back()} href={'/'} scroll={false} passHref>
 						<svg className={'w-6 h-6 text-gray-400 hover:text-gray-900 cursor-pointer'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-					</Link> : null}
+					</p> : null}
 					{router.pathname === '/' ?
 						<div className={'flex flex-row w-full items-baseline'}>
 							<div>

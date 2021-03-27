@@ -5,7 +5,7 @@
 **	@Filename:				_app.js
 ******************************************************************************/
 
-import	React, {useState}			from	'react';
+import	React, {useState, useEffect}			from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
@@ -13,6 +13,7 @@ import	{ToastProvider}				from	'react-toast-notifications';
 import	useWeb3, {Web3ContextApp}			from	'contexts/useWeb3';
 import	{AchievementsContextApp}	from	'contexts/useAchievements';
 import	useUi, {UIApp}						from	'contexts/useUI';
+import	useScrollRestoration		from	'hook/useScrollRestoration';
 import	TopMenu						from	'components/TopMenu';
 import	Confetti from 'react-dom-confetti'
 
@@ -22,11 +23,14 @@ import	'tailwindcss/tailwind.css';
 Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
+// Router.events.on("routeChangeComplete", () => { setTimeout(() => { html.style.height = 'initial' }, 1500); });
 
 function	AppWrapper(props) {
 	const	{Component, pageProps, router} = props;
 	const	{confetti} = useUi();
 	const	{chainID} = useWeb3();
+	useScrollRestoration(router);
+
 
 	return (
 		<>

@@ -260,8 +260,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				transactionResponse = await contract.functions.claim(...txPayload);
 			}
 		} catch (error) {
-			console.log(txPayload)
-
 			if (error?.error?.message) {
 				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
 				if (errorMessage === 'Achievement already unlocked') {

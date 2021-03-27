@@ -77,7 +77,6 @@ function	ClaimableButtom(props) {
 
 
 const	AchievementCard = forwardRef((props, ref) => {
-	const	cardRef = useRef();
 	const	{addToast} = useToasts();
 	const	{confetti} = useUI();
 	const	{provider, address, walletData} = useWeb3();
@@ -85,12 +84,6 @@ const	AchievementCard = forwardRef((props, ref) => {
 
 	const	[achievement, set_achievement] = useState(props.achievement);
 	useEffect(() => set_achievement(props.achievement), [props.informations, props.unlocked]);
-
-	useEffect(() => {
-		if (cardRef?.current?.className.indexOf('cardAnimOnMount') === -1) {
-			setTimeout(() => cardRef.current.className = `${cardRef.current.className} cardAnimOnMount`, 0);
-		}
-	}, [achievement.hidden])
 
 	async function	onClaim(callback = () => null) {
 		const	strategy = achievement.strategy;

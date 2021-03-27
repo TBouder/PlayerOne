@@ -16,7 +16,6 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({params}) {
-	console.log(params)
 	const	achievement = await fetcher(`${process.env.API_URI}/achievement/by-slug/${params.slug}`)
 
 	return {props: {achievement}}

@@ -20,9 +20,6 @@ function	SectionAchievements(props) {
 		}
 	}, [achievements]);
 
-	if (!achievementList || achievementList.length === 0) {
-		return null;
-	}
 	return (
 		<section className={'mt-16 z-10'} aria-label={`achievements`}>
 			<div className={'pb-8 flex flex-row'}>

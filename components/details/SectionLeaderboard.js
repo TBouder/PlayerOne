@@ -91,11 +91,16 @@ function	SectionLeaderboard(props) {
 			<div className={'pb-5 border-b border-gray-200 sm:pb-0'}>
 				<div className={'mt-3 sm:mt-4'}>
 					<div className={'sm:hidden'}>
-						<label for={'current-tab'} className={'sr-only'}>Select a tab</label>
-						<select id={'current-tab'} name={'current-tab'} className={'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md'}>
-							<option selected={currentSubSection === 0}>{'Leaderboard'}</option>
-							<option selected={currentSubSection === 1}>{'Technical informations'}</option>
-							<option selected={currentSubSection === 2}>{'Bla'}</option>
+						<label htmlFor={'current-tab'} className={'sr-only'}>Select a tab</label>
+						<select
+							value={currentSubSection === 0 ? 'Leaderboard' : currentSubSection === 0 ? 'Technical informations' :  'Bla'}
+							onChange={(e) => set_currentSubSection(e)}
+							id={'current-tab'}
+							name={'current-tab'}
+							className={'block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md'}>
+							<option>{'Leaderboard'}</option>
+							<option>{'Technical informations'}</option>
+							<option>{'Bla'}</option>
 						</select>
 					</div>
 					<div className={'hidden sm:block'}>
