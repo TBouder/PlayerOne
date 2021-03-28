@@ -34,10 +34,19 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
 	const	[nonce, set_nonce] = useState(0);
 	const	[provider, set_provider] = useState(undefined);
+	const	[rProvider, set_rProvider] = useState(undefined);
 	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
 	const	[walletData, set_walletData] = useState({erc20: undefined, transactions: undefined, ready: false});
+
+	/**************************************************************************
+	**	Init default provider
+	**************************************************************************/
+	useEffect(() => {
+		const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		set_rProvider(_provider)
+	}, [])
 
 	/**************************************************************************
 	**	If user was connected with metamask, auto-reconnect
@@ -335,6 +344,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				walletType,
 				walletData,
 				provider,
+				rProvider,
 				chainID,
 				actions: {
 					sign,
