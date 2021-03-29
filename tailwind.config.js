@@ -119,17 +119,17 @@ module.exports = {
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
-    require('tailwind-content-placeholder')({
-      placeholders: {
-        height: 1.25,
-        'line': {
-          height: '1.25', // the height of the container in em
-          rows: [ // This class will have 4 rows:
-            [100],
-            [],
-          ]
-        },
-      }
-    }),
+    // require('tailwind-content-placeholder')({
+    //   placeholders: {
+    //     height: 1.25,
+    //     'line': {
+    //       height: '1.25', // the height of the container in em
+    //       rows: [ // This class will have 4 rows:
+    //         [100],
+    //         [],
+    //       ]
+    //     },
+    //   }
+    // }),
   ],
 }
