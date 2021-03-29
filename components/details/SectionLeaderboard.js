@@ -21,7 +21,7 @@ function jsNumberForAddress(address) {
 }
 
 function	Leader({claim}) {
-	const	{address, rProvider} = useWeb3();
+	const	{rProvider} = useWeb3();
 	const	[requestor, set_requestor] = useState(undefined)
 	const	jazziconRef = useRef();
 	const	numericRepresentation = jsNumberForAddress(claim.address);
@@ -355,6 +355,19 @@ function	SectionLeaderboard(props) {
 		);
 	}
 
+	function	Social() {
+		return (
+			<div className={'flow-root mt-6'}>
+				<div className={'flex items-center justify-center flex-col p-12'}>
+					<svg className={'w-20 h-20 text-gray-400'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" /></svg>
+
+					<p className={'text-gray-400 font-medium mt-4'}>{'Share the achievement to your followers!'}</p>
+
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className={'grid grid-cols-1 gap-4 lg:col-span-3 pb-32'}>
 			<section aria-labelledby={'leaderboard'}>
@@ -363,6 +376,7 @@ function	SectionLeaderboard(props) {
 						<Navbar />
 						{currentSubSection === 0 ? <LeaderBoard /> : null}
 						{currentSubSection === 1 ? <Technical /> : null}
+						{currentSubSection === 2 ? <Social /> : null}
 					</div>
 				</div>
 			</section>
