@@ -6,26 +6,49 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useRef}			from	'react';
+import	useAchievements							from	'contexts/useAchievements';
+import	useWeb3									from	'contexts/useWeb3';
 
 function HelperButton(props) {
-	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
+	const	STATUS = {CONNECT: -2, LOCKED: -1, UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
+	const	{achievements, achievementsNonce} = useAchievements();
+	const	{provider} = useWeb3();
 	const	[buttonStatus, set_buttonStatus] = useState(props.defaultClaimed ? 2 : 0);
 	const	buttonRef = useRef();
 
 	useEffect(() => {
 		if (props.defaultClaimed) {
-			set_buttonStatus(2);
+			set_buttonStatus(STATUS.UNLOCKED);
 			const	elementPosition = buttonRef.current.getBoundingClientRect();
 			props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
 			setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
 		}
 	}, [props.defaultClaimed])
 
+	useEffect(() => {
+		if (achievements) {
+			const	currentAchievement = achievements.find(e => e.key === props.achievementKey);
+			if (currentAchievement) {
+				const	isUnlocked = currentAchievement.unlocked;
+				if (!isUnlocked)
+					set_buttonStatus(STATUS.LOCKED);
+				else 
+					set_buttonStatus(props.defaultClaimed ? STATUS.UNLOCKED : STATUS.UNDEFINED);
+			}
+		}
+	}, [achievementsNonce, achievements, props.defaultClaimed]);
+
+	useEffect(() => {
+		if (!provider) {
+			set_buttonStatus(STATUS.CONNECT);
+		}
+	}, [provider])
+
 	return (
 		<button
 			ref={buttonRef}
 			onClick={({clientX, clientY}) => {
-				if (buttonStatus === STATUS.PENDING) {
+				if (buttonStatus === STATUS.PENDING || buttonStatus === STATUS.LOCKED || buttonStatus === STATUS.CONNECT) {
 					return;
 				}
 				if (buttonStatus === STATUS.UNLOCKED) {
@@ -45,10 +68,14 @@ function HelperButton(props) {
 					}
 				})
 			}}
-			disabled={buttonStatus === STATUS.PENDING}
-			className={`mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white ${props.textColor} font-medium relative  ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : 'cursor-pointer'}`}>
+			disabled={buttonStatus === STATUS.PENDING || buttonStatus === STATUS.LOCKED || buttonStatus === STATUS.CONNECT}
+			className={`mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white ${props.textColor} font-medium relative  ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : buttonStatus === STATUS.LOCKED || buttonStatus === STATUS.CONNECT ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
 			<p style={buttonStatus === STATUS.PENDING ? {opacity: 0} : {opacity: 1} }>
-				{buttonStatus === STATUS.UNLOCKED ?
+				{buttonStatus === STATUS.CONNECT ?
+					'Please connect your wallet' :
+				buttonStatus === STATUS.LOCKED ?
+					'Achievement locked' :
+				buttonStatus === STATUS.UNLOCKED ?
 					'Congratulations! You\'ve unlocked this achievement! 🎉' :
 					'Claim this achievement !'
 				}

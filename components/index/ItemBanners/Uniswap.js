@@ -24,6 +24,7 @@ const	ItemBannerUniswap = forwardRef((props, ref) => {
 					<HelperButton
 						bgColor={'bg-uniswap-pink'}
 						textColor={'text-uniswap-pink'}
+						achievementKey={props.achievementKey}
 						defaultClaimed={props.defaultClaimed}
 						onClaim={props.onClaim}
 						confetti={props.confetti} />
