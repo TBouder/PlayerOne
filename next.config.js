@@ -9,6 +9,7 @@ const Dotenv = require('dotenv-webpack');
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true'
 })
+
 module.exports = withBundleAnalyzer({
 	plugins: [
 		new Dotenv()

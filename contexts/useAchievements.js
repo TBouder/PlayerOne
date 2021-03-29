@@ -6,24 +6,19 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
+import	useSWR												from	'swr';
+import	{ethers}											from	'ethers';
 import	axios												from	'axios';
+import	{useToasts}											from	'react-toast-notifications';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
-
-const	fetcher = url => axios.get(url).then(res => res.data);
-
-const	removeFromArray = (arr, item) => {
-	const i = arr.findIndex(a => a.UUID === item);
-	if (i > -1) {
-		arr.splice(i, 1);
-	}
-	return arr;
-}
+import	{fetcher, removeFromArray, sortBy}					from	'utils';
 
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
-	const	{address, provider, walletData} = useWeb3();
+	const	{addToast} = useToasts();
+	const	{address, provider, walletData, chainID, actions} = useWeb3();
 
 	/**************************************************************************
 	**	achievements: matches the local state to handle the achievements on the
@@ -55,6 +50,17 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	**	claims: lists the claims for this user
 	**************************************************************************/
 	const	[claims, set_claims] = useState();
+	const	[claimsAsMapping, set_claimsAsMapping] = useState({});
+
+	/**************************************************************************
+	**	pool: size of the pool of adresse which have interacted with this
+	**	playground
+	**************************************************************************/
+	const	{data: poolSize} = useSWR(
+		`${process.env.API_URI}/addresses/count`,
+		fetcher,
+		{focusThrottleInterval: 1000 * 10}
+	);
 
 	useEffect(async () => {
 		if (achievements === undefined && (achievementsList === undefined || achievementsList.length === 0)) {
@@ -68,22 +74,23 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 	useEffect(async () => {
 		if (address && claims === undefined && achievements !== undefined) {
 			const	addressClaims = await fetcher(`${process.env.API_URI}/claims/address/${address}`);
+			const	_claimsAsMapping = {};
 			const	_achievements = achievements.map((achievement) => {
 				const	_achievement = {...achievement};
-				const	achievementClaim = addressClaims.find(e => e.achievementUUID === achievement.UUID);
+				const	achievementClaim = addressClaims.find(e => e.achievementKey === achievement.key);
 				if (achievementClaim) {
 					_achievement.unlocked = true
-					_achievement.claim = {
-						id: achievementClaim.nonce,
-						count: 100,
-						level: null
-					}
+					_achievement.claimed = !!achievementClaim
+					_achievement.claim = achievementClaim
 				}
 				return _achievement;
 			})
 
 			set_claims(addressClaims || []);
-			set_achievements(_achievements);
+
+			addressClaims.forEach(e => {_claimsAsMapping[e.achievement] = true;});
+			set_claimsAsMapping(_claimsAsMapping);
+			set_achievements(sortBy(_achievements, 'unlocked'));
 			set_achievementsNonce(n => n + 1);
 			set_achievementsCheckProgress({checking: false, progress: addressClaims.length, total: _achievements.length});
 		}
@@ -95,6 +102,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
 			set_achievements(achievementsList.map(e => ({...e})));
 			set_claims(undefined);
+			set_claimsAsMapping({});
 			set_achievementsNonce(n => n + 1);
 			set_shouldReset(false);
 		}
@@ -130,9 +138,19 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			return;
 		}
+		if (claimsAsMapping[achievement.key] && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
+			unlockedStack.push(achievement);
+			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
+
+			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
+			set_achievementsNonce(v => v + 1);
+			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress, total: v.total}));
+			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+			return
+		}
 		if (achievement.unlocked && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
 			unlockedStack.push(achievement);
-			newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
 
 			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
 			set_achievementsNonce(v => v + 1);
@@ -151,7 +169,7 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				achievement.informations = informations || {};
 				if (unlocked) {
 					unlockedStack.push(achievement);
-					newLockedStack = removeFromArray(lockedStack, achievement.UUID)
+					newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
 				}
 			}
 		}
@@ -165,15 +183,111 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		}
 	}
 
+	async function	checkAchievement(achievement) {
+		if (!achievement) {
+			return null;
+		}
+		if (achievement.unlocked) {
+			return achievement;
+		}
+
+		achievement.unlocked = false;
+		achievement.informations = {};
+		if (!achievement?.strategy?.name) {
+			return null;
+		}
+
+		const	strategy = getStrategy(achievement.strategy.name);
+		if (strategy === undefined) {
+			return null;
+		}
+		const	{unlocked, informations} = await strategy(provider, address, walletData, achievement?.strategy?.args);
+		achievement.unlocked = unlocked;
+		achievement.informations = informations || {};
+		return achievement;
+	}
+	async function	claimAchievement(achievementKey, callback = () => null) {
+		const	achievement = achievements.find(e => e.key === achievementKey);
+		const	isUnlocked = (await checkAchievement(achievement)).unlocked;
+		if (!isUnlocked) {
+			return callback({status: 'ERROR'});
+		}
+
+		/**********************************************************************
+		**	Only for ropsten / testnets
+		**	We need to get the gasPrice to provide an actual price estimation
+		**********************************************************************/
+		let	gasPrice = undefined;
+		let	averageGasPrice = undefined;
+
+		if (chainID !== 1 || chainID !== '0x1') {
+			gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
+			averageGasPrice = (gasPrice.average / 10);
+			addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
+		}
+
+		/**********************************************************************
+		**	We need the backend to generate a claim.
+		**	Note: the backend will ask, to the smartcontract, is the user can
+		**	claim the achievement (not already claimed), then check if the
+		**	user matches the requirements (verification with the specific
+		**	strategy)
+		**********************************************************************/
+		let	signatureResponse = undefined;
+		try {
+			signatureResponse = await axios.post(`${process.env.API_URI}/claim/signature`, {
+				achievementKey: achievement.key,
+				address: address,
+			});
+			callback({status: 'GET_SIGNATURE'})
+			addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
+		} catch (error) {
+			if (error?.response?.data?.error === 'achievement already claimed') {
+				return callback({status: 'SUCCESS'});
+			}
+			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
+			return callback({status: 'ERROR'});
+		}
+
+		/**********************************************************************
+		**	Creating the claim transaction
+		**********************************************************************/
+		const	signature = signatureResponse.data.signature;
+		const	tokenAddress = signatureResponse.data.contractAddress;
+		const	validator = signatureResponse.data.validator;
+		const	achievementHash = signatureResponse.data.achievement;
+		const	amount = signatureResponse.data.amount;
+		const	deadline = signatureResponse.data.deadline;
+		const	r = signature.slice(0, 66);
+		const	s = '0x' + signature.slice(66, 130);
+		const	v = parseInt(signature.slice(130, 132), 16) + 27;
+
+		/**********************************************************************
+		**	Accessing the contract
+		**********************************************************************/
+		actions.claim(
+			tokenAddress,
+			[validator, address, achievementHash, amount, deadline, v, r, s],
+			averageGasPrice ? {gasPrice: averageGasPrice * 1000000000} : undefined,
+			callback
+		);
+	}
+
 	return (
 		<AchievementsContext.Provider
 			children={children}
 			value={{
 				claims,
+				claimsAsMapping,
+				poolSize: poolSize || 0,
 				achievements,
 				set_achievements,
 				achievementsNonce,
 				achievementsCheckProgress,
+				actions: {
+					check: checkAchievement,
+					claim: claimAchievement
+				}
 			}} />
 	)
 }
