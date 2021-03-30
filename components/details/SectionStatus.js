@@ -85,7 +85,12 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 										</span>
 									</div>
 									<div>
-										{/* <SwapOnSushiswap /> */}
+										{achievement.slug === 'booty-assy' ?
+											<SwapOnSushiswap
+												routerAddress={'0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F'}
+												pairID={'0x46acb1187a6d83e26c0bb46a57ffeaf23ad7851e'}
+											/>
+										: null}
 									</div>
 								</div>
 							</div>

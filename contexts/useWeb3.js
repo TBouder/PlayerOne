@@ -16,7 +16,8 @@ import	{ConnectorEvent}									from	'dependencies/@web3-react/types';
 import	{WalletConnectConnector}							from	'dependencies/@web3-react/walletconnect-connector';
 
 import	useLocalStorage										from	'hook/useLocalStorage';
-import	{fetcher, toAddress}								from	'utils';
+import	{bigNumber, fetcher, toAddress}								from	'utils';
+import { Percent } from '@uniswap/sdk'
 
 const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 function	fetchERC20(baseUri, address) {
@@ -152,7 +153,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			if (active) {
 				deactivate()
 			}
-			const	injected = new InjectedConnector({supportedChainIds: [1, 3]})
+			const	injected = new InjectedConnector({supportedChainIds: [1, 3, 1337]})
 			activate(injected, undefined, true);
 		} else if (_providerType === walletType.WALLET_CONNECT) {
 			if (active) {
@@ -225,17 +226,20 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			}
 		}
 	}
-	async function	swapOnSushiswap(tokenAddress = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F", txPayload, callback = () => null) {
+	async function	swapOnSushiswap(contractAddress, txPayload, payableAmount, callback = () => null) {
 		addToast(`This path is not completed yet`, {appearance: 'warning'});
 
-		const	CLAIM_ABI = ["function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)"];
+		const	SUSHISWAP_ABI = [
+			"function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)"
+		];
 		const	signer = provider.getSigner();
-		const	contract = new ethers.Contract(tokenAddress, CLAIM_ABI, signer);
+		const	contract = new ethers.Contract(contractAddress, SUSHISWAP_ABI, signer);
 		let		transactionResponse = undefined;
 
 		try {
-			transactionResponse = await contract.functions.swapETHForExactTokens(...txPayload, {value: txPayload[0]});
+			transactionResponse = await contract.swapETHForExactTokens(...txPayload, {value: payableAmount});
 		} catch (error) {
+			console.log(error)
 			if (error?.error?.message) {
 				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
 				if (errorMessage === 'Achievement already unlocked') {
