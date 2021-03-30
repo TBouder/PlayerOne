@@ -22,6 +22,9 @@ module.exports = withBundleAnalyzer({
 	images: {
 		domains: ['images.unsplash.com', 'source.unsplash.com'],
 	},
+	future: {
+		webpack5: true,
+	},
   	optimization: {
 		minimize: true,
 		splitChunks: {
