@@ -9,10 +9,10 @@ import	useWeb3											from	'contexts/useWeb3';
 import	useAchievements									from	'contexts/useAchievements';
 
 function	SectionProgress({unlocked, myAchievements}) {
-	const	{providerType, walletType} = useWeb3();
+	const	{active} = useWeb3();
 	const	{achievementsCheckProgress} = useAchievements();
 	
-	if (providerType === walletType.NONE) {
+	if (!active) {
 		return null;
 	}
 	return (

@@ -7,7 +7,6 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	useSWR												from	'swr';
-import	{ethers}											from	'ethers';
 import	axios												from	'axios';
 import	{useToasts}											from	'react-toast-notifications';
 import	useWeb3												from	'contexts/useWeb3';
