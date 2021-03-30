@@ -53,7 +53,9 @@ module.exports = {
         'bitcoin': {
           initial: '#f7931a',
           darker: '#DF5820',
-        }
+        },
+        walletConnect: '#4199FC',
+        metamask: '#f6851b'
       },
       scale: {
         '101': '1.01',

@@ -5,17 +5,20 @@
 **	@Filename:				_app.js
 ******************************************************************************/
 
-import	React, {useState, useEffect}			from	'react';
+import	React, {useState}			from	'react';
 import	NProgress					from	'nprogress';
 import	Router						from	'next/router';
 import	Head						from	'next/head';
 import	{ToastProvider}				from	'react-toast-notifications';
-import	useWeb3, {Web3ContextApp}			from	'contexts/useWeb3';
+import	Confetti					from	'react-dom-confetti'
+import	{ethers}					from	'ethers';
+
+import	useWeb3, {Web3ContextApp}	from	'contexts/useWeb3';
 import	{AchievementsContextApp}	from	'contexts/useAchievements';
-import	useUi, {UIApp}						from	'contexts/useUI';
+import	useUi, {UIApp}				from	'contexts/useUI';
 import	useScrollRestoration		from	'hook/useScrollRestoration';
 import	TopMenu						from	'components/TopMenu';
-import	Confetti from 'react-dom-confetti'
+import	{Web3ReactProvider}			from	'dependencies/@web3-react/core';
 
 import	'style/Default.css'
 import	'tailwindcss/tailwind.css';
@@ -29,7 +32,6 @@ function	AppWrapper(props) {
 	const	{confetti} = useUi();
 	const	{chainID} = useWeb3();
 	useScrollRestoration(router, '/');
-
 
 	return (
 		<>
@@ -88,28 +90,34 @@ function	AppWrapper(props) {
 function	MyApp(props) {
 	const	{Component, pageProps} = props;
 	const	[shouldReset, set_shouldReset] = useState(false);
+	
 	/**************************************************************************
 	**	AchievementList: matches the list of all the achievements, fetched from
 	**	the database in getStaticProps on each page.
 	**************************************************************************/
 	const	achievementsList = pageProps && pageProps.achievementsList ? [...pageProps.achievementsList] : [];
 
+	const getLibrary = (provider, connector) => {
+		return new ethers.providers.Web3Provider(provider, 'any')
+	};
+
 	return (
 		<ToastProvider autoDismiss>
 			<UIApp>
-				<Web3ContextApp
-					set_shouldReset={() => set_shouldReset(true)}>
-					<AchievementsContextApp
-						shouldReset={shouldReset}
-						set_shouldReset={value => set_shouldReset(value)}
-						achievementsList={achievementsList}>
-					<AppWrapper
-						Component={Component}
-						pageProps={{...pageProps, achievementsList}}
-						element={props.element}
-						router={props.router} />
-					</AchievementsContextApp>
-				</Web3ContextApp>
+				<Web3ReactProvider getLibrary={getLibrary}>
+					<Web3ContextApp set_shouldReset={() => set_shouldReset(true)}>
+						<AchievementsContextApp
+							shouldReset={shouldReset}
+							set_shouldReset={value => set_shouldReset(value)}
+							achievementsList={achievementsList}>
+						<AppWrapper
+							Component={Component}
+							pageProps={{...pageProps, achievementsList}}
+							element={props.element}
+							router={props.router} />
+						</AchievementsContextApp>
+					</Web3ContextApp>
+				</Web3ReactProvider>
 			</UIApp>
 		</ToastProvider>
 	);

@@ -9,7 +9,12 @@ import	{useState, useEffect, useContext, createContext}	from	'react';
 import	{ethers}											from	'ethers';
 import	{useToasts}											from	'react-toast-notifications';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
-import	WalletConnectProvider								from	'@walletconnect/web3-provider';
+
+import	{useWeb3React}										from	'dependencies/@web3-react/core';
+import	{InjectedConnector}									from	'dependencies/@web3-react/injected-connector';
+import	{ConnectorEvent}									from	'dependencies/@web3-react/types';
+import	{WalletConnectConnector}							from	'dependencies/@web3-react/walletconnect-connector';
+
 import	useLocalStorage										from	'hook/useLocalStorage';
 import	{fetcher, toAddress}								from	'utils';
 
@@ -31,14 +36,86 @@ function	etherscanBaseDomain(chainID = 1) {
 const Web3Context = createContext();
 export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	{addToast} = useToasts();
+	const	web3 = useWeb3React();
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
-	const	[nonce, set_nonce] = useState(0);
 	const	[provider, set_provider] = useState(undefined);
 	const	[rProvider, set_rProvider] = useState(undefined);
-	const	[providerType, set_providerType] = useLocalStorage('providerType', walletType.NONE);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
+	const	[nonce, set_nonce] = useState(0);
 	const	[walletData, set_walletData] = useState({erc20: undefined, transactions: undefined, ready: false});
+
+	const	{activate, active, library, connector, account, chainId, deactivate} = web3;
+
+	useEffect(() => {
+		if (active) {
+			onActivate()
+		} else {
+			onDesactivate()
+		}
+	}, [active])
+
+	useEffect(() => {
+		if (nonce > 0) {
+			fetchOnEtherscan(chainID, address);
+		}
+	}, [nonce])
+
+	function	onActivate() {
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
+		set_provider(library);
+		set_address(toAddress(account));
+		set_chainID(parseInt(chainId, 16));
+		fetchOnEtherscan(chainId, account);
+
+		connector
+			.on(ConnectorEvent.Update, onUpdate)
+			.on(ConnectorEvent.Deactivate, onDesactivate)
+	}
+	function	onDesactivate() {
+		set_address('');
+		set_chainID(-1);
+		set_provider(undefined);
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
+		set_shouldReset();
+		if (connector !== undefined) {
+			connector
+				.off(ConnectorEvent.Update, onUpdate)
+				.off(ConnectorEvent.Deactivate, onDesactivate)
+		}
+	}
+	function	onUpdate(update) {
+		set_walletData({erc20: undefined, transactions: undefined, ready: false});
+		set_shouldReset();
+
+		if (update.provider) {
+			set_provider(library);
+		}
+		if (update.chainId) {
+			set_chainID(parseInt(update.chainId, 16));
+		}
+		if (update.account) {
+			set_address(toAddress(update.account));
+		}
+		set_nonce(n => n + 1);
+	}
+
+	function	fetchOnEtherscan(_chainID, _address) {
+		fetchERC20(etherscanBaseDomain(_chainID), _address).then((walletDataERC20) => {
+			set_walletData(wc => ({
+				transactions: wc.transactions,
+				erc20: walletDataERC20.result || [],
+				ready: Boolean(wc.transactions && walletDataERC20.result)
+			}));
+		});
+		fetchTx(etherscanBaseDomain(_chainID), _address).then((walletDataTransactions) => {
+			set_walletData(wc => ({
+				transactions: walletDataTransactions.result || [],
+				erc20: wc.erc20,
+				ready: Boolean(walletDataTransactions.result && wc.erc20)
+			}));
+		});
+	}
 
 	/**************************************************************************
 	**	Init default provider
@@ -47,37 +124,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
 		set_rProvider(_provider)
 	}, [])
-
-	/**************************************************************************
-	**	If user was connected with metamask, auto-reconnect
-	**************************************************************************/
-	useEffect(() => {
-		if (nonce === 0) {
-			connect(providerType);
-			set_nonce(n => n + 1);
-		} else {
-			set_nonce(n => n + 1);
-		}
-	}, []);
-
-	/**************************************************************************
-	**	disconnect
-	**	What should we do when the user choose to disconnect it's wallet, 
-	**	from the UI or from it's wallet approval ?
-	**	Spoiler : reset the app state to default
-	**************************************************************************/
-	function	disconnect(error) {
-		if (error) {
-			addToast(error, {appearance: 'error'});
-			return console.error(error);
-		}
-		set_provider(undefined);
-		set_providerType(walletType.NONE);
-		set_chainID(-1);
-		set_address('');
-		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		set_shouldReset();
-	}
 
 	/**************************************************************************
 	**	connect
@@ -101,145 +147,29 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		**	⚠️ We should add some fallback for the web3provider
 		******************************************************************/
 		const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
-		// const	web3Provider = window.ethereum || 'wss://eth-mainnet.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
-		// 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 
 		if (_providerType === walletType.METAMASK) {
-			const	_provider = new ethers.providers.Web3Provider(web3Provider)
-			await _provider.send('eth_requestAccounts');
-			const	signer = await _provider.getSigner();
-			const	_address = await signer.getAddress();
-			const	_chainID = (await _provider.getNetwork()).chainId;
-
-			onConnect(_provider, walletType.METAMASK, _chainID, _address);
-			ethereum.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
-			ethereum.on('disconnect', () => disconnect());
-			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID, walletType.METAMASK));
+			if (active) {
+				deactivate()
+			}
+			const	injected = new InjectedConnector({supportedChainIds: [1, 3]})
+			activate(injected, undefined, true);
 		} else if (_providerType === walletType.WALLET_CONNECT) {
-			const wcProvider = new WalletConnectProvider({
+			if (active) {
+				deactivate()
+			}
+			const walletconnect = new WalletConnectConnector({
 				rpc: {
 					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
 					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
 				},
+				chainId: 1,
 				bridge: 'https://bridge.walletconnect.org',
-				qrcodeModal: QRCodeModal
+				pollingInterval: 12000,
+				qrcodeModal: QRCodeModal,
+				qrcode: true,
 			});
-			await wcProvider.enable();
-
-			const	_provider = new ethers.providers.Web3Provider(wcProvider)
-			const	signer = await _provider.getSigner();
-			const	_address = await signer.getAddress();
-			const	_chainID = (await _provider.getNetwork()).chainId;
-
-			onConnect(_provider, walletType.WALLET_CONNECT, _chainID, _address);
-			_provider.provider.on('connect', accounts => onChangeAccount(accounts[0]));
-			_provider.provider.on('disconnect', () => disconnect());
-			_provider.provider.on('chainChanged', newChainID => onChangeChain(newChainID, walletType.WALLET_CONNECT));
-			_provider.provider.on('accountsChanged', accounts => onChangeAccount(accounts[0]));
-			_provider.provider.on('wc_sessionUpdate', newChainID => onChangeChain(newChainID, walletType.WALLET_CONNECT));
-		}
-	}
-
-	/**************************************************************************
-	**	onConnect
-	**	Function triggered once the wallet is connected (aka the user has
-	**	accepted the connection).
-	**	Actually set the states for this application
-	**	Try to fetch the needed data for this wallet, aka the etherscan
-	**	transactions
-	**************************************************************************/
-	function	onConnect(_provider, _walletType, _chainID, _account) {
-		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		set_provider(_provider);
-		set_providerType(_walletType);
-		set_address(toAddress(_account));
-		set_chainID(parseInt(_chainID, 16));
-
-		fetchERC20(etherscanBaseDomain(_chainID), _account).then((walletDataERC20) => {
-			set_walletData(wc => ({
-				transactions: wc.transactions,
-				erc20: walletDataERC20.result || [],
-				ready: Boolean(wc.transactions && walletDataERC20.result)
-			}));
-		});
-		fetchTx(etherscanBaseDomain(_chainID), _account).then((walletDataTransactions) => {
-			set_walletData(wc => ({
-				transactions: walletDataTransactions.result || [],
-				erc20: wc.erc20,
-				ready: Boolean(walletDataTransactions.result && wc.erc20)
-			}));
-		});
-	}
-	async function	onChangeAccount(_account) {
-		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		set_address(toAddress(_account));
-		set_shouldReset();
-
-		fetchERC20(etherscanBaseDomain(chainID), _account).then((walletDataERC20) => {
-			set_walletData(wc => ({
-				transactions: wc.transactions,
-				erc20: walletDataERC20.result || [],
-				ready: Boolean(wc.transactions && walletDataERC20.result)
-			}));
-		});
-		fetchTx(etherscanBaseDomain(chainID), _account).then((walletDataTransactions) => {
-			set_walletData(wc => ({
-				transactions: walletDataTransactions.result || [],
-				erc20: wc.erc20,
-				ready: Boolean(walletDataTransactions.result && wc.erc20)
-			}));
-		});
-	}
-	async function	onChangeChain(_chainID, wallet, _provider = provider) {
-		if (wallet === walletType.METAMASK) {
-			const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
-			const	_provider = new ethers.providers.Web3Provider(web3Provider);
-			await _provider.send('eth_requestAccounts');
-			const	signer = await _provider.getSigner();
-			const	_address = await signer.getAddress();
-
-			set_walletData({erc20: undefined, transactions: undefined, ready: false});
-			set_provider(_provider);
-			set_chainID(parseInt(_chainID, 16))
-			set_address(toAddress(_address));
-			set_shouldReset();
-
-			fetchERC20(etherscanBaseDomain(_chainID), _address).then((walletDataERC20) => {
-				set_walletData(wc => ({
-					transactions: wc.transactions,
-					erc20: walletDataERC20.result || [],
-					ready: Boolean(wc.transactions && walletDataERC20.result)
-				}));
-			});
-			fetchTx(etherscanBaseDomain(_chainID), _address).then((walletDataTransactions) => {
-				set_walletData(wc => ({
-					transactions: walletDataTransactions.result || [],
-					erc20: wc.erc20,
-					ready: Boolean(walletDataTransactions.result && wc.erc20)
-				}));
-			});
-
-			ethereum.removeAllListeners()
-			ethereum.on('accountsChanged', accounts => onChangeAccount(undefined, accounts[0]));
-			ethereum.on('disconnect', () => disconnect());
-			ethereum.on('chainChanged', _chainID => onChangeChain(_chainID));
-		} else if (wallet === walletType.WALLET_CONNECT) {
-			const wcProvider = new WalletConnectProvider({
-				chainId: _chainID,
-				rpc: {
-					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
-					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
-				},
-				bridge: 'https://bridge.walletconnect.org',
-				qrcodeModal: QRCodeModal
-			});
-			await wcProvider.enable();
-			const	_provider = new ethers.providers.Web3Provider(wcProvider)
-			const	signer = await _provider.getSigner();
-			const	_address = await signer.getAddress();
-			set_chainID(_chainID);
-			onConnect(_provider, walletType.WALLET_CONNECT, _chainID, _address);
-			set_shouldReset();
+			activate(walletconnect, undefined, true);
 		}
 	}
 
@@ -339,13 +269,13 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			value={{
 				address,
 				connect,
-				disconnect,
-				providerType,
+				deactivate,
 				walletType,
 				walletData,
 				provider,
 				rProvider,
 				chainID,
+				active,
 				actions: {
 					sign,
 					claim,
