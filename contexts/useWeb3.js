@@ -51,9 +51,11 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	useEffect(() => {
 		if (active) {
 			onActivate()
-		} else {
-			onDesactivate()
 		}
+		// else {
+
+		// 	onDesactivate()
+		// }
 	}, [active])
 
 	useEffect(() => {
