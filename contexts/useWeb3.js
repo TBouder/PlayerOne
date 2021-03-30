@@ -147,7 +147,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		**	⚠️ Alchemy is prefered because of it's archive node.
 		**	⚠️ We should add some fallback for the web3provider
 		******************************************************************/
-		const	web3Provider = window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
+		// const	web3Provider = typeof(window) !== 'undefined' && window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
 
 		if (_providerType === walletType.METAMASK) {
 			if (active) {
