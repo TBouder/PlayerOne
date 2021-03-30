@@ -8,53 +8,41 @@
 import	{useState, useEffect, useRef}			from	'react';
 import	useAchievements							from	'contexts/useAchievements';
 import	useWeb3									from	'contexts/useWeb3';
-import	{useWeb3React}							from	'dependencies/@web3-react/core';
 
 function HelperButton(props) {
 	const	STATUS = {CONNECT: -2, LOCKED: -1, UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
+	const	{active, connect, walletType} = useWeb3();
 	const	{achievements, achievementsNonce} = useAchievements();
-	const	{address} = useWeb3();
 	const	[buttonStatus, set_buttonStatus] = useState(props.defaultClaimed ? 2 : -2);
 	const	buttonRef = useRef();
-	const	web3React = useWeb3React()
-
-	// useEffect(() => {
-	// 	if (props.defaultClaimed) {
-	// 		set_buttonStatus(STATUS.UNLOCKED);
-	// 		const	elementPosition = buttonRef.current.getBoundingClientRect();
-	// 		props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
-	// 		setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
-	// 	}
-	// }, [props.defaultClaimed])
-
-	// useEffect(() => {
-	// 	if (achievements) {
-	// 		const	currentAchievement = achievements.find(e => e.key === props.achievementKey);
-	// 		if (currentAchievement) {
-	// 			const	isUnlocked = currentAchievement.unlocked;
-	// 			if (!isUnlocked)
-	// 				set_buttonStatus(STATUS.LOCKED);
-	// 			else 
-	// 				set_buttonStatus(props.defaultClaimed ? STATUS.UNLOCKED : STATUS.UNDEFINED);
-	// 		}
-	// 	}
-	// }, [achievementsNonce, achievements, props.defaultClaimed]);
 
 	useEffect(() => {
+		if (!active) {
 			set_buttonStatus(STATUS.CONNECT);
-		if (!address) {
-			set_buttonStatus(STATUS.CONNECT);
+		} else if (props.defaultClaimed) {
+			set_buttonStatus(STATUS.UNLOCKED);
+			const	elementPosition = buttonRef.current.getBoundingClientRect();
+			props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
+			setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
+		} else if (achievements) {
+			const	currentAchievement = achievements.find(e => e.key === props.achievementKey);
+			if (currentAchievement) {
+				const	isUnlocked = currentAchievement.unlocked;
+				if (!isUnlocked)
+					set_buttonStatus(STATUS.LOCKED);
+				else 
+					set_buttonStatus(props.defaultClaimed ? STATUS.UNLOCKED : STATUS.UNDEFINED);
+			}
 		}
-	}, [address])
+	}, [props.defaultClaimed, active, achievementsNonce, achievements])
 
 	return (
 		<button
 			ref={buttonRef}
 			onClick={({clientX, clientY}) => {
 				if (buttonStatus === STATUS.CONNECT) {
-					// web3React.activate()
+					return connect(walletType.METAMASK)
 				}
-
 
 				if (buttonStatus === STATUS.PENDING || buttonStatus === STATUS.LOCKED || buttonStatus === STATUS.CONNECT) {
 					return;
