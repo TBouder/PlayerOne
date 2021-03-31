@@ -8,7 +8,7 @@
 import	ReactMarkdown						from	'react-markdown';
 import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
-import	SwapOnSushiswap						from	'components/details/SwapOnSushiswap';
+import	SwapOnSushiswap						from	'components/details/SwapRouter';
 import	{formatPercent}						from	'utils';
 
 function	SectionQuickStats({numberOfClaims}) {
@@ -89,6 +89,10 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 											<SwapOnSushiswap
 												routerAddress={'0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F'}
 												pairID={'0x46acb1187a6d83e26c0bb46a57ffeaf23ad7851e'}
+												token={{
+													icon: '🍑',
+													name: 'ASSY'
+												}}
 											/>
 										: null}
 									</div>

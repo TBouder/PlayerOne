@@ -231,15 +231,15 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	async function	swapOnSushiswap(contractAddress, txPayload, payableAmount, callback = () => null) {
 		addToast(`This path is not completed yet`, {appearance: 'warning'});
 
-		const	SUSHISWAP_ABI = [
+		const	SWAP_ABI = [
 			"function swapETHForExactTokens(uint amountOut, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts)"
 		];
 		const	signer = provider.getSigner();
-		const	contract = new ethers.Contract(contractAddress, SUSHISWAP_ABI, signer);
+		const	contract = new ethers.Contract(contractAddress, SWAP_ABI, signer);
 		let		transactionResponse = undefined;
 
 		try {
-			transactionResponse = await contract.swapETHForExactTokens(...txPayload, {value: payableAmount});
+			transactionResponse = await contract.swapETHForExactTokens(...txPayload, {value: payableAmount, from: address});
 		} catch (error) {
 			console.log(error)
 			if (error?.error?.message) {
