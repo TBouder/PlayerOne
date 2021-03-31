@@ -29,6 +29,7 @@
     "axios": "^0.21.1",
     "dotenv-webpack": "^7.0.2",
     "enc-utils": "^3.0.0",
+    "eth-ens-namehash": "^2.0.8",
     "ethers": "^5.0.32",
     "graphql": "^15.5.0",
     "graphql-request": "^3.4.0",

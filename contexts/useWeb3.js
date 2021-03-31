@@ -7,6 +7,7 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	{ethers}											from	'ethers';
+import	namehash											from	'eth-ens-namehash';
 import	{useToasts}											from	'react-toast-notifications';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 
@@ -16,8 +17,7 @@ import	{ConnectorEvent}									from	'@web3-react-fork/types';
 import	{WalletConnectConnector}							from	'@web3-react-fork/walletconnect-connector';
 
 import	useLocalStorage										from	'hook/useLocalStorage';
-import	{bigNumber, fetcher, toAddress}								from	'utils';
-import { Percent } from '@uniswap/sdk'
+import	{fetcher, toAddress}								from	'utils';
 
 const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
 function	fetchERC20(baseUri, address) {
@@ -51,11 +51,9 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	useEffect(() => {
 		if (active) {
 			onActivate()
+		} else {
+			onDesactivate()
 		}
-		// else {
-
-		// 	onDesactivate()
-		// }
 	}, [active])
 
 	useEffect(() => {
