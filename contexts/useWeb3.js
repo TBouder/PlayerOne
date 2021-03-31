@@ -10,10 +10,10 @@ import	{ethers}											from	'ethers';
 import	{useToasts}											from	'react-toast-notifications';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 
-import	{useWeb3React}										from	'dependencies/@web3-react/core';
-import	{InjectedConnector}									from	'dependencies/@web3-react/injected-connector';
-import	{ConnectorEvent}									from	'dependencies/@web3-react/types';
-import	{WalletConnectConnector}							from	'dependencies/@web3-react/walletconnect-connector';
+import	{useWeb3React}										from	'@web3-react-fork/core';
+import	{InjectedConnector}									from	'@web3-react-fork/injected-connector';
+import	{ConnectorEvent}									from	'@web3-react-fork/types';
+import	{WalletConnectConnector}							from	'@web3-react-fork/walletconnect-connector';
 
 import	useLocalStorage										from	'hook/useLocalStorage';
 import	{bigNumber, fetcher, toAddress}								from	'utils';

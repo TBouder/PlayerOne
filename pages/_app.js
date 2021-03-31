@@ -18,7 +18,7 @@ import	{AchievementsContextApp}	from	'contexts/useAchievements';
 import	useUi, {UIApp}				from	'contexts/useUI';
 import	useScrollRestoration		from	'hook/useScrollRestoration';
 import	TopMenu						from	'components/TopMenu';
-import	{Web3ReactProvider}			from	'dependencies/@web3-react/core';
+import	{Web3ReactProvider}			from	'@web3-react-fork/core';
 
 import	'style/Default.css'
 import	'tailwindcss/tailwind.css';

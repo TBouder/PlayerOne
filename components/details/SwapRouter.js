@@ -102,8 +102,6 @@ function	SwapRouter({routerAddress, pairID, token}) {
 	}
 	async function	calculateAmountOut(amountIn, decimalsIn, path) {
 		try {
-			console.log('------------------------XXXX----------------------')
-			console.log(amountIn, decimalsIn)
 			const	toEth = ethers.utils.parseUnits(amountIn, decimalsIn);
 			const	contract = new ethers.Contract(routerAddress, AMOUNTS_IN_OUT_ABI, provider);
 			const	amountOut = await contract.getAmountsOut(toEth, path);
@@ -209,7 +207,6 @@ function	SwapRouter({routerAddress, pairID, token}) {
 								console.log(String(swapToken0), swapToken0Decimals)
 								amountOutWei = ethers.utils.parseUnits(String(swapToken1), swapToken1Decimals)
 								ethToPay = await calculateAmountOut(String(swapToken0), swapToken0Decimals, swapPath)
-								// ethToPay = ethers.utils.parseUnits(String(swapToken0), 'ether')
 							}
 
 							actions.SwapRouter(
