@@ -7,12 +7,10 @@
 
 import	{useRef, useState, useEffect}		from	'react';
 import	ReactMarkdown						from	'react-markdown';
-import	{ethers}							from	'ethers';
 import	jazzicon							from	'@metamask/jazzicon';
 import	useSWR								from	'swr';
 import	useWeb3								from	'contexts/useWeb3';
-import	Graph								from	'components/details/Graph';
-import	{fetcher, toAddress}				from	'utils';
+import	{fetcher}							from	'utils';
 
 function jsNumberForAddress(address) {
 	const addr = address.slice(2, 10);
