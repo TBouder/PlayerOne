@@ -40,6 +40,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
 	const	[provider, set_provider] = useState(undefined);
 	const	[rProvider, set_rProvider] = useState(undefined);
+	const	[rProviderMainnet, set_rProviderMainnet] = useState(undefined);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
 	const	[nonce, set_nonce] = useState(0);
@@ -121,7 +122,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**	Init default provider
 	**************************************************************************/
 	useEffect(() => {
-		// const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		const	_providerMainnet = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		set_rProviderMainnet(_providerMainnet)
 		const	_provider = new ethers.providers.AlchemyProvider('ropsten', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
 		set_rProvider(_provider)
 	}, [])
@@ -278,6 +280,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				walletData,
 				provider,
 				rProvider,
+				rProviderMainnet,
 				chainID,
 				active,
 				actions: {

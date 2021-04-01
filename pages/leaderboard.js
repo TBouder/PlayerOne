@@ -41,7 +41,7 @@ function	Head() {
 	)
 }
 function	Row({challenger, numberOfAchievements}) {
-	const	{rProvider} = useWeb3();
+	const	{rProviderMainnet} = useWeb3();
 	const	jazziconRef = useRef();
 	const	[requestor, set_requestor] = useState(undefined);
 	const	[isENS, set_isENS] = useState(false);
@@ -53,12 +53,12 @@ function	Row({challenger, numberOfAchievements}) {
 				jazziconRef.current.removeChild(jazziconRef.current.childNodes[0]); 
 			jazziconRef.current.appendChild(jazzicon(40, numericRepresentation))
 		}
-		if (rProvider) {
-			const	ENS = await rProvider.lookupAddress(challenger.address);
+		if (rProviderMainnet) {
+			const	ENS = await rProviderMainnet.lookupAddress(challenger.address);
 			set_isENS(ENS ? true : false);
 			set_requestor(ENS || challenger.address);
 		}
-	}, [rProvider])
+	}, [rProviderMainnet])
 
 	return (
 		<tr>
