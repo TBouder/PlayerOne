@@ -44,6 +44,9 @@ export const	sleep = (milliseconds) => {
 export function	formatPercent(amount) {
     return (new Intl.NumberFormat('fr-FR', {style: 'percent', maximumFractionDigits: 1}).format(amount))
 }
+export function	formatNumber(amount) {
+	return (new Intl.NumberFormat().format(amount))
+}
   
 export function slugify(str) {
     str = str.replace(/^\s+|\s+$/g, '');

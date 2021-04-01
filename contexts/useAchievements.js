@@ -8,16 +8,17 @@
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	useSWR												from	'swr';
 import	axios												from	'axios';
+import	{ethers}											from	'ethers';
 import	{useToasts}											from	'react-toast-notifications';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
-import	{fetcher, removeFromArray, sortBy}					from	'utils';
+import	{bigNumber, fetcher, removeFromArray, sortBy}					from	'utils';
 
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
 	const	{addToast} = useToasts();
-	const	{address, provider, walletData, chainID, actions} = useWeb3();
+	const	{address, provider, rProvider, walletData, chainID, actions} = useWeb3();
 
 	/**************************************************************************
 	**	achievements: matches the local state to handle the achievements on the
@@ -272,6 +273,13 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		);
 	}
 
+	async function	getTotalSupply(_provider) {
+		const	TOTAL_SUPPLY_ABI = ["function totalSupply() external view returns (uint256)"];
+		const	contract = new ethers.Contract('0x35017DC776c43Bcf8192Bb6Ba528348D32A57CB5', TOTAL_SUPPLY_ABI, _provider);
+		const	totalSupply = await contract.functions.totalSupply();
+		return (bigNumber.from(totalSupply[0]).div(bigNumber.from(10).pow(18)));
+	}
+
 	return (
 		<AchievementsContext.Provider
 			children={children}
@@ -285,7 +293,8 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				achievementsCheckProgress,
 				actions: {
 					check: checkAchievement,
-					claim: claimAchievement
+					claim: claimAchievement,
+					getTotalSupply: getTotalSupply,
 				}
 			}} />
 	)

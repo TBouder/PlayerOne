@@ -7,7 +7,6 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	{ethers}											from	'ethers';
-import	namehash											from	'eth-ens-namehash';
 import	{useToasts}											from	'react-toast-notifications';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
 
@@ -122,7 +121,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**	Init default provider
 	**************************************************************************/
 	useEffect(() => {
-		const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		// const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		const	_provider = new ethers.providers.AlchemyProvider('ropsten', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
 		set_rProvider(_provider)
 	}, [])
 

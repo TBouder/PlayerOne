@@ -65,8 +65,6 @@ function	TopMenu() {
 		)
 	}
 
-	console.log(router.pathname)
-
 	return (
 		<div className={'w-full py-2 px-4 fixed top-0 left-0 bg-white bg-opacity-90 pointer-events-none z-50'}>
 			<div className={'max-w-screen-2xl mx-auto flex justify-between items-center px-6 md:px-12 lg:px-12 xl:px-12'}>
