@@ -495,7 +495,7 @@ input[type=number] {
 .headerAnim {
 	transform: translateY(30px) scale(0.98);
 	opacity: 0;
-	transition: transform 300ms cubic-bezier(0.175, 0.85, 0.42, 0.96);
+	transition: transform 600ms cubic-bezier(0.175, 0.85, 0.42, 0.96);
 	will-change: transform;
 }
 .headerAnimOnMount {
@@ -506,7 +506,7 @@ input[type=number] {
 .contentAnim {
 	transform: translateY(100px);
 	opacity: 0;
-	transition: transform 300ms cubic-bezier(0.175, 0.85, 0.42, 0.96);
+	transition: transform 600ms cubic-bezier(0.175, 0.85, 0.42, 0.96);
 	will-change: transform;
 }
 .contentAnimOnMount {
@@ -571,8 +571,7 @@ input[type=number] {
     height: 100%;
     overflow: hidden;
 }
-
-.circles li{
+.circles li {
     position: absolute;
     display: block;
     list-style: none;
@@ -581,17 +580,16 @@ input[type=number] {
     background: rgba(187, 247, 208, 0.05);
     animation: animate 25s linear infinite;
     bottom: -150px;
-    
 }
-
+.circlesMoreVisible li {
+    background: rgba(187, 247, 208, 0.1);
+}
 .circles li:nth-child(1){
     left: 25%;
     width: 80px;
     height: 80px;
     animation-delay: 0s;
 }
-
-
 .circles li:nth-child(2){
     left: 10%;
     width: 20px;
@@ -599,14 +597,12 @@ input[type=number] {
     animation-delay: 2s;
     animation-duration: 12s;
 }
-
 .circles li:nth-child(3){
     left: 70%;
     width: 20px;
     height: 20px;
     animation-delay: 4s;
 }
-
 .circles li:nth-child(4){
     left: 40%;
     width: 60px;
@@ -614,28 +610,24 @@ input[type=number] {
     animation-delay: 0s;
     animation-duration: 18s;
 }
-
 .circles li:nth-child(5){
     left: 65%;
     width: 20px;
     height: 20px;
     animation-delay: 0s;
 }
-
 .circles li:nth-child(6){
     left: 75%;
     width: 110px;
     height: 110px;
     animation-delay: 3s;
 }
-
 .circles li:nth-child(7){
     left: 35%;
     width: 150px;
     height: 150px;
     animation-delay: 7s;
 }
-
 .circles li:nth-child(8){
     left: 50%;
     width: 25px;
@@ -643,7 +635,6 @@ input[type=number] {
     animation-delay: 15s;
     animation-duration: 45s;
 }
-
 .circles li:nth-child(9){
     left: 20%;
     width: 15px;
@@ -651,7 +642,6 @@ input[type=number] {
     animation-delay: 2s;
     animation-duration: 35s;
 }
-
 .circles li:nth-child(10){
     left: 85%;
     width: 150px;
@@ -685,7 +675,7 @@ input[type=number] {
 
 .custom-shape-divider-bottom-1617443724 {
     position: absolute;
-    bottom: 0;
+    bottom: -10px;
     left: 0;
     width: 100%;
     overflow: hidden;
@@ -696,7 +686,7 @@ input[type=number] {
     position: relative;
     display: block;
     width: calc(100% + 1.3px);
-    height: 81px;
+    height: 100px;
 }
 
 .custom-shape-divider-bottom-1617443724 .shape-fill {

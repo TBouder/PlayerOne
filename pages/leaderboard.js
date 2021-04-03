@@ -18,29 +18,42 @@ import	{randomInteger, fetcher, jsNumberForAddress, formatNumber}		from	'utils'
 
 function	Head() {
 	return (
-		<thead className={'bg-gray-50'}>
-			<tr>
-				<th scope={'col'} className={'px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider flex items-center'}>
+		<li>
+			<div className={'items-center px-4 py-4 sm:px-6 bg-gray-100 hidden md:flex'}>
+				<div className={'text-sm text-center font-semibold text-gray-400 lining-nums w-10 mr-8'}>
 					<FontAwesomeIcon
 						style={{width: 24, height: 24}}
-						className={'mr-4 mb-1 text-gray-200'}
+						className={'text-gray-200'}
 						icon={faCrown} />
-					{'Challengers'}
-				</th>
-				<th scope={'col'} className={'px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-pre'}>
-					{`Claim\ncount`}
-				</th>
-				<th scope={'col'} className={'px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-pre'}>
-					<p>{`RWD\nfrom claims`}</p>
-				</th>
-				<th scope={'col'} className={'px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-pre'}>
-					<p>{`RWD\nbalance`}</p>
-				</th>
-			</tr>
-		</thead>
-	)
+				</div>
+				<div className={'min-w-0 flex-1 flex items-center'}>
+					<div className={'px-1 text-sm font-semibold text-gray-600 lining-nums'}>
+						{'Challengers'}
+					</div>
+				</div>
+
+				<div className={'w-2/12 px-6 py-4 whitespace-nowrap text-center'}>
+					<div className={'text-sm font-semibold text-gray-600 lining-nums'}>
+						{`Achievements`}
+					</div>
+				</div>
+				<div className={'w-2/12 px-6 py-4 whitespace-nowrap text-center'}>
+					<div className={'text-sm font-semibold text-gray-600 lining-nums'}>
+						{`Rewards from claims`}
+					</div>
+				</div> 
+			</div>
+			<div className={'items-center px-4 py-4 sm:px-6 bg-gray-100 flex md:hidden'}>
+				<div className={'min-w-0 flex-1 flex items-center justify-center text-center'}>
+					<div className={'px-1 text-sm font-semibold text-gray-600 lining-nums'}>
+						{'Challengers'}
+					</div>
+				</div>
+			</div>
+		</li>
+	);
 }
-function	Row({challenger, numberOfAchievements}) {
+function	Row({index, challenger, numberOfAchievements}) {
 	const	{rProvider} = useWeb3();
 	const	jazziconRef = useRef();
 	const	[requestor, set_requestor] = useState(undefined);
@@ -64,66 +77,81 @@ function	Row({challenger, numberOfAchievements}) {
 	}, [rProvider])
 
 	return (
-		<tr>
-			<td className={'px-6 py-4 whitespace-nowrap'}>
-				<div className={'flex items-center'}>
-					<div className={'flex-shrink-0 h-10 w-10'}>
-						<div className={'w-10 h-10 rounded-full'} ref={jazziconRef} />
-					</div>
-					<div className={'ml-4 flex flex-col justify-center'}>
-						<p className={`text-sm font-medium text-gray-900 ${requestor === undefined ? 'cpLine' : 'cpLine-after truncate'}`}>
-							<a
-								href={`https://etherscan.io/address/${requestor}`}
-								target={'_blank'}
-								className={'hover:text-teal-600 hover:underline cursor-pointer truncate'}>
-								{requestor}
-							</a>
-						</p>
-						<div className={`text-xs text-gray-400 ${isENS ? 'opacity-100' : 'opacity-0'}`}>
-							{challenger.address}
+		<li>
+			<div className={'flex items-center px-4 py-4 sm:px-6 flex-col md:flex-row relative w-full'}>
+				<div className={'text-sm text-center font-semibold text-gray-400 lining-nums w-10 mr-0 md:mr-8 absolute md:static top-6 left-6'}>
+					{`#${index}`}
+				</div>
+				<div className={'flex-1 flex items-center w-full'}>
+					<div className={'flex items-center flex-col md:flex-row mt-2 md:mt-0 w-full'}>
+						<div className={'flex-shrink-0 h-10 w-10 mb-2 md:mb-0'}>
+							<div className={'w-10 h-10 rounded-full'} ref={jazziconRef} />
+						</div>
+						<div className={'ml-4 flex flex-col justify-center w-full'}>
+							<p className={`text-sm font-medium text-gray-900 ${requestor === undefined ? 'cpLine' : 'cpLine-after truncate'}`}>
+								<a
+									href={`https://etherscan.io/address/${requestor}`}
+									target={'_blank'}
+									className={'hover:text-teal-600 hover:underline cursor-pointer truncate'}>
+									{requestor}
+								</a>
+							</p>
+							<div className={`text-xs text-gray-400 ${isENS ? 'flex' : 'hidden'}`}>
+								{challenger.address}
+							</div>
 						</div>
 					</div>
 				</div>
-			</td>
-			<td className={'px-6 py-4 whitespace-nowrap text-center'}>
-				<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
-					{`${(challenger.achievements / numberOfAchievements * 100).toFixed(2)} %`}
-				</div>
-			</td>
-			<td className={'px-6 py-4 whitespace-nowrap text-center'}>
-				<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
-					{`${(challenger.rewards / 10000).toFixed(4)} 💎`}
-				</div>
-			</td>
-			<td className={'px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500'}>
-				<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
-					{`${((challenger.rewards + randomInteger(challenger.rewards < 1000 ? -challenger.rewards : -10000, 10000)) / 10000).toFixed(4)} 💎`}
-				</div>
-			</td>
-		</tr>
+
+
+				<div className={'flex flex-row md:hidden'}>
+					<div className={'text-left'}>
+						<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
+							<span className={'text-gray-600 font-medium'}>{`Achievements : `}</span>
+							{`${(challenger.achievements / numberOfAchievements * 100).toFixed(2)} %`}
+						</div>
+						<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
+							<span className={'text-gray-600 font-medium'}>{`Rewards : `}</span>
+							{`${(challenger.rewards / 10000).toFixed(4)} 💎`}
+						</div>
+					</div>
+				</div> 
+
+				<div className={'hidden md:contents'}>
+					<div className={'w-2/12 px-6 py-4 whitespace-nowrap text-center'}>
+						<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
+							{`${(challenger.achievements / numberOfAchievements * 100).toFixed(2)} %`}
+						</div>
+					</div>
+					<div className={'w-2/12 px-6 py-4 whitespace-nowrap text-center'}>
+						<div className={'text-sm font-semibold text-gray-900 lining-nums'}>
+							{`${(challenger.rewards / 10000).toFixed(4)} 💎`}
+						</div>
+					</div>
+				</div> 
+			</div>
+		</li>
 	)
 }
 function	Table({challengers, numberOfAchievements}) {
 	return (
 		<div className={'flex flex-col mt-16'} id={'challengers'}>
-			<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
-				<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
-					<div className={'shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'}>
-						<table className='min-w-full divide-y divide-gray-200'>
-							<Head />
-							<tbody className='bg-white divide-y divide-gray-200'>
-								{challengers.map((challenger) => (
-									<Row key={challenger.address} challenger={challenger} numberOfAchievements={numberOfAchievements} />	
-								))}
-							</tbody>
-						</table>
-					</div>
-					<div className={'flex w-full items-center justify-center mt-6'}>
-						<p className={'text-sm text-gray-400 hover:text-teal-600 cursor-pointer text-center hover:underline'}>
-							{'Contact us to see more'}
-						</p>
-					</div>
-				</div>
+			<div className={'shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'}>
+				<ul className={'bg-white divide-y divide-gray-200'}>
+					<Head />
+					{challengers.map((challenger, index) => (
+						<Row
+							key={challenger.address}
+							index={index + 1}
+							challenger={challenger}
+							numberOfAchievements={numberOfAchievements} />	
+					))}
+				</ul>
+			</div>
+			<div className={'flex w-full items-center justify-center mt-6'}>
+				<p className={'text-sm text-gray-400 hover:text-teal-600 cursor-pointer text-center hover:underline'}>
+					{'Contact us to see more'}
+				</p>
 			</div>
 		</div>
 	);
@@ -246,76 +274,91 @@ function	Page(props) {
 	const	initialData = {challengers: props.challengers, addressesCount: props.addressesCount, achievementsCount: props.achievementsCount};
 	const	{data: {challengers, addressesCount, achievementsCount}} = useSWR(`${process.env.API_URI}/leaderboard`, fetcher, {initialData});
 
+	/**************************************************************************
+	**	Used for the animations
+	**************************************************************************/
+	const	headerRef = useRef();
+	const	contentRef = useRef();
+	useEffect(() => {
+		setTimeout(() => headerRef.current.className = `${headerRef.current.className} headerAnimOnMount`, 0);
+		setTimeout(() => contentRef.current.className = `${contentRef.current.className} contentAnimOnMount`, 0);
+	}, [])
+
 	return (
 		<>
-  			<div
-				className={'py-32 md:py-48 progressBarColor -mt-28 relative'}
-				style={{background: bg}}
-				onClick={() => {
-					if (bg === 'rgb(255,71,62)') {
-						set_bg('linear-gradient(42deg, rgba(255,191,50,1) 0%, rgba(255,179,49,1) 75%, rgba(255,156,45,1) 100%)')
-						set_color(2)
-					} else if (bg === 'linear-gradient(42deg, rgba(255,191,50,1) 0%, rgba(255,179,49,1) 75%, rgba(255,156,45,1) 100%)') {
-						set_bg('#1B7340')
-						set_color(3)
-					} else if (bg === '#1B7340') {
-						set_bg('#E9897E')
-						set_color(4)
-					} else if (bg === '#E9897E') {
-						set_bg('#0072B5')
-						set_color(5)
-					} else if (bg === '#0072B5') {
-						set_bg('#FDAC53')
-						set_color(6)
-					} else if (bg === '#FDAC53') {
-						set_bg('#B55A30')
-						set_color(7)
-					} else {
-						set_bg('rgb(255,71,62)')
-						set_color(1)
-					}
-				}}
-			  >
-				<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
-					<div className={'lg:text-center'}>
-						<p className={'leading-8 font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
-							{'Greetings'}
-						</p>
-						<p className={'text-7xl font-extrabold tracking-tight text-white my-4 md:my-8'}>
-							{'PLAYER ONE'}
-						</p>
-						<p className={'font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
-							{'Are you ready to claim your name ?'}
-						</p>
-						<p className={'font-extrabold tracking-tight text-white opacity-80 text-lg mt-6'}>
-							{`Color #${color}`}
-						</p>
+			<div ref={headerRef} className={'headerAnim'}>
+				<div
+					className={'py-32 md:py-48 progressBarColor -mt-28 relative'}
+					style={{background: bg}}
+					onClick={() => {
+						if (bg === 'rgb(255,71,62)') {
+							set_bg('linear-gradient(42deg, rgba(255,191,50,1) 0%, rgba(255,179,49,1) 75%, rgba(255,156,45,1) 100%)')
+							set_color(2)
+						} else if (bg === 'linear-gradient(42deg, rgba(255,191,50,1) 0%, rgba(255,179,49,1) 75%, rgba(255,156,45,1) 100%)') {
+							set_bg('#1B7340')
+							set_color(3)
+						} else if (bg === '#1B7340') {
+							set_bg('#E9897E')
+							set_color(4)
+						} else if (bg === '#E9897E') {
+							set_bg('#0072B5')
+							set_color(5)
+						} else if (bg === '#0072B5') {
+							set_bg('#FDAC53')
+							set_color(6)
+						} else if (bg === '#FDAC53') {
+							set_bg('#B55A30')
+							set_color(7)
+						} else {
+							set_bg('rgb(255,71,62)')
+							set_color(1)
+						}
+					}}
+				>
+					<ul className={'circles circlesMoreVisible pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
+					<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
+						<div className={'lg:text-center'}>
+							<p className={'leading-8 font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
+								{'Greetings'}
+							</p>
+							<p className={'text-7xl font-extrabold tracking-tight text-white my-4 md:my-8'}>
+								{'PLAYER ONE'}
+							</p>
+							<p className={'font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
+								{'Are you ready to claim your name ?'}
+							</p>
+							<p className={'font-extrabold tracking-tight text-white opacity-80 text-lg mt-6'}>
+								{`Color #${color}`}
+							</p>
+						</div>
+					</header>
+					<div className="custom-shape-divider-bottom-1617443724">
+						<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+							<path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="shape-fill"></path>
+						</svg>
 					</div>
-				</header>
-				<div className="custom-shape-divider-bottom-1617443724">
-					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
-						<path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="shape-fill"></path>
-					</svg>
 				</div>
 			</div>
-			<div className={'w-full px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
-				<div className={'pb-6'}>
+			<div ref={contentRef} className={'contentAnim'}>
+				<div className={'w-full px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
+					<div className={'pb-6'}>
 
 
-					<div className={'flex flex-col mt-6'}>
-						<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
-							<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
-								<SectionStats numberOfChallengers={addressesCount} numberOfAchievements={achievementsCount} />
+						<div className={'flex flex-col mt-6'}>
+							<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
+								<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
+									<SectionStats numberOfChallengers={addressesCount} numberOfAchievements={achievementsCount} />
+								</div>
 							</div>
 						</div>
+
+
+						<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
+							<svg width='404' height='500' fill={'none'} viewBox='0 0 404 500' className='hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0'><defs><pattern id='b1e6e422-73f8-40a6-b5d9-c8586e37e0e7' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='4' height='4' fill={'currentColor'} className='text-gray-200'></rect></pattern></defs><rect width='404' height='500' fill='url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)'></rect></svg>
+						</div>
+
+						<Table challengers={challengers} numberOfAchievements={achievementsCount} />
 					</div>
-
-
-					<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
-						<svg width='404' height='500' fill={'none'} viewBox='0 0 404 500' className='hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0'><defs><pattern id='b1e6e422-73f8-40a6-b5d9-c8586e37e0e7' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='4' height='4' fill={'currentColor'} className='text-gray-200'></rect></pattern></defs><rect width='404' height='500' fill='url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)'></rect></svg>
-					</div>
-
-					<Table challengers={challengers} numberOfAchievements={achievementsCount} />
 				</div>
 			</div>
 		</>
