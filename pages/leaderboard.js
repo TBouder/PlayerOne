@@ -249,13 +249,13 @@ function	Page(props) {
   			<div className={'py-48 progressBarColor -mt-28 relative'} style={{background: 'rgb(255,71,62)'}}>
 				<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
 					<div className={'lg:text-center'}>
-						<p className={'text-lg leading-8 font-extrabold tracking-tight text-white opacity-60 sm:text-4xl'}>
+						<p className={'leading-8 font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
 							{'Greetings'}
 						</p>
-						<p className={'text-7xl leading-8 font-extrabold tracking-tight text-white my-8'}>
+						<p className={'text-7xl font-extrabold tracking-tight text-white my-4 md:my-8'}>
 							{'PLAYER ONE'}
 						</p>
-						<p className={'text-lg leading-8 font-extrabold tracking-tight text-white opacity-60 sm:text-4xl'}>
+						<p className={'font-extrabold tracking-tight  text-white opacity-60 text-4xl'}>
 							{'Are you ready to claim your name ?'}
 						</p>
 					</div>
