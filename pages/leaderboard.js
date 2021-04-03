@@ -246,7 +246,7 @@ function	Page(props) {
 
 	return (
 		<>
-  			<div className={'py-48 progressBarColor -mt-28 relative'} style={{background: 'rgb(255,71,62)'}}>
+  			<div className={'py-32 md:py-48 progressBarColor -mt-28 relative'} style={{background: 'rgb(255,71,62)'}}>
 				<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
 					<div className={'lg:text-center'}>
 						<p className={'leading-8 font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
