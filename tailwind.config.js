@@ -33,6 +33,7 @@ module.exports = {
         },
       },
       colors: {
+        'playerone': 'rgb(255,71,62)',
         'uniswap': {
           pink: 'rgb(255, 0, 122)',
           600: 'rgba(189, 0, 255, 0.2)',

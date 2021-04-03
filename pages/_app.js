@@ -42,6 +42,8 @@ function	AppWrapper(props) {
 				<meta name={'description'} content={'DEFI Achievements - Get achievement & NFT from your DEFI Degen score'} />
 				<meta name={'msapplication-TileColor'} content={'#9fcc2e'} />
 				<meta name={'theme-color'} content={'#ffffff'} />
+				<link rel="preconnect" href="https://fonts.gstatic.com" />
+				<link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet" />
 				<meta charSet={'utf-8'} />
 			</Head>
 			<div>

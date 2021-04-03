@@ -73,11 +73,11 @@ function	TopMenu() {
 						<svg className={'w-6 h-6 text-gray-400 hover:text-gray-900 cursor-pointer'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
 					</Link> : null}
 					{router.pathname !== '/details/[slug]' ?
-						<div className={'flex flex-row w-full items-baseline'}>
+						<div className={'flex flex-row w-full items-center'}>
 							<div>
 								<Link href={'/'} passHref>
-									<p className={'text-gray-400 hover:text-gray-900 leading-7 font-semibold cursor-pointer mr-8'}>
-										{'Achievements.eth'}
+									<p className={'text-playerone leading-7 font-semibold cursor-pointer mr-8 text-3xl'} style={{fontFamily: 'Courgette'}}>
+										{'1'}
 									</p>
 								</Link>
 							</div>

@@ -41,7 +41,7 @@ function	Head() {
 	)
 }
 function	Row({challenger, numberOfAchievements}) {
-	const	{rProviderMainnet} = useWeb3();
+	const	{rProvider} = useWeb3();
 	const	jazziconRef = useRef();
 	const	[requestor, set_requestor] = useState(undefined);
 	const	[isENS, set_isENS] = useState(false);
@@ -53,12 +53,15 @@ function	Row({challenger, numberOfAchievements}) {
 				jazziconRef.current.removeChild(jazziconRef.current.childNodes[0]); 
 			jazziconRef.current.appendChild(jazzicon(40, numericRepresentation))
 		}
-		if (rProviderMainnet) {
-			const	ENS = await rProviderMainnet.lookupAddress(challenger.address);
-			set_isENS(ENS ? true : false);
-			set_requestor(ENS || challenger.address);
-		}
-	}, [rProviderMainnet])
+		set_isENS(false);
+		set_requestor(challenger.address);
+
+		// if (rProvider) {
+		// 	const	ENS = await rProvider.lookupAddress(challenger.address);
+		// 	set_isENS(ENS ? true : false);
+		// 	set_requestor(ENS || challenger.address);
+		// }
+	}, [rProvider])
 
 	return (
 		<tr>
@@ -105,16 +108,21 @@ function	Table({challengers, numberOfAchievements}) {
 		<div className={'flex flex-col mt-16'} id={'challengers'}>
 			<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
 				<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
-				<div className={'shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'}>
-					<table className='min-w-full divide-y divide-gray-200'>
-					<Head />
-					<tbody className='bg-white divide-y divide-gray-200'>
-						{challengers.map((challenger) => (
-							<Row key={challenger.address} challenger={challenger} numberOfAchievements={numberOfAchievements} />	
-						))}
-					</tbody>
-					</table>
-				</div>
+					<div className={'shadow overflow-hidden border-b border-gray-200 sm:rounded-lg'}>
+						<table className='min-w-full divide-y divide-gray-200'>
+							<Head />
+							<tbody className='bg-white divide-y divide-gray-200'>
+								{challengers.map((challenger) => (
+									<Row key={challenger.address} challenger={challenger} numberOfAchievements={numberOfAchievements} />	
+								))}
+							</tbody>
+						</table>
+					</div>
+					<div className={'flex w-full items-center justify-center mt-6'}>
+						<p className={'text-sm text-gray-400 hover:text-teal-600 cursor-pointer text-center hover:underline'}>
+							{'Contact us to see more'}
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -122,7 +130,7 @@ function	Table({challengers, numberOfAchievements}) {
 }
 
 
-function	ItemStatChallengers() {
+function	ItemStatChallengers({count}) {
 	return (
 		<div className={'relative bg-white pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
@@ -134,13 +142,7 @@ function	ItemStatChallengers() {
 
 			<dd className={'ml-16 pb-6 flex items-baseline sm:pb-7'}>
 				<p className={'text-2xl font-semibold text-gray-900'}>
-					{'71,897'}
-				</p>
-
-				<p className={'ml-2 flex items-baseline text-sm font-semibold text-green-600'}>
-					<svg className={'self-center flex-shrink-0 h-5 w-5 text-green-500'} fill={'currentColor'} viewBox='0 0 20 20' aria-hidden={'true'}><path fill-rule={'evenodd'} d={'M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z'} clip-rule={'evenodd'} /></svg>
-					<span className={'sr-only'}>{'Increased by'}</span>
-					{'122'}
+					{count}
 				</p>
 
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6'}>
@@ -168,14 +170,6 @@ function	ItemStatAchievements({count}) {
 			<dd className={'ml-16 pb-6 flex items-baseline sm:pb-7'}>
 				<p className={'text-2xl font-semibold text-gray-900'}>
 					{count}
-				</p>
-
-				<p className={'ml-2 flex items-baseline text-sm font-semibold text-green-600'}>
-					<svg className={'self-center flex-shrink-0 h-5 w-5 text-green-500'} fill={'currentColor'} viewBox='0 0 20 20' aria-hidden={'true'}><path fill-rule={'evenodd'} d={'M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z'} clip-rule={'evenodd'} /></svg>
-					<span className={'sr-only'}>
-						{'Increased by'}
-					</span>
-					{'5.4%'}
 				</p>
 
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6'}>
@@ -217,15 +211,6 @@ function	ItemStatTotalSupply() {
 				<p className={'text-2xl font-semibold text-gray-900'}>
 					{`${formatNumber(totalSupply)}`}
 				</p>
-				<p className={'text-xs font-light text-gray-400 ml-1'}>
-					{'𝗑10¹⁸'}
-				</p>
-
-				<p className={'ml-2 flex items-baseline text-sm font-semibold text-green-500'}>
-					<svg className={'self-center flex-shrink-0 h-5 w-5 text-green-500'} fill={'currentColor'} viewBox='0 0 20 20' aria-hidden={'true'}><path fill-rule={'evenodd'} d={'M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z'} clip-rule={'evenodd'} /></svg>
-					<span className={'sr-only'}>Decreased by</span>
-					{'3.2%'}
-				</p>
 
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 px-4 py-4 sm:px-6'}>
 					<div className={'text-sm'}>
@@ -241,63 +226,73 @@ function	ItemStatTotalSupply() {
 		</div>
 	);
 }
-function	SectionStats({numberOfAchievements}) {
+function	SectionStats({numberOfChallengers, numberOfAchievements}) {
 	return (
 		<div>
-		<h3 className='text-lg leading-6 font-medium text-gray-900'>
-			Last 30 days
-		</h3>
+			<dl className={'mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'}>
+				<ItemStatChallengers count={numberOfChallengers}/>
 
-		<dl className={'mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'}>
-			<ItemStatChallengers />
+				<ItemStatAchievements count={numberOfAchievements} />
 
-			<ItemStatAchievements count={numberOfAchievements} />
-
-			<ItemStatTotalSupply />
-		</dl>
-		</div>
-	)
-}
-
-function	Page(props) {
-	const	{data: challengers} = useSWR(`${process.env.API_URI}/claims`, fetcher, {initialData: props.challengers});
-	const	{data: numberOfAchievements} = useSWR(`${process.env.API_URI}/achievements/count`, fetcher, {initialData: props.numberOfAchievements});
-
-	return (
-		<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
-			<div className={'pb-6'}>
-				
-				{/* <div className={'relative -ml-8'} style={{zIndex: -1}}>
-					<svg width={'404'} height={'300'} fill={'none'} viewBox={'0 0 404 300'} className={`absolute left-0 transform opacity-50`}><defs><pattern id={'64e643ad-2176-4f86-b3d7-f2c5da3b6a6d'} x={'0'} y={'0'} width={'20'} height={'20'} patternUnits={'userSpaceOnUse'}><rect x={'0'} y={'0'} width={'4'} height={'4'} fill={'currentColor'} className={'text-gray-200'}></rect></pattern></defs><rect width={'404'} height={'300'} fill={'url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)'}></rect></svg>
-				</div> */}
-				
-				<Header />
-				{/* <SectionBanner /> */}
-
-
-				<div className={'flex flex-col mt-16'}>
-					<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
-						<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
-							<SectionStats numberOfAchievements={numberOfAchievements} />
-						</div>
-					</div>
-				</div>
-
-
-				<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
-					<svg width='404' height='500' fill={'none'} viewBox='0 0 404 500' className='hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0'><defs><pattern id='b1e6e422-73f8-40a6-b5d9-c8586e37e0e7' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='4' height='4' fill={'currentColor'} className='text-gray-200'></rect></pattern></defs><rect width='404' height='500' fill='url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)'></rect></svg>
-				</div>
-
-				<Table challengers={challengers} numberOfAchievements={numberOfAchievements} />
-			</div>
+				<ItemStatTotalSupply />
+			</dl>
 		</div>
 	);
 }
 
+function	Page(props) {
+	const	initialData = {challengers: props.challengers, addressesCount: props.addressesCount, achievementsCount: props.achievementsCount};
+	const	{data: {challengers, addressesCount, achievementsCount}} = useSWR(`${process.env.API_URI}/leaderboard`, fetcher, {initialData});
+
+	return (
+		<>
+  			<div className={'py-48 progressBarColor -mt-28 relative'} style={{background: 'rgb(255,71,62)'}}>
+				<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
+					<div className={'lg:text-center'}>
+						<p className={'text-lg leading-8 font-extrabold tracking-tight text-white opacity-60 sm:text-4xl'}>
+							{'Greetings'}
+						</p>
+						<p className={'text-7xl leading-8 font-extrabold tracking-tight text-white my-8'}>
+							{'PLAYER ONE'}
+						</p>
+						<p className={'text-lg leading-8 font-extrabold tracking-tight text-white opacity-60 sm:text-4xl'}>
+							{'Are you ready to claim your name ?'}
+						</p>
+					</div>
+				</header>
+				<div className="custom-shape-divider-bottom-1617443724">
+					<svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+						<path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" className="shape-fill"></path>
+					</svg>
+				</div>
+			</div>
+			<div className={'w-full px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
+				<div className={'pb-6'}>
+
+
+					<div className={'flex flex-col mt-6'}>
+						<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
+							<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
+								<SectionStats numberOfChallengers={addressesCount} numberOfAchievements={achievementsCount} />
+							</div>
+						</div>
+					</div>
+
+
+					<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
+						<svg width='404' height='500' fill={'none'} viewBox='0 0 404 500' className='hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0'><defs><pattern id='b1e6e422-73f8-40a6-b5d9-c8586e37e0e7' x='0' y='0' width='20' height='20' patternUnits='userSpaceOnUse'><rect x='0' y='0' width='4' height='4' fill={'currentColor'} className='text-gray-200'></rect></pattern></defs><rect width='404' height='500' fill='url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)'></rect></svg>
+					</div>
+
+					<Table challengers={challengers} numberOfAchievements={achievementsCount} />
+				</div>
+			</div>
+		</>
+	);
+}
+
 export async function getStaticProps() {
-	const	challengers = await fetcher(`${process.env.API_URI}/claims`)
-	const	numberOfAchievements = await fetcher(`${process.env.API_URI}/achievements/count`)
-	return {props: {challengers, numberOfAchievements}}
+	const	{challengers, addressesCount, achievementsCount} = await fetcher(`${process.env.API_URI}/leaderboard`)
+	return {props: {challengers, addressesCount, achievementsCount}}
 }
 
 export default Page;
