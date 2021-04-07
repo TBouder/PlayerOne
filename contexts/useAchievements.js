@@ -13,7 +13,7 @@ import	{useToasts}											from	'react-toast-notifications';
 import	useWeb3												from	'contexts/useWeb3';
 import	{getStrategy}										from	'achievements/helpers';
 import	UUID												from	'utils/uuid';
-import	{bigNumber, fetcher, removeFromArray, sortBy}					from	'utils';
+import	{bigNumber, fetcher, removeFromArray}				from	'utils';
 
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = (props) => {
@@ -25,13 +25,6 @@ export const AchievementsContextApp = (props) => {
 	**	front-end
 	**************************************************************************/
 	const	[achievements, set_achievements] = useState();
-
-	/**************************************************************************
-	**	achievementsNonce: nonce matching the number of updates for the
-	**	achievements state. achievements is an array, we need a nonce to get
-	**	the update informations
-	**************************************************************************/
-	const	[achievementsNonce, set_achievementsNonce] = useState(0);
 
 	/**************************************************************************
 	**	achievementsCheckProgress: used to indicate to the user which
@@ -50,10 +43,16 @@ export const AchievementsContextApp = (props) => {
 	**	claims: lists the claims for this user
 	**	claimables: lists the claimable for this user
 	**************************************************************************/
-	const	[claims, set_claims] = useState();
-	const	[claimsAsMapping, set_claimsAsMapping] = useState({});
-	const	[claimables, set_claimables] = useState();
-	const	[claimablesAsMapping, set_claimablesAsMapping] = useState({});
+	const	[elements, set_elements] = useState({
+		claims: undefined,
+		claimsAsMapping: {},
+		claimables: undefined,
+		claimablesAsMapping: {},
+		locked: undefined,
+		lockedAsMapping: {},
+		count: 0,
+		nonce: 0
+	});
 
 	/**************************************************************************
 	**	pool: size of the pool of adresse which have interacted with this
@@ -73,10 +72,10 @@ export const AchievementsContextApp = (props) => {
 	**	time.
 	**	We will then init the achievements based on this list.
 	**************************************************************************/
-	const	{data: achievementsList} = useSWR(`${process.env.API_URI}/achievements`, fetcher, {initialData: props.achievementsList});
+	const	{data: achievementsList} = useSWR(`${process.env.API_URI}/achievements`, fetcher);
 
 	useEffect(() => {
-		if (!achievements) {
+		if (!achievements && achievementsList) {
 			set_achievements(achievementsList.map(e => ({...e})));
 		}
 	}, [achievementsList])
@@ -97,37 +96,57 @@ export const AchievementsContextApp = (props) => {
 
 		const	_claimsAsMapping = {};
 		const	_claimablesAsMapping = {};
+		const	_lockedAsMapping = {};
+		const	_locked = [];
+		const	_claimables = [];
+		const	_claims = [];
 		const	_achievements = achievements.map((achievement) => {
 			const	_achievement = {...achievement};
 			const	achievementClaim = addressClaims.find(e => e.achievement === achievement.key);
 			if (achievementClaim) {
-				_achievement.unlocked = true
-				_achievement.claimed = !!achievementClaim
-				_achievement.claim = achievementClaim
-				_claimsAsMapping[_achievement.key] = true
+				_claims.push({
+					...achievement,
+					status: `CLAIMED`,
+					address: achievementClaim.address,
+					validator: achievementClaim.validator,
+					nonce: achievementClaim.nonce,
+					date: achievementClaim.date,
+				});
+				_claimsAsMapping[_achievement.key] = true;
 			} else {
 				const	achievementClaimable = addressClaimables.find(e => e.achievement === achievement.key);
 				if (achievementClaimable) {
-					_achievement.unlocked = true
-					_achievement.claimed = false
-					_claimablesAsMapping[_achievement.key] = true
+					_claimables.push({
+						...achievement,
+						status: `CLAIMABLE`,
+						verified: achievementClaimable.verified,
+						address: achievementClaimable.address,
+						date: achievementClaimable.date,
+					});
+					_claimablesAsMapping[_achievement.key] = true;
+				} else {
+					_lockedAsMapping[_achievement.key] = true;
+					_locked.push(achievement);
 				}
 			}
 			return _achievement;
 		})
 
-		set_claims(addressClaims || []);
-		set_claimsAsMapping(_claimsAsMapping);
+		set_elements(x => ({
+			claims: _claims,
+			claimsAsMapping: _claimsAsMapping,
+			claimables: _claimables,
+			claimablesAsMapping: _claimablesAsMapping,
+			locked: _locked,
+			lockedAsMapping: _lockedAsMapping,
+			count: _achievements.length,
+			nonce: x.nonce + 1,
+		}));
 
-		set_claimables(addressClaimables || []);
-		set_claimablesAsMapping(_claimablesAsMapping);
-
-		set_achievements(sortBy(_achievements, 'unlocked'));
-		set_achievementsNonce(n => n + 1);
 		set_achievementsCheckProgress({checking: false, progress: addressClaims.length + addressClaimables.length, total: _achievements.length});
 	}
 	useEffect(() => {
-		if (address && claims === undefined && achievements !== undefined) {
+		if (address && achievements !== undefined) {
 			recomputeClaims();
 		}
 	}, [address, achievements])
@@ -141,12 +160,6 @@ export const AchievementsContextApp = (props) => {
 		if (props.shouldReset) {
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
-			set_achievements(achievementsList.map(e => ({...e})));
-			set_claims(undefined);
-			set_claimsAsMapping({});
-			set_claimables(undefined);
-			set_claimablesAsMapping({});
-			set_achievementsNonce(n => n + 1);
 			props.set_shouldReset(false);
 		}
 	}, [props.shouldReset])
@@ -156,70 +169,60 @@ export const AchievementsContextApp = (props) => {
 	**************************************************************************/
 	useEffect(() => {
 		if (walletData.ready && provider) {
-			if (claims !== undefined) {
+			if (elements.locked !== undefined && !achievementsCheckProgress.checking) {
 				checkAchievements();
 			}
 		}
-	}, [walletData.ready, claims]);
+	}, [walletData.ready, elements.nonce]);
 
 	function	checkAchievements() {
-		if (!achievements) {
+		if (elements.nonce === 0) {
 			return
 		}
-		const	_achievements = achievements.map(e => ({...e}));
-		const	lockedStack = achievements.map(e => ({...e}));
 		const	progressUUID = UUID();
 		set_achievementsProgressNonce(v => ({previous: v.previous === undefined ? progressUUID : undefined, current: progressUUID}));
-		set_achievementsCheckProgress({checking: true, progress: 0, total: _achievements.length});
-		recursiveCheckAchivements(_achievements, [], lockedStack, _achievements[0], 0);
+		set_achievementsCheckProgress({checking: true, progress: 0, total: elements.count});
+		recursiveCheckAchivements([...elements.locked], elements.locked[0], 0);
 	}
-	async function	recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, achievement, index) {
-		let	newLockedStack = lockedStack;
-
+	async function	recursiveCheckAchivements(achievementsList, achievement, index) {
 		if (achievement === undefined) {
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			return;
 		}
-		if (claimsAsMapping[achievement.key] && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
-			unlockedStack.push(achievement);
-			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
 
-			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
-			set_achievementsNonce(v => v + 1);
-			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress, total: v.total}));
-			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+		if (achievementsProgressNonce.current !== achievementsProgressNonce.previous) {
 			return
-		}
-		if (claimablesAsMapping[achievement.key] && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
-			unlockedStack.push(achievement);
-			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID);
-
-			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
-			set_achievementsNonce(v => v + 1);
-			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress, total: v.total}));
-			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+		} else if (elements.claimsAsMapping[achievement.key] || elements.claimablesAsMapping[achievement.key]) {
+			recursiveCheckAchivements(achievementsList, achievementsList[index + 1], index + 1);
 			return
 		}
 
-		achievement.unlocked = false;
-		achievement.informations = {};
 		if (achievement?.strategy?.name) {
 			const	strategy = getStrategy(achievement.strategy.name);
 			if (strategy !== undefined) {
-				const	{unlocked, informations} = await strategy(provider, address, walletData, achievement?.strategy?.args);
-				achievement.unlocked = unlocked;
-				achievement.informations = informations || {};
+				const	{unlocked} = await strategy(provider, address, walletData, achievement?.strategy?.args);
 				if (unlocked) {
-					unlockedStack.push(achievement);
-					newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID);
 					try {
 						const	newClaimable = await axios.post(`${process.env.API_URI}/claimable`, {
 							achievementKey: achievement.key,
 							address: address,
 						}).then(e => e.data);
-						set_claimables(e => {e.push(newClaimable); return e});
-						set_claimablesAsMapping(e => {e[achievement.key] = true; return e});
+
+						set_elements((x) => ({
+							...x,
+							claimables: [...x.claimables, {
+								...achievement,
+								status: `CLAIMABLE`,
+								verified: newClaimable.verified,
+								address: newClaimable.address,
+								date: newClaimable.date,
+							}],
+							claimablesAsMapping: {...x.claimablesAsMapping, [achievement.key]: true},
+							locked: removeFromArray(x.locked, 'key', achievement.key),
+							lockedAsMapping: {...x.lockedAsMapping, [achievement.key]: false},
+							nonce: x.nonce + 1
+						}));
 					} catch (error) {
 						console.log(error)
 					}
@@ -227,12 +230,9 @@ export const AchievementsContextApp = (props) => {
 			}
 		}
 
-		_achievements[index] = achievement;
 		if (achievementsProgressNonce.current === achievementsProgressNonce.previous) {
-			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
-			set_achievementsNonce(v => v + 1);
 			set_achievementsCheckProgress(v => ({checking: true, progress: v.progress + 1, total: v.total}));
-			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
+			recursiveCheckAchivements(achievementsList, achievementsList[index + 1], index + 1);
 		}
 	}
 
@@ -408,33 +408,33 @@ export const AchievementsContextApp = (props) => {
 		return (bigNumber.from(totalSupply[0]).div(bigNumber.from(10).pow(18)));
 	}
 	function	setAsClaimed(list) {
-		let		_claims = claims;
-		let		_claimables = claimables;
-		const	_claimablesAsMapping = {};
-		const	_claimsAsMapping = claimsAsMapping;
+		let		_claims = [...elements.claims];
+		let		_claimables = [...elements.claimables];
+		const	_claimsAsMapping = {...elements.claimsAsMapping};
+		const	_claimablesAsMapping = {...elements.claimablesAsMapping};
 
-		Object.entries(claimablesAsMapping).map(([key, value]) => {
-			const	index = list.findIndex(e => e.key === key);
-			if (index >= 0) {
-				_claimablesAsMapping[key] = false;
-				_claimables = removeFromArray(_claimables, 'achievement', key);
-				_claimsAsMapping[list[index].key] = true;
-				_claims.push({
-					achievements: list[index].key,
-					address: address,
-					date: new Date(),
-					nonce: -1,
-					validator: 'undefined'
-				});
-			} else {
-				_claimablesAsMapping[key] = value;
-			}
+		list.forEach((achievement) => {
+			_claimablesAsMapping[achievement.key] = false;
+			_claimsAsMapping[achievement.key] = true;
+			_claimables = removeFromArray(_claimables, 'key', achievement.key)
+			_claims.push({
+				...achievement,
+				status: `CLAIMED`,
+				address: address,
+				validator: 'validator',
+				nonce: -1,
+				date: new Date()
+			});
 		});
-		set_claimables(_claimables);
-		set_claimablesAsMapping(_claimablesAsMapping);
-		set_claims(_claims);
-		set_claimsAsMapping(_claimsAsMapping);
-		setTimeout(() => recomputeClaims(), 1000);
+
+		set_elements((x) => ({
+			...x,
+			claimablesAsMapping: _claimablesAsMapping,
+			claimsAsMapping: _claimsAsMapping,
+			claimables: _claimables,
+			claims: _claims,
+			nonce: x.nonce + 1
+		}))
 		setTimeout(() => recomputeClaims(), 2000);
 	}
 
@@ -442,16 +442,9 @@ export const AchievementsContextApp = (props) => {
 		<AchievementsContext.Provider
 			children={props.children}
 			value={{
-				claims,
-				claimsAsMapping,
-				claimables,
-				claimablesAsMapping,
-
 				poolSize: poolSize || 0,
-				achievements,
-				set_achievements,
-				achievementsNonce,
 				achievementsCheckProgress,
+				elements,
 				actions: {
 					check: checkAchievement,
 					claim: claimAchievement,

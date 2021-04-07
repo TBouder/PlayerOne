@@ -81,7 +81,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 	const	{actions} = useAchievements();
 
 	const	[achievement, set_achievement] = useState(props.achievement);
-	useEffect(() => set_achievement(props.achievement), [props.informations, props.unlocked]);
+	useEffect(() => set_achievement(props.achievement), [props.claimable]);
 
 	async function	onClaimMultiple(callback = () => null) {
 		try {
@@ -128,7 +128,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 			<div
 				ref={ref}
 				className={'flex w-full lg:w-auto'}
-				style={props.claimed || props.unlocked ? {} : {filter: 'grayscale(1)'}}>
+				style={props.claimed || props.claimable ? {} : {filter: 'grayscale(1)'}}>
 				<div className={'flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine shadow-lg rounded-lg bg-white'}>
 					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
@@ -160,7 +160,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 									</div>
 								</div>
 							:
-							props.unlocked ?
+							props.claimable ?
 								<ClaimableButtom onClaim={onClaim} confetti={confetti} />
 							:
 								<div className={'w-full flex-1 flex'}>

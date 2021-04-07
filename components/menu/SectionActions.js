@@ -15,7 +15,7 @@ import	ContextMenuProgress		from	'components/menu/ContextMenuProgress'
 function	SectionActions() {
 	const	refOutside = useRef();
 	const	{address, deactivate, onDesactivate, active} = useWeb3();
-	const	{claimables} = useAchievements()
+	const	{elements} = useAchievements()
 	const	[open, set_open] = useState(false);
 	const	[slideOverOpen, set_slideOverOpen] = useState(false);
 
@@ -63,7 +63,7 @@ function	SectionActions() {
 
 					<svg className={`-mr-1 ml-2 h-5 w-5 text-gray-400 ${!active ? 'hidden' : 'block'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
 				</button>
-				{claimables?.length > 0 ? <span className={`transition-opacity flex absolute h-3 w-3 top-0 right-0 -mt-0.5 -mr-1 ${active && !slideOverOpen ? 'opacity-100' : 'opacity-0'}`}>
+				{elements.claimables?.length > 0 ? <span className={`transition-opacity flex absolute h-3 w-3 top-0 right-0 -mt-0.5 -mr-1 ${active && !slideOverOpen ? 'opacity-100' : 'opacity-0'}`}>
 					<span className={'animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75'} />
 					<span className={'relative inline-flex rounded-full h-3 w-3 bg-teal-500'} />
 				</span> : null}

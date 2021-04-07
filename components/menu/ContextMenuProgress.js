@@ -49,7 +49,7 @@ function	ContextItemLocked({count}) {
 	);
 }
 
-function	ContextMenuProgress({claims, claimables, achievements, set_modalOpen}) {
+function	ContextMenuProgress({claims, claimables, locked, set_modalOpen}) {
 	return (
 		<div className={'absolute z-10 left-1/2 transform -translate-x-1/2 mt-6 px-2 w-full max-w-xs sm:px-0'}>
 			<div className={'rounded-md shadow-lg border-gray-200 border-solid border overflow-hidden'}>
@@ -67,7 +67,7 @@ function	ContextMenuProgress({claims, claimables, achievements, set_modalOpen}) 
 									count={claimables?.length || 0}
 									set_modalOpen={set_modalOpen} />
 								<ContextItemLocked
-									count={(achievements?.length || 0) - (claims?.length || 0) - (claimables?.length || 0)} />
+									count={locked?.length || 0} />
 							</ul>
 						</div>
 					</div>
@@ -78,8 +78,8 @@ function	ContextMenuProgress({claims, claimables, achievements, set_modalOpen}) 
 }
 
 function	ContextMenuProgressController({open, set_open}) {
-	const	{claims, claimables, achievements, actions} = useAchievements()
-	const	[modalOpen, set_modalOpen] = useState(false)
+	const	{elements, actions} = useAchievements();
+	const	[modalOpen, set_modalOpen] = useState(false);
 	
 	return (
 		<>
@@ -92,15 +92,14 @@ function	ContextMenuProgressController({open, set_open}) {
 				leaveFrom={'opacity-100 translate-y-0'}
 				leaveTo={'opacity-0 translate-y-1'}>
 				<ContextMenuProgress
-					claims={claims}
-					claimables={claimables}
-					achievements={achievements}
+					claims={elements.claims}
+					claimables={elements.claimables}
+					locked={elements.locked}
 					set_modalOpen={set_modalOpen} />
 			</Transition>
 			<DialogBatchClaim
 				actions={actions}
-				claimables={claimables}
-				achievements={achievements}
+				claimables={elements.claimables}
 				modalOpen={modalOpen}
 				set_modalOpen={set_modalOpen} />
 		</>

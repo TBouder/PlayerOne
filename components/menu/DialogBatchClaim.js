@@ -29,9 +29,18 @@ function	SectionHeader({count}) {
 	)
 }
 
-function	SectionBatchAchievements({expectedReward, achievementsToClaim}) {
+function	SectionBatchAchievements({expectedReward, achievementsToClaim, claimSuccess}) {
 	if (!achievementsToClaim) {
 		return null;
+	}
+	if (claimSuccess) {
+		return (
+			<div className={'mt-4 px-4'}>
+				<p className={'text-sm text-gray-500 text-left'}>
+					{`Your achievements have been successfully claimed ! Congratulation !`}
+				</p>
+			</div>
+		);	
 	}
 	return (
 		<div className={'mt-4 px-4'}>
@@ -53,7 +62,7 @@ function	SectionBatchAchievements({expectedReward, achievementsToClaim}) {
 	);
 }
 
-function	SectionButtons({set_modalOpen, achievementsToClaim, actions}) {
+function	SectionButtons({set_modalOpen, set_claimSuccess, achievementsToClaim, actions}) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
 	const	{confetti} = useUI();
 	const	{addToast} = useToasts();
@@ -73,13 +82,12 @@ function	SectionButtons({set_modalOpen, achievementsToClaim, actions}) {
 		try {
 			actions.claimMultiple(achievementsToClaim.map(e => e.key), ({status}) => {
 				if (status === 'SUCCESS') {
+					set_claimSuccess(true)
 					actions.setAsClaimed(achievementsToClaim)
 					set_buttonStatus(STATUS.UNLOCKED);
 					confetti.set({active: true, x: e.pageX, y: e.pageY});
-					setTimeout(() => {
-						set_modalOpen(false);
-						set_buttonStatus(STATUS.UNDEFINED);
-					}, 1000);
+					setTimeout(() => set_modalOpen(false), 1500);
+					setTimeout(() => set_buttonStatus(STATUS.UNDEFINED), 1600);
 				} else if (status === 'ERROR') {
 					set_buttonStatus(STATUS.UNDEFINED);
 				}
@@ -124,20 +132,18 @@ function	SectionButtons({set_modalOpen, achievementsToClaim, actions}) {
 	);
 }
 
-function	DialogBatchClaim({claimables, achievements, actions, modalOpen, set_modalOpen}) {
+function	DialogBatchClaim({claimables, actions, modalOpen, set_modalOpen}) {
 	const	[achievementsToClaim, set_achievementsToClaim] = useState(undefined);
 	const	[expectedReward, set_expectedReward] = useState(0);
+	const	[claimSuccess, set_claimSuccess] = useState(false);
 	const	buttonRef = useRef();
 
 	useEffect(() => {
-		if (claimables && achievements) {
-			const intersections = achievements.filter((achievement) => (
-				claimables.findIndex(claimable => claimable.achievement === achievement.key) >= 0
-			))
-			set_achievementsToClaim(intersections);
-			set_expectedReward((intersections.reduce((a, b) => a + b.reward, 0)) / 100)
+		if (claimables) {
+			set_achievementsToClaim(claimables);
+			set_expectedReward((claimables.reduce((a, b) => a + b.reward, 0)) / 100)
 		}
-	}, [claimables, achievements])
+	}, [claimables])
 
 	return (
 		<>
@@ -164,10 +170,12 @@ function	DialogBatchClaim({claimables, achievements, actions, modalOpen, set_mod
 							<SectionHeader
 								count={achievementsToClaim?.length || 0} />
 							<SectionBatchAchievements
+								claimSuccess={claimSuccess}
 								expectedReward={expectedReward}
 								achievementsToClaim={achievementsToClaim} />
 							<SectionButtons
 								set_modalOpen={(_modalOpen) => set_modalOpen(_modalOpen)}
+								set_claimSuccess={set_claimSuccess}
 								achievementsToClaim={achievementsToClaim}
 								actions={actions} />
 						</div>

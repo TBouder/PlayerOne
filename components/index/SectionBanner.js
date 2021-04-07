@@ -16,7 +16,7 @@ import	useHover							from	'hook/useHover';
 
 function	SectionBanner() {
 	const	{confetti} = useUI();
-	const	{actions, claimsAsMapping} = useAchievements();
+	const	{actions} = useAchievements();
 	const	firstBannerRef = useRef();
 	const	secondBannerRef = useRef();
 	const	thirdBannerRef = useRef();
@@ -78,7 +78,6 @@ function	SectionBanner() {
 					ref={firstBannerRef}
 					achievementKey={'73676514052504261986825330636986845718420318140825453794724876113850676774808'}
 					defaultClassName={firstClassName}
-					defaultClaimed={claimsAsMapping['73676514052504261986825330636986845718420318140825453794724876113850676774808']}
 					onClaim={(callback) => onClaim('73676514052504261986825330636986845718420318140825453794724876113850676774808', callback)}
 					confetti={confetti} />
 				<ItemBannerSponsor
@@ -86,7 +85,6 @@ function	SectionBanner() {
 					ref={secondBannerRef}
 					achievementKey={'10129071317085928672231597343656140796863069368282823987076694473609354742003'}
 					defaultClassName={secondClassName}
-					defaultClaimed={claimsAsMapping['10129071317085928672231597343656140796863069368282823987076694473609354742003']}
 					onClaim={(callback) => onClaim('10129071317085928672231597343656140796863069368282823987076694473609354742003', callback)}
 					confetti={confetti} />
 				<ItemBannerWBTC
@@ -94,7 +92,6 @@ function	SectionBanner() {
 					ref={thirdBannerRef}
 					achievementKey={'85104516872644109789153651723214403976812994108384631455702337152374087380959'}
 					defaultClassName={thirdClassName}
-					defaultClaimed={claimsAsMapping['85104516872644109789153651723214403976812994108384631455702337152374087380959']}
 					onClaim={(callback) => onClaim('85104516872644109789153651723214403976812994108384631455702337152374087380959', callback)}
 					confetti={confetti} />
 			</div>

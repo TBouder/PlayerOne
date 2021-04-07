@@ -97,7 +97,6 @@ function	MyApp(props) {
 	**	AchievementList: matches the list of all the achievements, fetched from
 	**	the database in getStaticProps on each page.
 	**************************************************************************/
-	const	achievementsList = pageProps && pageProps.achievementsList ? [...pageProps.achievementsList] : [];
 
 	const getLibrary = (provider, connector) => {
 		return new ethers.providers.Web3Provider(provider, 'any')
@@ -110,11 +109,10 @@ function	MyApp(props) {
 					<Web3ContextApp set_shouldReset={() => set_shouldReset(true)}>
 						<AchievementsContextApp
 							shouldReset={shouldReset}
-							set_shouldReset={value => set_shouldReset(value)}
-							achievementsList={achievementsList}>
+							set_shouldReset={value => set_shouldReset(value)}>
 						<AppWrapper
 							Component={Component}
-							pageProps={{...pageProps, achievementsList}}
+							pageProps={pageProps}
 							element={props.element}
 							router={props.router} />
 						</AchievementsContextApp>
