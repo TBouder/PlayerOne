@@ -5,7 +5,7 @@
 **	@Filename:				useUI.js
 ******************************************************************************/
 
-import	{useState, useContext, createContext}	from	'react';
+import	{useState, useEffect, useContext, createContext}	from	'react';
 
 const	UI = createContext();
 export const UIApp = ({children}) => {
@@ -22,6 +22,14 @@ export const UIApp = ({children}) => {
 		height: '10px',
 		colors: ['#a864fd', '#29cdff', '#78ff44', '#ff718d', '#fdff6a'],
 	}
+
+	useEffect(() => {
+		if (confetti.active) {
+			setTimeout(() => (
+				set_confetti({active: false, x: 0, y: 0})
+			), 3000);
+		}
+	}, [confetti.active])
 
 
 	return (
