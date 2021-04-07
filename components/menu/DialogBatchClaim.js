@@ -13,16 +13,16 @@ import	useUI								from	'contexts/useUI';
 function	SectionHeader({count}) {
 	function	DialogIcon() {
 		return (
-			<svg className={'h-6 w-6 text-teal-600'} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
+			<svg className={'h-6 w-6 text-teal-600 hidden md:block'} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
 		);
 	}
 
 	return (
 		<section
 			aria-label={'batch-header'}
-			className={'flex flex-row items-center justify-center bg-gray-50 sm:-mt-6 sm:-mx-6 p-4'}>
+			className={'flex flex-row items-center justify-center bg-gray-50 -mt-2 -mx-2 md:-mt-6 md:-mx-6 p-4'}>
 			<DialogIcon />
-			<p className={'text-lg leading-6 font-medium text-gray-900 ml-3'} id={'modal-title'}>
+			<p className={'text-base md:text-lg leading-6 font-medium text-gray-900 md:ml-3 text-center whitespace-nowrap'} id={'modal-title'}>
 				{`You can claim ${count} achievements !`}
 			</p>
 		</section>
@@ -38,7 +38,7 @@ function	SectionBatchAchievements({expectedReward, achievementsToClaim}) {
 			<p className={'text-sm text-gray-500 text-left'}>
 				{`You can batch claim the ${achievementsToClaim?.length || 0} following achievements to get a total of ${expectedReward || 0} RWD. Congratulation !`}
 			</p>
-			<ul className={'bg-gray-100 rounded-lg px-2 py-2 space-y-2 text-left my-4'}>
+			<ul className={'bg-gray-100 rounded-lg px-2 py-2 space-y-2 text-left my-4 h-24 overflow-y-scroll md:h-full'}>
 				{
 					achievementsToClaim.map((achievement) => (
 						<li key={achievement.key}>
@@ -157,10 +157,10 @@ function	DialogBatchClaim({claimables, achievements, actions, modalOpen, set_mod
 				<div
 					onClose={set_modalOpen}
 					className={'fixed z-50 inset-0 pointer-events-none flex justify-center'}>
-					<div className={'fixed top-32 pointer-events-auto'}>
+					<div className={'fixed top-12 md:top-32 pointer-events-auto'}>
 						<div
 							ref={buttonRef}
-							className={'inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-xl sm:w-full sm:p-6'}>
+							className={'flex flex-col bg-white rounded-lg p-2 md:px-4 md:pt-5 md:pb-4 text-left overflow-hidden shadow-xl transform transition-all align-middle max-w-xl md:w-full w-11/12 mx-auto'}>
 							<SectionHeader
 								count={achievementsToClaim?.length || 0} />
 							<SectionBatchAchievements

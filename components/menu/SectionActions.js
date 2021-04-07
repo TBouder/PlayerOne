@@ -27,7 +27,7 @@ function	SectionActions() {
 	function	renderContent() {
 		if (address) {
 			return (
-				<span>
+				<span className={'whitespace-nowrap'}>
 					<span className={'font-semibold bg-playerone text-white mr-2 -ml-4 px-2 py-4'}>{`150 RWD`}</span>
 					{`${address.slice(0, 4)}...${address.slice(-4)}`}
 				</span>
