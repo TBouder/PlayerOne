@@ -17,7 +17,6 @@ function	StatusButton(props) {
 				onClick={(e) => {
 					e.preventDefault();
 					confetti.set({active: true, x: e.pageX, y: e.pageY});
-					setTimeout(() => confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 				}}
 				className={'relative mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent rounded-md bg-white sm:w-auto text-base font-medium'}>
 				<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="url(#gradient)"><linearGradient id="gradient"><stop offset="0%" stopColor={'rgba(20,184,166,1)'} /><stop offset="50%" stopColor={'rgba(139,92,246,1)'} /><stop offset="100%" stopColor={'rgba(236,72,153,1)'} /></linearGradient><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />

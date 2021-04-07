@@ -26,6 +26,8 @@ export const partition = (arr, criteria) => arr.reduce((acc, i) => (acc[criteria
 
 export const hasIntersection = (a, ...arr) => [...new Set(a)].some(v => arr.some(b => b.includes(v)));
 
+export const getIntersection = (a, ...arr) => [...new Set(a)].filter(v => arr.every(b => b.includes(v)));
+
 export const randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export const randomItem = arr => arr[(Math.random() * arr.length) | 0];

@@ -67,7 +67,7 @@ function	AppWrapper(props) {
 								</div>
 							: null}
 						</div>
-						<div style={{marginTop: 104}}>
+						<div className={'mt-14'}>
 							<Component
 								key={router.route}
 								element={props.element}
@@ -79,8 +79,8 @@ function	AppWrapper(props) {
 			</div>
 			<div id={'portal-confetti'}>
 				<div
-					className={'absolute pointer-events-none z-50'}
-					style={{top: confetti.get.y, left: confetti.get.x}}>
+					className={'absolute pointer-events-none'}
+					style={{top: confetti.get.y, left: confetti.get.x, zIndex: 100}}>
 					<Confetti active={confetti.get.active} config={confetti.config} />
 				</div>
 			</div>

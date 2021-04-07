@@ -75,8 +75,8 @@ function	Page(props) {
 
 
 	return (
-		<div className={'bg-white'}>
-			<div style={{marginTop: -50}}>
+		<div className={'bg-white -mt-14'}>
+			<div>
 				<div ref={headerRef} className={'headerAnim'}>
 					<PageHeader
 						achievement={achievement}

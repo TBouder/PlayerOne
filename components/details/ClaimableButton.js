@@ -19,7 +19,6 @@ function	ClaimableButton(props) {
 		}
 		if (buttonStatus === STATUS.UNLOCKED) {
 			props.confetti.set({active: true, x: e.pageX, y: e.pageY});
-			setTimeout(() => props.confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 			return;
 		}
 
@@ -28,7 +27,6 @@ function	ClaimableButton(props) {
 			if (status === 'SUCCESS') {
 				set_buttonStatus(STATUS.UNLOCKED);
 				props.confetti.set({active: true, x: e.pageX, y: e.pageY});
-				setTimeout(() => props.confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 			} else if (status === 'ERROR') {
 				set_buttonStatus(STATUS.UNDEFINED);
 			}

@@ -28,7 +28,7 @@ function	Page(props) {
 
 
 	return (
-		<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
+		<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24 mt-16'}>
 			<div className={'py-6'}>
 				<Header />
 

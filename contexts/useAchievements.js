@@ -16,7 +16,7 @@ import	UUID												from	'utils/uuid';
 import	{bigNumber, fetcher, removeFromArray, sortBy}					from	'utils';
 
 const	AchievementsContext = createContext();
-export const AchievementsContextApp = ({children, achievementsList, shouldReset, set_shouldReset}) => {
+export const AchievementsContextApp = (props) => {
 	const	{addToast} = useToasts();
 	const	{address, provider, rProvider, walletData, chainID, actions} = useWeb3();
 
@@ -48,9 +48,12 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 
 	/**************************************************************************
 	**	claims: lists the claims for this user
+	**	claimables: lists the claimable for this user
 	**************************************************************************/
 	const	[claims, set_claims] = useState();
 	const	[claimsAsMapping, set_claimsAsMapping] = useState({});
+	const	[claimables, set_claimables] = useState();
+	const	[claimablesAsMapping, set_claimablesAsMapping] = useState({});
 
 	/**************************************************************************
 	**	pool: size of the pool of adresse which have interacted with this
@@ -62,51 +65,91 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 		{focusThrottleInterval: 1000 * 10}
 	);
 
-	useEffect(async () => {
-		if (achievements === undefined && (achievementsList === undefined || achievementsList.length === 0)) {
-			const	list = await fetcher(`${process.env.API_URI}/achievements`)
-			set_achievements(list);
-		} else if (!achievements) {
+	/**************************************************************************
+	**	This is a hack. Is it a good one ? I am not sure, but it seams to work.
+	**	Only here for performance reason : the list of achievements is built at
+	**	build time and, if we land on the index, we will have them as this
+	**	component props (achievementsList). It will save us one API call & some
+	**	time.
+	**	We will then init the achievements based on this list.
+	**************************************************************************/
+	const	{data: achievementsList} = useSWR(`${process.env.API_URI}/achievements`, fetcher, {initialData: props.achievementsList});
+
+	useEffect(() => {
+		if (!achievements) {
 			set_achievements(achievementsList.map(e => ({...e})));
 		}
 	}, [achievementsList])
 
-	useEffect(async () => {
-		if (address && claims === undefined && achievements !== undefined) {
-			const	addressClaims = await fetcher(`${process.env.API_URI}/claims/address/${address}`);
-			const	_claimsAsMapping = {};
-			const	_achievements = achievements.map((achievement) => {
-				const	_achievement = {...achievement};
-				const	achievementClaim = addressClaims.find(e => e.achievementKey === achievement.key);
-				if (achievementClaim) {
+	/**************************************************************************
+	**	This effect will be launched once we got an address (aka we know which
+	**	address is connected) + some achievements (we need to check them, so we
+	**	need them). It will only be launched if claims is undefined, so not
+	**	initialized, and will :
+	**	- init the claims + claimMapping
+	** 	- init the claimables + claimablesMapping
+	**	- sort the achievements by `unlocked` (should we add a distinction
+	**		between claim & claimable ?)
+	**	- prepare the field for the achievement check
+	**************************************************************************/
+	async function	recomputeClaims() {
+		const	{claims: addressClaims, claimables: addressClaimables} = await fetcher(`${process.env.API_URI}/address/${address}`);
+
+		const	_claimsAsMapping = {};
+		const	_claimablesAsMapping = {};
+		const	_achievements = achievements.map((achievement) => {
+			const	_achievement = {...achievement};
+			const	achievementClaim = addressClaims.find(e => e.achievement === achievement.key);
+			if (achievementClaim) {
+				_achievement.unlocked = true
+				_achievement.claimed = !!achievementClaim
+				_achievement.claim = achievementClaim
+				_claimsAsMapping[_achievement.key] = true
+			} else {
+				const	achievementClaimable = addressClaimables.find(e => e.achievement === achievement.key);
+				if (achievementClaimable) {
 					_achievement.unlocked = true
-					_achievement.claimed = !!achievementClaim
-					_achievement.claim = achievementClaim
+					_achievement.claimed = false
+					_claimablesAsMapping[_achievement.key] = true
 				}
-				return _achievement;
-			})
+			}
+			return _achievement;
+		})
 
-			set_claims(addressClaims || []);
+		set_claims(addressClaims || []);
+		set_claimsAsMapping(_claimsAsMapping);
 
-			addressClaims.forEach(e => {_claimsAsMapping[e.achievement] = true;});
-			set_claimsAsMapping(_claimsAsMapping);
-			set_achievements(sortBy(_achievements, 'unlocked'));
-			set_achievementsNonce(n => n + 1);
-			set_achievementsCheckProgress({checking: false, progress: addressClaims.length, total: _achievements.length});
+		set_claimables(addressClaimables || []);
+		set_claimablesAsMapping(_claimablesAsMapping);
+
+		set_achievements(sortBy(_achievements, 'unlocked'));
+		set_achievementsNonce(n => n + 1);
+		set_achievementsCheckProgress({checking: false, progress: addressClaims.length + addressClaimables.length, total: _achievements.length});
+	}
+	useEffect(() => {
+		if (address && claims === undefined && achievements !== undefined) {
+			recomputeClaims();
 		}
 	}, [address, achievements])
 
+
+	/**************************************************************************
+	**	This effect function is called when we need to reset the state of the
+	**	achievement context (on logout, on change account, on change chainID).
+	**************************************************************************/
 	useEffect(() => {
-		if (shouldReset) {
+		if (props.shouldReset) {
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
 			set_achievements(achievementsList.map(e => ({...e})));
 			set_claims(undefined);
 			set_claimsAsMapping({});
+			set_claimables(undefined);
+			set_claimablesAsMapping({});
 			set_achievementsNonce(n => n + 1);
-			set_shouldReset(false);
+			props.set_shouldReset(false);
 		}
-	}, [shouldReset])
+	}, [props.shouldReset])
 
 	/**************************************************************************
 	**	Updating the achievements when we have the wallet history
@@ -148,9 +191,9 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			recursiveCheckAchivements(_achievements, unlockedStack, lockedStack, _achievements[index + 1], index + 1);
 			return
 		}
-		if (achievement.unlocked && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
+		if (claimablesAsMapping[achievement.key] && achievementsProgressNonce.current === achievementsProgressNonce.previous) {
 			unlockedStack.push(achievement);
-			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
+			newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID);
 
 			setTimeout(() => set_achievements([...unlockedStack, ...newLockedStack]), 0);
 			set_achievementsNonce(v => v + 1);
@@ -169,7 +212,17 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				achievement.informations = informations || {};
 				if (unlocked) {
 					unlockedStack.push(achievement);
-					newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID)
+					newLockedStack = removeFromArray(lockedStack, 'UUID', achievement.UUID);
+					try {
+						const	newClaimable = await axios.post(`${process.env.API_URI}/claimable`, {
+							achievementKey: achievement.key,
+							address: address,
+						}).then(e => e.data);
+						set_claimables(e => {e.push(newClaimable); return e});
+						set_claimablesAsMapping(e => {e[achievement.key] = true; return e});
+					} catch (error) {
+						console.log(error)
+					}
 				}
 			}
 		}
@@ -269,23 +322,131 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 			tokenAddress,
 			[validator, address, achievementHash, amount, deadline, v, r, s],
 			averageGasPrice ? {gasPrice: averageGasPrice * 1000000000} : undefined,
-			callback
+			(({status}) => {
+				if (status === 'SUCCESS') {
+					recomputeClaims();
+				}
+				callback({status})
+			})
 		);
 	}
+	async function	claimMultipleAchievement(achievementsKey, callback = () => null) {
+		// const	achievement = achievements.find(e => e.key === achievementKey);
+		// const	isUnlocked = (await checkAchievement(achievement)).unlocked;
+		// if (!isUnlocked) {
+		// 	return callback({status: 'ERROR'});
+		// }
 
+		/**********************************************************************
+		**	Only for ropsten / testnets
+		**	We need to get the gasPrice to provide an actual price estimation
+		**********************************************************************/
+		let	gasPrice = undefined;
+		let	averageGasPrice = undefined;
+
+		if (chainID !== 1 || chainID !== '0x1') {
+			gasPrice = await fetcher(`https://ethgasstation.info/api/ethgasAPI.json?api-key=14139d139150b5687787a4bcd40aae485d6a380a9253ada65e6076a957df`)
+			averageGasPrice = (gasPrice.average / 10);
+			addToast(`Average gasPrice on mainnet: ${averageGasPrice}`, {appearance: 'info'});
+		}
+
+		/**********************************************************************
+		**	We need the backend to generate a claim.
+		**	Note: the backend will ask, to the smartcontract, is the user can
+		**	claim the achievement (not already claimed), then check if the
+		**	user matches the requirements (verification with the specific
+		**	strategy)
+		**********************************************************************/
+		let	signatureResponse = undefined;
+		try {
+			signatureResponse = await axios.post(`${process.env.API_URI}/claim/multiple/signature`, {
+				achievementsKey: achievementsKey,
+				address: address,
+			});
+			callback({status: 'GET_SIGNATURE'})
+			addToast(`Signature from validator (${signatureResponse.data.validator}) : ${signatureResponse.data.signature}`, {appearance: 'info'});
+		} catch (error) {
+			if (error?.response?.data?.error === 'achievement already claimed') {
+				return callback({status: 'SUCCESS'});
+			}
+			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
+			return callback({status: 'ERROR'});
+		}
+
+		/**********************************************************************
+		**	Creating the claim transaction
+		**********************************************************************/
+		const	signature = signatureResponse.data.signature;
+		const	tokenAddress = signatureResponse.data.contractAddress;
+		const	validator = signatureResponse.data.validator;
+		const	achievements = signatureResponse.data.achievements;
+		const	amount = signatureResponse.data.amount;
+		const	deadline = signatureResponse.data.deadline;
+		const	r = signature.slice(0, 66);
+		const	s = '0x' + signature.slice(66, 130);
+		const	v = parseInt(signature.slice(130, 132), 16) + 27;
+
+		/**********************************************************************
+		**	Accessing the contract
+		**********************************************************************/
+		actions.claimMultiple(
+			tokenAddress,
+			[validator, address, achievements, amount, deadline, v, r, s],
+			averageGasPrice ? {gasPrice: averageGasPrice * 1000000000} : undefined,
+			(({status}) => {
+				if (status === 'SUCCESS') {
+					setTimeout(() => recomputeClaims(), 500);
+				}
+				callback({status})
+			})
+		);
+	}
 	async function	getTotalSupply(_provider) {
 		const	TOTAL_SUPPLY_ABI = ["function totalSupply() external view returns (uint256)"];
 		const	contract = new ethers.Contract('0x35017DC776c43Bcf8192Bb6Ba528348D32A57CB5', TOTAL_SUPPLY_ABI, _provider);
 		const	totalSupply = await contract.functions.totalSupply();
 		return (bigNumber.from(totalSupply[0]).div(bigNumber.from(10).pow(18)));
 	}
+	function	setAsClaimed(list) {
+		let		_claims = claims;
+		let		_claimables = claimables;
+		const	_claimablesAsMapping = {};
+		const	_claimsAsMapping = claimsAsMapping;
+
+		Object.entries(claimablesAsMapping).map(([key, value]) => {
+			const	index = list.findIndex(e => e.key === key);
+			if (index >= 0) {
+				_claimablesAsMapping[key] = false;
+				_claimables = removeFromArray(_claimables, 'achievement', key);
+				_claimsAsMapping[list[index].key] = true;
+				_claims.push({
+					achievements: list[index].key,
+					address: address,
+					date: new Date(),
+					nonce: -1,
+					validator: 'undefined'
+				});
+			} else {
+				_claimablesAsMapping[key] = value;
+			}
+		});
+		set_claimables(_claimables);
+		set_claimablesAsMapping(_claimablesAsMapping);
+		set_claims(_claims);
+		set_claimsAsMapping(_claimsAsMapping);
+		setTimeout(() => recomputeClaims(), 1000);
+		setTimeout(() => recomputeClaims(), 2000);
+	}
 
 	return (
 		<AchievementsContext.Provider
-			children={children}
+			children={props.children}
 			value={{
 				claims,
 				claimsAsMapping,
+				claimables,
+				claimablesAsMapping,
+
 				poolSize: poolSize || 0,
 				achievements,
 				set_achievements,
@@ -294,7 +455,9 @@ export const AchievementsContextApp = ({children, achievementsList, shouldReset,
 				actions: {
 					check: checkAchievement,
 					claim: claimAchievement,
+					claimMultiple: claimMultipleAchievement,
 					getTotalSupply: getTotalSupply,
+					setAsClaimed: setAsClaimed
 				}
 			}} />
 	)

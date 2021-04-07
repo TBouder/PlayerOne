@@ -21,9 +21,8 @@ function HelperButton(props) {
 			set_buttonStatus(STATUS.CONNECT);
 		} else if (props.defaultClaimed) {
 			set_buttonStatus(STATUS.UNLOCKED);
-			const	elementPosition = buttonRef.current.getBoundingClientRect();
-			props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
-			setTimeout(() => props.confetti.set({active: false, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top}), 100);
+			// const	elementPosition = buttonRef.current.getBoundingClientRect();
+			// props.confetti.set({active: true, x: elementPosition.left + (elementPosition.width / 2), y: elementPosition.top});
 		} else if (achievements) {
 			const	currentAchievement = achievements.find(e => e.key === props.achievementKey);
 			if (currentAchievement) {
@@ -49,7 +48,6 @@ function HelperButton(props) {
 				}
 				if (buttonStatus === STATUS.UNLOCKED) {
 					props.confetti.set({active: true, x: clientX, y: clientY});
-					setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
 					return;
 				}
 
@@ -58,7 +56,6 @@ function HelperButton(props) {
 					if (status === 'SUCCESS') {
 						set_buttonStatus(STATUS.UNLOCKED);
 						props.confetti.set({active: true, x: clientX, y: clientY});
-						setTimeout(() => props.confetti.set({active: false, x: clientX, y: clientY}), 100);
 					} else if (status === 'ERROR') {
 						set_buttonStatus(STATUS.UNDEFINED);
 					}

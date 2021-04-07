@@ -82,8 +82,10 @@ module.exports = {
       animation: {
           flip: "flip 0.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) both",
           shake: "shake 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both",
+          'shake-infinite': "shake 1.2s cubic-bezier(0.455, 0.030, 0.515, 0.955) both infinite",
           'slide-in-right': "slide-in-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940)   both",
           'slide-out-left': "slide-out-left 0.5s cubic-bezier(0.550, 0.085, 0.680, 0.530)   both",
+          "wobble-hor-bottom": "wobble-hor-bottom 0.8s ease both"
       },
       keyframes: {
           flip: {
@@ -104,7 +106,15 @@ module.exports = {
           'slide-out-left': {
             '0%': {transform: 'translateX(0)', opacity: '1'},
             to: {transform: 'translateX(-1000px)', opacity: '0'}
-          }
+          },
+          "wobble-hor-bottom": {
+            "0%,to": {transform: "translateX(0%)", "transform-origin": "50% 50%"},
+            "15%": {transform: "translateX(-6px) rotate(-6deg)"},
+            "30%": {transform: "translateX(3px) rotate(6deg)"},
+            "45%": {transform: "translateX(-3px) rotate(-3.6deg)"},
+            "60%": {transform: "translateX(2px) rotate(2.4deg)"},
+            "75%": {transform: "translateX(-1px) rotate(-1.2deg)"}
+        }
       },
       fontFamily: {
         sans: ['Inter var', ...defaultTheme.fontFamily.sans],

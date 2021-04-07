@@ -42,16 +42,22 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	[rProvider, set_rProvider] = useState(undefined);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
+	const	[lastWallet, set_lastWallet] = useLocalStorage('lastWallet', walletType.NONE);
 	const	[nonce, set_nonce] = useState(0);
 	const	[walletData, set_walletData] = useState({erc20: undefined, transactions: undefined, ready: false});
 
 	const	{activate, active, library, connector, account, chainId, deactivate} = web3;
 
 	useEffect(() => {
-		if (active) {
+		if (active)
 			onActivate()
-		}
 	}, [active])
+
+	useEffect(() => {
+		if (!active && lastWallet !== walletType.NONE) {
+			connect(lastWallet);
+		}
+	}, [])
 
 	useEffect(() => {
 		if (nonce > 0) {
@@ -76,6 +82,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		set_provider(undefined);
 		set_walletData({erc20: undefined, transactions: undefined, ready: false});
 		set_shouldReset();
+		set_lastWallet(walletType.NONE);
 		if (connector !== undefined) {
 			connector
 				.off(ConnectorEvent.Update, onUpdate)
@@ -146,21 +153,13 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**	or changeChain).
 	**************************************************************************/
 	async function	connect(_providerType) {
-		/******************************************************************
-		**	First, connect the web3 provider (window.ethereum, for Brave or
-		**	Metamask, and the alchemy provider in any other case).
-		**	⚠️ An in house node is preferable
-		**	⚠️ Alchemy is prefered because of it's archive node.
-		**	⚠️ We should add some fallback for the web3provider
-		******************************************************************/
-		// const	web3Provider = typeof(window) !== 'undefined' && window.ethereum || 'wss://eth-ropsten.ws.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf';
-
 		if (_providerType === walletType.METAMASK) {
 			if (active) {
 				deactivate()
 			}
 			const	injected = new InjectedConnector({supportedChainIds: [1, 3, 1337]})
 			activate(injected, undefined, true);
+			set_lastWallet(walletType.METAMASK);
 		} else if (_providerType === walletType.WALLET_CONNECT) {
 			if (active) {
 				deactivate()
@@ -177,6 +176,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				qrcode: true,
 			});
 			activate(walletconnect, undefined, true);
+			set_lastWallet(walletType.WALLET_CONNECT);
 		}
 	}
 
@@ -197,6 +197,45 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		const	CLAIM_ABI = ["function claim(address validator, address requestor, uint256 achievement, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
 		const	signer = provider.getSigner();
 		const	contract = new ethers.Contract(tokenAddress, CLAIM_ABI, signer);
+		let		transactionResponse = undefined;
+
+		try {
+			if (gasPrice && walletType === walletType.METAMASK) {
+				transactionResponse = await contract.functions.claim(...txPayload, gasPrice);
+			} else {
+				transactionResponse = await contract.functions.claim(...txPayload);
+			}
+		} catch (error) {
+			if (error?.error?.message) {
+				const	errorMessage = error.error.message.replace(`execution reverted: `, '');
+				if (errorMessage === 'Achievement already unlocked') {
+					return callback({status: 'SUCCESS'});
+				} else {
+					addToast(errorMessage, {appearance: 'error'});
+				}
+			} else {
+				addToast(`Impossible to perform the tx`, {appearance: 'error'});
+			}
+			return callback({status: 'ERROR'});
+		}
+	
+		callback({status: 'SEND_TRANSACTION'})
+		if (transactionResponse.wait) {
+			try {
+				const	receipt = await transactionResponse.wait(1);
+				if (receipt && receipt.status === 1) {
+					return callback({status: 'SUCCESS'});
+				}
+				return callback({status: 'ERROR'});
+			} catch(error) {
+				return addToast(`Transaction reverted`, {appearance: 'error'});
+			}
+		}
+	}
+	async function	claimMultiple(tokenAddress, txPayload, gasPrice, callback = () => null) {
+		const	CLAIMS_ABI = ["function claim(address validator, address requestor, uint256[] memory _achievements, uint256 amount, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public"];
+		const	signer = provider.getSigner();
+		const	contract = new ethers.Contract(tokenAddress, CLAIMS_ABI, signer);
 		let		transactionResponse = undefined;
 
 		try {
@@ -280,6 +319,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				address,
 				connect,
 				deactivate,
+				onDesactivate,
 				walletType,
 				walletData,
 				provider,
@@ -289,6 +329,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				actions: {
 					sign,
 					claim,
+					claimMultiple,
 					swapOnSushiswap
 				}
 			}} />

@@ -10,7 +10,7 @@ import	StatusButton						from	'components/details/StatusButton';
 
 function	PageHeader({achievement, isClaimed}) {
 	return (
-		<header style={{background: achievement.background}}>
+		<header className={'pt-14'} style={{background: achievement.background}}>
 			<div className={'max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8'}>
 				<div className={'pt-12 pb-36'}>
 					<div className={'mx-auto px-4 sm:px-6 lg:px-8'}>

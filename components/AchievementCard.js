@@ -28,7 +28,6 @@ function	ClaimableButtom(props) {
 				}
 				if (buttonStatus === STATUS.UNLOCKED) {
 					props.confetti.set({active: true, x: e.pageX, y: e.pageY});
-					setTimeout(() => props.confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 					return;
 				}
 
@@ -37,7 +36,6 @@ function	ClaimableButtom(props) {
 					if (status === 'SUCCESS') {
 						set_buttonStatus(STATUS.UNLOCKED);
 						props.confetti.set({active: true, x: e.pageX, y: e.pageY});
-						setTimeout(() => props.confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 					} else if (status === 'ERROR') {
 						set_buttonStatus(STATUS.UNDEFINED);
 					}
@@ -84,6 +82,15 @@ const	AchievementCard = forwardRef((props, ref) => {
 
 	const	[achievement, set_achievement] = useState(props.achievement);
 	useEffect(() => set_achievement(props.achievement), [props.informations, props.unlocked]);
+
+	async function	onClaimMultiple(callback = () => null) {
+		try {
+			actions.claimMultiple(['17014046665459167871385144214384153657052529861444070975123034192784533496286', '9467569119697655395695061540870730797287567233033790043736635320929402325446'], callback)
+		} catch (error) {
+			addToast(error?.response?.data?.error || error.message, {appearance: 'error'});
+			return console.error(error.message);
+		}
+	}
 
 	async function	onClaim(callback = () => null) {
 		const	strategy = achievement.strategy;
@@ -145,7 +152,6 @@ const	AchievementCard = forwardRef((props, ref) => {
 								onClick={(e) => {
 									e.preventDefault();
 									confetti.set({active: true, x: e.pageX, y: e.pageY});
-									setTimeout(() => confetti.set({active: false, x: e.pageX, y: e.pageY}), 100);
 								}}>
 									<div className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gradient border-t border-transparent font-medium '}>
 										<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="url(#gradient)"><linearGradient id="gradient"><stop offset="0%" stopColor={'rgba(20,184,166,1)'} /><stop offset="50%" stopColor={'rgba(139,92,246,1)'} /><stop offset="100%" stopColor={'rgba(236,72,153,1)'} /></linearGradient><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
