@@ -10,19 +10,16 @@ import	{Transition}		from	'@headlessui/react';
 import	useWeb3				from	'contexts/useWeb3';
 
 function	ContextMenuLogin({set_open}) {
-	const	{connect, active, walletType} = useWeb3();
+	const	{connect, walletType} = useWeb3();
 
-	if (!active) {
-		return null;
-	}
 	return (
-		<div role={'none'}>
+		<>
 			<button
 				onClick={() => {
 					connect(walletType.METAMASK);
 					set_open(false);
 				}}
-				className={'flex flex-row w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
+				className={'flex flex-row items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
 				role={'menuitem'}>
 				<Image
 					src={'/logoMetamask.svg'}
@@ -38,7 +35,7 @@ function	ContextMenuLogin({set_open}) {
 					connect(walletType.WALLET_CONNECT);
 					set_open(false);
 				}}
-				className={'flex flex-row w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
+				className={'flex flex-row items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'}
 				role={'menuitem'}>
 				<Image
 					src={'/logoWalletConnect.svg'}
@@ -49,7 +46,7 @@ function	ContextMenuLogin({set_open}) {
 					{'Connect with WalletConnect'}
 				</p>
 			</button>
-		</div>
+		</>
 	);
 }
 
@@ -57,18 +54,16 @@ function	ContextMenuLoginController({open, set_open}) {
 	return (
 		<Transition
 			show={open}
-			enter={'transition ease-out duration-100'}
-			enterFrom={'transform opacity-0 scale-95'}
-			enterTo={'transform opacity-100 scale-100'}
-			leave={'transition ease-in duration-75'}
-			leaveFrom={'transform opacity-100 scale-100'}
-			leaveTo={'transform opacity-0 scale-95'}>
-			<div
-				className={'origin-top-right absolute right-0 mt-5 w-64 rounded-md shadow-lg bg-white border-gray-200 border-solid border divide-y divide-gray-100 focus:outline-none'}
-				role={'menu'}
-				aria-orientation={'vertical'}
-				aria-labelledby={'options-menu'}>
-				<ContextMenuLogin set_open={set_open} />
+			enter={'transition ease-out duration-200'}
+			enterFrom={'opacity-0 translate-y-1'}
+			enterTo={'opacity-100 translate-y-0'}
+			leave={'transition ease-in duration-150'}
+			leaveFrom={'opacity-100 translate-y-0'}
+			leaveTo={'opacity-0 translate-y-1'}>
+			<div className={'origin-top-right absolute z-10 right-0 transform mt-6 px-2 w-max max-w-xs sm:px-0'}>
+				<div className={'rounded-md shadow-lg border-gray-200 border-solid border overflow-hidden bg-white'}>
+					<ContextMenuLogin set_open={set_open} />
+				</div>
 			</div>
 		</Transition>
 	);

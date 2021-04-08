@@ -14,7 +14,7 @@ import	ContextMenuProgress		from	'components/menu/ContextMenuProgress'
 
 function	SectionActions() {
 	const	refOutside = useRef();
-	const	{address, deactivate, onDesactivate, active} = useWeb3();
+	const	{address, active} = useWeb3();
 	const	{elements} = useAchievements()
 	const	[open, set_open] = useState(false);
 	const	[slideOverOpen, set_slideOverOpen] = useState(false);
@@ -34,7 +34,11 @@ function	SectionActions() {
 			);
 			return (`${address.slice(0, 4)}...${address.slice(-4)}`);
 		}
-		return ('Connect a wallet');
+		return (
+			<span className={'whitespace-nowrap'}>
+				{'Connect a wallet'}
+			</span>
+		);
 	}
 
 	return (
@@ -47,8 +51,6 @@ function	SectionActions() {
 					onClick={() => {
 						if (active) {
 							set_slideOverOpen(!slideOverOpen)
-							// deactivate();
-							// onDesactivate();
 						} else {
 							set_open(!open);
 						}

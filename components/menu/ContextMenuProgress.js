@@ -9,6 +9,7 @@ import	{useState}			from	'react';
 import	{Transition}		from	'@headlessui/react';
 import	useAchievements		from	'contexts/useAchievements';
 import	DialogBatchClaim	from	'components/menu/DialogBatchClaim';
+import	useWeb3				from	'contexts/useWeb3';
 
 function	ContextItemClaimed({count}) {
 	return (
@@ -24,8 +25,8 @@ function	ContextItemClaimed({count}) {
 function	ContextItemClaimable({set_modalOpen, count}) {
 	return (
 		<li
-			onClick={() => set_modalOpen(true)}
-			className={'px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer relative'}>
+			onClick={() => count > 0 ? set_modalOpen(true) : null}
+			className={`px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 ${count > 0 ? 'cursor-pointer' : 'cursor-auto'} relative`}>
 			<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" /></svg>
 			<p className={'ml-2 text-sm inline'}>
 				{`${count} claimable`}
@@ -49,7 +50,26 @@ function	ContextItemLocked({count}) {
 	);
 }
 
-function	ContextMenuProgress({claims, claimables, locked, set_modalOpen}) {
+function	ContextDisconnnect({set_open}) {
+	const	{deactivate, onDesactivate} = useWeb3();
+
+	return (
+		<li
+			onClick={() => {
+				set_open(false);
+				deactivate();
+				onDesactivate();
+			}}
+			className={'px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer border-t border-solid border-gray-200'}>
+			<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 inline'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+			<p className={'ml-2 text-sm inline'}>
+				{`Disconnect`}
+			</p>
+		</li>
+	);
+}
+
+function	ContextMenuProgress({claims, claimables, locked, set_modalOpen, set_open}) {
 	return (
 		<div className={'absolute z-10 left-1/2 transform -translate-x-1/2 mt-6 px-2 w-full max-w-xs sm:px-0'}>
 			<div className={'rounded-md shadow-lg border-gray-200 border-solid border overflow-hidden'}>
@@ -68,6 +88,7 @@ function	ContextMenuProgress({claims, claimables, locked, set_modalOpen}) {
 									set_modalOpen={set_modalOpen} />
 								<ContextItemLocked
 									count={locked?.length || 0} />
+								<ContextDisconnnect set_open={set_open} />
 							</ul>
 						</div>
 					</div>
@@ -95,7 +116,8 @@ function	ContextMenuProgressController({open, set_open}) {
 					claims={elements.claims}
 					claimables={elements.claimables}
 					locked={elements.locked}
-					set_modalOpen={set_modalOpen} />
+					set_modalOpen={set_modalOpen}
+					set_open={set_open} />
 			</Transition>
 			<DialogBatchClaim
 				actions={actions}
