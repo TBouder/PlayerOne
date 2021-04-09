@@ -92,7 +92,7 @@ export const AchievementsContextApp = (props) => {
 	**	- prepare the field for the achievement check
 	**************************************************************************/
 	async function	recomputeClaims() {
-		const	{claims: addressClaims, claimables: addressClaimables} = await fetcher(`${process.env.API_URI}/address/${address}`);
+		const	{claims: addressClaims, claimables: addressClaimables} = await fetcher(`${process.env.API_URI}/address/${address || 'none'}`);
 
 		const	_claimsAsMapping = {};
 		const	_claimablesAsMapping = {};
@@ -146,7 +146,7 @@ export const AchievementsContextApp = (props) => {
 		set_achievementsCheckProgress({checking: false, progress: addressClaims.length + addressClaimables.length, total: _achievements.length});
 	}
 	useEffect(() => {
-		if (address && achievements !== undefined) {
+		if (achievements !== undefined) {
 			recomputeClaims();
 		}
 	}, [address, achievements])
@@ -167,7 +167,7 @@ export const AchievementsContextApp = (props) => {
 				claimablesAsMapping: {},
 				locked: achievementsList,
 				lockedAsMapping: _lockedAsMapping,
-				count: 0,
+				count: achievementsList.length,
 			});
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			set_achievementsProgressNonce({previous: undefined, current: undefined});
