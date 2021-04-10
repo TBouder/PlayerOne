@@ -6,9 +6,11 @@
 ******************************************************************************/
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
+import	useLocalStorage										from	'hook/useLocalStorage';
 
 const	UI = createContext();
 export const UIApp = ({children}) => {
+	const	[theme, set_theme] = useLocalStorage('theme', 'light');
 	const	[confetti, set_confetti] = useState({x: 0, y: 0});
 	const	confettiConfig = {
 		angle: 90,
@@ -31,11 +33,25 @@ export const UIApp = ({children}) => {
 		}
 	}, [confetti.active])
 
+	useEffect(() => {
+		if (theme === 'light') {
+			document.documentElement.classList.add('light')
+			document.documentElement.classList.remove('dark')
+		} else if (theme === 'dark') {
+			document.documentElement.classList.add('dark')
+			document.documentElement.classList.remove('light')
+		}
+	}, [theme])
 
 	return (
 		<UI.Provider
 			children={children}
 			value={{
+				theme: {
+					get: theme,
+					set: set_theme,
+					switch: () => set_theme(t => t === 'light' ? 'dark' : 'light')
+				},
 				confetti: {
 					config: confettiConfig,
 					set: set_confetti,

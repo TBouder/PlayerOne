@@ -15,20 +15,20 @@ function	SectionQuickStats({numberOfClaims}) {
 	const	{poolSize} = useAchievements();
 	return (
 		<section
-			className={'border-t border-gray-200 bg-gray-50 grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-3 sm:divide-y-0 sm:divide-x'}>
-			<div className='px-6 py-5 text-sm font-medium text-center'>
-				<span className={'text-gray-900'}>{'1 '}</span>
-				<span className={'text-gray-600'}>{'Reward Token'}</span>
+			className={'border-t border-gray-200 dark:border-dark-background-600 bg-gray-50 dark:bg-dark-background-400 grid grid-cols-1 divide-y divide-gray-200 dark:divide-dark-background-600 sm:grid-cols-3 sm:divide-y-0 sm:divide-x'}>
+			<div className={'px-6 py-5 text-sm font-medium text-center'}>
+				<span className={'text-gray-900 dark:text-white'}>{'1 '}</span>
+				<span className={'text-gray-600 dark:text-dark-white'}>{'Reward Token'}</span>
 			</div>
 
-			<div className='px-6 py-5 text-sm font-medium text-center'>
-				<span className={'text-gray-900'}>{numberOfClaims}</span>
-				<span className={'text-gray-600'}>{' Unlocks'}</span>
+			<div className={'px-6 py-5 text-sm font-medium text-center'}>
+				<span className={'text-gray-900 dark:text-white'}>{numberOfClaims}</span>
+				<span className={'text-gray-600 dark:text-dark-white'}>{' Unlocks'}</span>
 			</div>
 
-			<div className='px-6 py-5 text-sm font-medium text-center'>
-				<span className={'text-gray-900'}>{`${poolSize > 0 ? formatPercent(numberOfClaims / poolSize) : '100%'} `}</span>
-				<span className={'text-gray-600'}>{'Ratio'}</span>
+			<div className={'px-6 py-5 text-sm font-medium text-center'}>
+				<span className={'text-gray-900 dark:text-white'}>{`${poolSize > 0 ? formatPercent(numberOfClaims / poolSize) : '100%'} `}</span>
+				<span className={'text-gray-600 dark:text-dark-white'}>{'Ratio'}</span>
 			</div>
 		</section>
 	);
@@ -47,8 +47,8 @@ function	SectionCollections({collections, className}) {
 function	SectionStatus({achievement, currentAddressClaim, description}) {
 	return (
 		<section aria-labelledby={'profile-overview-title'}>
-			<div className={'rounded-lg bg-white overflow-hidden shadow'}>
-				<div className={'bg-white p-6'}>
+			<div className={'rounded-lg bg-white dark:bg-dark-background-600 overflow-hidden shadow'}>
+				<div className={'p-6'}>
 					<div className={'sm:flex sm:items-center sm:justify-between'}>
 						<div className={'w-full flex flex-col'}>
 
@@ -65,20 +65,20 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 									</div>
 									<div className={'ml-4 -mt-2 lg:mt-1 '}>
 										<SectionCollections collections={achievement.badges} className={'flex lg:hidden'} />
-										<span className={'text-xl font-bold text-gray-900 sm:text-2xl'}>
+										<span className={'text-xl font-bold text-gray-900 dark:text-white sm:text-2xl'}>
 											{achievement.title}
-											<p className={'text-sm font-normal text-gray-400 inline ml-2'}>
+											<p className={'text-sm font-normal text-gray-400 dark:text-dark-white inline ml-2'}>
 												{currentAddressClaim?.nonce ? `#${currentAddressClaim.nonce}` : ''}
 											</p>
 										</span>
-										<p className={'text-sm font-medium text-gray-600'}>
+										<p className={'text-sm font-medium text-gray-600 dark:text-dark-white'}>
 											{currentAddressClaim?.date ? <time dateTime={currentAddressClaim?.date}>{new Date(currentAddressClaim?.date).toLocaleDateString('en-EN', {year: 'numeric', month: 'short', day: 'numeric'})}</time> : null}
 										</p>
 									</div>
 								</div>
 								<div className={'flex flex-col w-full lg:w-2/3 pl-2 pt-6 lg:pt-0'}>
 									<div className={'flex'}>
-										<span className={'text-base font-normal text-gray-800 prose-xl prose-teal'}>
+										<span className={'text-base font-normal text-gray-800 dark:text-dark-white prose-xl prose-teal'}>
 											<ReactMarkdown>
 												{description}
 											</ReactMarkdown>

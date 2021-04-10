@@ -42,7 +42,7 @@ function	ClaimableButtom(props) {
 				})
 			}}
 			disabled={buttonStatus === STATUS.PENDING}
-			className={`relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm border-t border-transparent ${buttonStatus === STATUS.UNLOCKED ? 'font-medium text-gradient' : 'text-gray-700 font-normal'} ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : 'cursor-pointer'}`}>
+			className={`relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm border-t border-transparent dark:border-dark-background-600 dark:bg-dark-background-600 ${buttonStatus === STATUS.UNLOCKED ? 'font-medium text-gradient' : 'text-gray-700 dark:text-dark-white font-normal'} ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : 'cursor-pointer'}`}>
 			<p className={'flex items-center'} style={buttonStatus === STATUS.PENDING ? {opacity: 1} : {opacity: 1} }>
 				{buttonStatus === STATUS.UNLOCKED ?
 					<>
@@ -127,22 +127,19 @@ const	AchievementCard = forwardRef((props, ref) => {
 		<Link href={`/details/${achievement.slug}`}>
 			<div
 				ref={ref}
-				className={'flex w-full lg:w-auto'}
-				style={props.claimed || props.claimable ? {} : {filter: 'grayscale(1)'}}>
-				<div className={'flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu hover:scale-102 shine shadow-lg rounded-lg bg-white'}>
+				className={'flex w-full lg:w-auto'}>
+				<div className={`flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu shadow-lg rounded-lg bg-white dark:bg-dark-background-400 ${props.claimed || props.claimable ? 'shine hover:scale-102' : 'filter grayscale dark:filter-none dark:opacity-20'}`}>
 					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
-						<div
-							className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl'}
-							style={{background: 'rgba(255, 255, 255, 0.9)'}}>
+						<div className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl bg-white bg-opacity-90'}>
 							{achievement.icon}
 						</div>
 					</div>
 					<div className={`flex flex-col h-full w-full`}>
 						<div className={'flex flex-col items-center text-center px-3 mb-12'}>
-							<h3 className={'mt-3 text-gray-900 text-base font-medium'}>{achievement.title}</h3>
+							<h3 className={'mt-3 text-gray-900 dark:text-white text-base font-medium'}>{achievement.title}</h3>
 							<dl className={'mt-2 flex-grow flex flex-col justify-between'}>
-								<dd className={'text-gray-500 text-sm'}>{achievement.description}</dd>
+								<dd className={'text-gray-500 dark:text-dark-white text-sm'}>{achievement.description}</dd>
 							</dl>
 						</div>
 						<div className={'flex mt-auto'}>
@@ -153,7 +150,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 									e.preventDefault();
 									confetti.set({active: true, x: e.pageX, y: e.pageY});
 								}}>
-									<div className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gradient border-t border-transparent font-medium '}>
+									<div className={'relative -mr-px w-0 flex-1 inline-flex items-center justify-center py-4 text-sm text-gradient border-t border-transparent font-medium'}>
 										<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="url(#gradient)"><linearGradient id="gradient"><stop offset="0%" stopColor={'rgba(20,184,166,1)'} /><stop offset="50%" stopColor={'rgba(139,92,246,1)'} /><stop offset="100%" stopColor={'rgba(236,72,153,1)'} /></linearGradient><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
 										</svg>
 										<span className={'ml-2'}>{'Unlocked'}</span>
@@ -165,7 +162,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 							:
 								<div className={'w-full flex-1 flex'}>
 									<a
-										className={'relative -mr-px w-full flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 border-t border-transparent cursor-not-allowed bg-gray-200'}>
+										className={'relative -mr-px w-full flex-1 inline-flex items-center justify-center py-4 text-sm text-gray-700 border-t border-transparent cursor-not-allowed bg-gray-200 dark:border-dark-background-600 dark:bg-dark-background-600 dark:text-dark-white'}>
 										<svg className={'w-4 h-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
 										<span className={'ml-2'}>{'Locked'}</span>
 									</a>

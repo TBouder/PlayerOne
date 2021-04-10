@@ -22,23 +22,6 @@ function	Page(props) {
 	**	`claims` (the list of all the claims).
 	**************************************************************************/
 	const	[achievement, set_achievement] = useState(props.achievement);
-	const	[numberOfClaims, set_numberOfClaims] = useState(props.numberOfClaims);
-
-	/**************************************************************************
-	**	Then, we need to hydrate the default page's informations, aka data,
-	**	which are `achievement` (the informations about this achievement) and
-	**	`claims` (the list of all the claims).
-	**************************************************************************/
-	// const	{data} = useSWR(
-	// 	`${process.env.API_URI}/achievement/withclaims/${props?.achievement?.key}`,
-	// 	fetcher,
-	// 	{
-	// 		initialData: {achievement},
-	// 		revalidateOnMount: false,
-	// 		revalidateOnFocus: false,
-	// 		revalidateOnReconnect: false
-	// 	}
-	// );
 
 	/**************************************************************************
 	**	We should check if the current address has a claim, and use if to
@@ -53,15 +36,6 @@ function	Page(props) {
 			revalidateOnReconnect: true
 		}
 	);
-
-	/**************************************************************************
-	**	Effect to update the `achievement` and `claims` state when receiving
-	**	data from swr.
-	**************************************************************************/
-	// useEffect(() => {
-	// 	set_achievement(data.achievement);
-	// 	set_numberOfClaims(data.achievement.numberOfClaims);
-	// }, [data])
 
 	/**************************************************************************
 	**	Used for the animations
@@ -84,7 +58,7 @@ function	Page(props) {
 						isClaimed={currentAddressClaim !== undefined} />
 				</div>
 				<div ref={contentRef} className={'contentAnim'}>
-					<main className={'-mt-24 pb-8'}>
+					<main className={'-mt-24 pb-8 '}>
 						<div className={'max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8'}>
 							<div className={'grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'}>
 								<div className={'grid grid-cols-1 gap-4 lg:col-span-3'}>

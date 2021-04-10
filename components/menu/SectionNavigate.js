@@ -39,23 +39,23 @@ function	SectionNavigate({menuOpen, set_menuOpen}) {
 									<div className={'cursor-pointer'}>
 										<FontAwesomeIcon
 											style={{width: 24, height: 24}}
-											className={'text-gray-600'}
+											className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white'}
 											icon={faCrown} />
 									</div>
 								</Link>
 							</div>
 							<div>
-								<p className={'text-gray-600 hover:text-gray-900 leading-7 text-sm cursor-pointer mx-8'}>{'About'}</p>
+								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mx-8'}>{'About'}</p>
 							</div>
 							<div>
 								<Link href={'/leaderboard'} passHref>
-									<p className={'text-gray-600 hover:text-gray-900 leading-7 text-sm cursor-pointer mr-8'}>
+									<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mr-8'}>
 										{'Leaderboard'}
 									</p>
 								</Link>
 							</div>
 							<div>
-								<p className={'text-gray-600 hover:text-gray-900 leading-7 text-sm cursor-pointer mr-8'}>{'Governance'}</p>
+								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mr-8'}>{'Governance'}</p>
 							</div>
 						</div>
 					</>

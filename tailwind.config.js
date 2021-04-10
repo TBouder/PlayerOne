@@ -6,7 +6,7 @@ module.exports = {
     './pages/**/*.js',
     './components/**/*.js'
   ],
-  darkMode: false,
+  darkMode: 'class',
   theme: {
     colors: {
       gray: colors.blueGray,
@@ -33,7 +33,27 @@ module.exports = {
         },
       },
       colors: {
-        'playerone': 'rgb(255,71,62)',
+        'playerone': '#2846c2',
+        'playerone2': 'rgb(255,71,62)',
+        'dark': {
+          // playerone: 'rgb(255, 158, 65)',
+          playerone: '#C1436D',
+          black: '#051622',
+          white: 'rgb(228, 226, 228)',
+          background: {
+            // 900: 'rgb(30, 29, 34)',
+            900: '#09162E',
+            // 600: 'rgb(34, 33, 38)',
+            600: 'rgb(19,38,75)',
+            // 400: 'rgb(47, 46, 52)',
+            400: 'rgb(24,48,95)',
+            200: 'rgb(133, 142, 161)'
+          },
+          typo: {
+            primary: '#DEB992',
+            secondary: '#1BA098',
+          }
+        },
         'uniswap': {
           pink: 'rgb(255, 0, 122)',
           600: 'rgba(189, 0, 255, 0.2)',
@@ -124,7 +144,8 @@ module.exports = {
   variants: {
     extend: {
         backgroundColor: ['group-focus'],
-        opacity: ['group-hover', 'group-focus'],
+        opacity: ['group-hover', 'group-focus', 'dark'],
+        filter: ['dark'],
         display: ['group-hover'],
         animation: ['group-hover', 'hover']
     },

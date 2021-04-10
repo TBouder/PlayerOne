@@ -18,7 +18,7 @@ function	TopMenu() {
 
 	return (
 		<div className={'fixed top-0 w-full z-50'}>
-			<div className={'py-2 px-4 bg-white bg-opacity-95 pointer-events-none'}>
+			<div className={'py-2 px-4 bg-white dark:bg-dark-background-900 bg-opacity-95 pointer-events-none'}>
 				<div className={'max-w-screen-2xl mx-auto flex justify-between items-center px-0 md:px-12 lg:px-12 xl:px-12'}>
 					<SectionNavigate
 						menuOpen={menuOpen}
