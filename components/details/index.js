@@ -8,8 +8,9 @@
 import	{useRef, useState, useEffect}		from	'react';
 import	useSWR								from	'swr';
 import	useWeb3								from	'contexts/useWeb3';
-import	PageHeader							from	'components/details/PageHeader';
-import	MainSection							from	'components/details/MainSection';
+import	SectionHeader						from	'components/details/SectionHeader';
+import	Leaderboard							from	'components/details/SectionLeaderboard';
+import	SectionStatus						from	'components/details/SectionStatus';
 import	{fetcher}							from	'utils';
 
 function	Page(props) {
@@ -28,16 +29,16 @@ function	Page(props) {
 	**	which are `achievement` (the informations about this achievement) and
 	**	`claims` (the list of all the claims).
 	**************************************************************************/
-	const	{data} = useSWR(
-		`${process.env.API_URI}/achievement/withclaims/${props?.achievement?.key}`,
-		fetcher,
-		{
-			initialData: {achievement},
-			revalidateOnMount: false,
-			revalidateOnFocus: false,
-			revalidateOnReconnect: false
-		}
-	);
+	// const	{data} = useSWR(
+	// 	`${process.env.API_URI}/achievement/withclaims/${props?.achievement?.key}`,
+	// 	fetcher,
+	// 	{
+	// 		initialData: {achievement},
+	// 		revalidateOnMount: false,
+	// 		revalidateOnFocus: false,
+	// 		revalidateOnReconnect: false
+	// 	}
+	// );
 
 	/**************************************************************************
 	**	We should check if the current address has a claim, and use if to
@@ -57,10 +58,10 @@ function	Page(props) {
 	**	Effect to update the `achievement` and `claims` state when receiving
 	**	data from swr.
 	**************************************************************************/
-	useEffect(() => {
-		set_achievement(data.achievement);
-		set_numberOfClaims(data.achievement.numberOfClaims);
-	}, [data])
+	// useEffect(() => {
+	// 	set_achievement(data.achievement);
+	// 	set_numberOfClaims(data.achievement.numberOfClaims);
+	// }, [data])
 
 	/**************************************************************************
 	**	Used for the animations
@@ -75,23 +76,36 @@ function	Page(props) {
 
 
 	return (
-		<div className={'bg-white -mt-14'}>
+		<>
 			<div>
 				<div ref={headerRef} className={'headerAnim'}>
-					<PageHeader
+					<SectionHeader
 						achievement={achievement}
 						isClaimed={currentAddressClaim !== undefined} />
 				</div>
 				<div ref={contentRef} className={'contentAnim'}>
-					<MainSection
-						achievement={achievement}
-						currentAddressClaim={currentAddressClaim}
-						description={props.description}
-						verificationCode={props.verificationCode}
-						/>
+					<main className={'-mt-24 pb-8'}>
+						<div className={'max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8'}>
+							<div className={'grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'}>
+								<div className={'grid grid-cols-1 gap-4 lg:col-span-3'}>
+									<SectionStatus
+										achievement={achievement}
+										description={props.description}
+										currentAddressClaim={currentAddressClaim} />
+								</div>
+								<div className={'grid grid-cols-1 gap-4 lg:col-span-3'}>
+									<Leaderboard
+										strategy={achievement?.strategy}
+										achievementKey={achievement.key}
+										verificationCode={achievement?.informations?.verificationPseudoCode}
+										technicalContext={achievement?.informations?.technicalContext} />
+								</div>
+							</div>
+						</div>
+					</main>
 				</div>
 			</div>
-		</div>
+		</>
 	)
 }
 

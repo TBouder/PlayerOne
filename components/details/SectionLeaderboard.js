@@ -218,7 +218,6 @@ function	SectionLeaderboard(props) {
 
 	function	Technical() {
 		function	renderArguments(args) {
-			// Block       *string `json:"Block,omitempty" bson:"Block,omitempty"`
 			// MoreOrLess  *int8   `json:"moreOrLess,omitempty" bson:"moreOrLess,omitempty"`
 
 			return Object.entries(args).map(([key, value]) => {
@@ -377,6 +376,11 @@ function	SectionLeaderboard(props) {
 						{currentSubSection === 2 ? <Social /> : null}
 					</div>
 				</div>
+				{currentSubSection === 0 ? <div className={'flex w-full items-center justify-center mt-6'}>
+					<p className={'text-sm text-gray-400 hover:text-teal-600 cursor-pointer text-center hover:underline'}>
+						{'Contact us to see more'}
+					</p>
+				</div> : null}
 			</section>
 		</div>
 	);

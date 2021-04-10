@@ -32,16 +32,10 @@ function	Page(props) {
 				<SectionHeader />
 			</div>
 			<div ref={contentRef} className={'contentAnim'}>
-				<div className={'w-full px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto pb-24'}>
-					<div className={'pb-6'}>
-
-
-						<div className={'flex flex-col mt-6'}>
-							<div className={'-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8'}>
-								<div className={'py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8'}>
-									<SectionStats numberOfChallengers={addressesCount} numberOfAchievements={achievementsCount} />
-								</div>
-							</div>
+				<main className={'-mt-24 pb-8'}>
+					<div className={'max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8'}>
+						<div className={'flex flex-col'}>
+							<SectionStats numberOfChallengers={addressesCount} numberOfAchievements={achievementsCount} />
 						</div>
 
 
@@ -51,7 +45,7 @@ function	Page(props) {
 
 						<SectionChallengers challengers={challengers} numberOfAchievements={achievementsCount} />
 					</div>
-				</div>
+				</main>
 			</div>
 		</>
 	);
