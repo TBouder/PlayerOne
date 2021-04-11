@@ -12,20 +12,17 @@ function	PageHeader({achievement, isClaimed}) {
 	return (
 		<section
 			aria-label={'header'}
-			className={'py-32 md:py-48 bg-accent-900 -mt-28 relative'}
+			className={'py-32 md:py-48 bg-accent-900 -mt-16 md:-mt-28 relative'}
 			style={{background: achievement.background}}>
 			<ul className={'circles circlesMoreVisible pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
 			<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
-				<div className={'lg:text-center pt-6 pb-2'}>
-					<p className={'text-7xl font-extrabold tracking-tight text-white my-4 md:my-8'}>
+				<div className={'text-center pt-6 pb-2'}>
+					<p className={'text-3xl md:text-6xl font-extrabold tracking-tight text-white my-4 md:my-8'}>
 						{achievement.title}
 					</p>
-					<p className={'font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
+					<p className={'font-extrabold tracking-tight text-white opacity-60 text-xl md:text-4xl'}>
 						{achievement.description}
 					</p>
-					{/* <p className={'leading-8 font-extrabold tracking-tight text-white opacity-60 text-4xl'}>
-						&nbsp;
-					</p> */}
 				</div>
 			</header>
 			{isClaimed ? <FullConfetti

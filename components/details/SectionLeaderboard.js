@@ -334,7 +334,7 @@ function	SectionLeaderboard(props) {
                 		</dt>
                 		<dd className={'mt-1 text-sm text-gray-900 dark:text-white'}>
 							<pre className={'bg-gray-800 dark:bg-dark-background-900 text-white rounded-lg px-6 py-3 text-xs'}>
-								<code>{props.verificationCode}</code>
+								<code className={'whitespace-break-spaces'}>{props.verificationCode}</code>
 							</pre>
                 		</dd>
               		</div>

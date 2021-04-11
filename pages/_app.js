@@ -50,7 +50,7 @@ function	AppWrapper(props) {
 				<div className={'w-full overflow-x-hidden min-h-screen bg-white dark:bg-dark-background-900'} key={router.pathname}>
 					<TopMenu />
 					<div id={'chainIDWarning'} suppressHydrationWarning>
-						{chainID === 1 ?
+						{/* {chainID === 1 ?
 							<div className={'fixed z-40 bg-amber-100 w-full'} style={{top: 51}}>
 								<div className={'max-w-7xl mx-auto py-3 px-3 sm:px-6 lg:px-8'}>
 									<div className={'pr-16 sm:text-center sm:px-16'}>
@@ -64,7 +64,7 @@ function	AppWrapper(props) {
 									</div>
 								</div>
 							</div>
-						: null}
+						: null} */}
 					</div>
 					<div>
 						<Component

@@ -316,6 +316,9 @@ input[type=number] {
 .contents {
 	display: contents;
 }
+.whitespace-break-spaces {
+	white-space: break-spaces;
+}
 
 /******************************************************************************
 **	PAGE [UUID].js
