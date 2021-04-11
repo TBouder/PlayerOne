@@ -89,7 +89,7 @@ function	TableRow({index, challenger, numberOfAchievements}) {
 								<a
 									href={`https://etherscan.io/address/${requestor}`}
 									target={'_blank'}
-									className={'hover:text-teal-600 hover:underline cursor-pointer truncate'}>
+									className={'hover:text-accent-900 hover:underline cursor-pointer truncate'}>
 									{requestor}
 								</a>
 							</p>
@@ -150,7 +150,7 @@ function	SectionChallengers({challengers, numberOfAchievements}) {
 				</ul>
 			</div>
 			<div className={'flex w-full items-center justify-center mt-6'}>
-				<p className={'text-sm text-gray-400 hover:text-teal-600 cursor-pointer text-center hover:underline'}>
+				<p className={'text-sm text-gray-400 hover:text-accent-900 cursor-pointer text-center hover:underline'}>
 					{'Contact us to see more'}
 				</p>
 			</div>

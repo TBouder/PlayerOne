@@ -135,7 +135,7 @@ function	SwapRouter({routerAddress, pairID, token}) {
 								set_swapToken1(e.target.value * (swapData.pair?.token0Price));
 							}
 						}}
-						className={'focus:ring-teal-500 focus:border-teal-500 block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md'}
+						className={'focus:ring-accent-900 focus:border-accent-900 block w-full pl-8 pr-12 sm:text-sm border-gray-300 rounded-md'}
 						placeholder={'0.00'}
 						aria-describedby={'price-currency'} />
 					<div className={'absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none'}>
@@ -157,7 +157,7 @@ function	SwapRouter({routerAddress, pairID, token}) {
 						type={'number'}
 						name={'price-token1'}
 						id={'price-token1'}
-						className={'focus:ring-teal-500 focus:border-teal-500 block w-full pl-10 pr-12 sm:text-sm border-gray-300 rounded-md'}
+						className={'focus:ring-accent-900 focus:border-accent-900 block w-full pl-10 pr-12 sm:text-sm border-gray-300 rounded-md'}
 						value={swapToken1}
 						onChange={(e) => {
 							if (swapOrder === 1) {
@@ -221,7 +221,7 @@ function	SwapRouter({routerAddress, pairID, token}) {
 								(e) => console.log(e)
 							)
 						}}
-						type={'button'} className={'inline-flex items-center px-3 py-2.5 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500'}>
+						type={'button'} className={'inline-flex items-center px-3 py-2.5 shadow-sm text-sm leading-4 font-medium rounded-md text-white bg-accent-900 hover:bg-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-900'}>
 						<svg className={'mr-2 -ml-0.5 h-4 w-4'} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
 						{'Swap'}
 					</button>

@@ -12,7 +12,7 @@ function	PageHeader({achievement, isClaimed}) {
 	return (
 		<section
 			aria-label={'header'}
-			className={'py-32 md:py-48 bg-playerone -mt-28 relative'}
+			className={'py-32 md:py-48 bg-accent-900 -mt-28 relative'}
 			style={{background: achievement.background}}>
 			<ul className={'circles circlesMoreVisible pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
 			<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>

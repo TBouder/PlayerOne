@@ -15,7 +15,7 @@ import	{
 function	ItemCollection({selected, faIcon, title, onClick}) {
 	if (selected) {
 		return (
-			<div className={'rounded-lg bg-playerone overflow-hidden w-full h-full transition-colors z-10'}>
+			<div className={'rounded-lg bg-accent-900 overflow-hidden w-full h-full transition-colors z-10'}>
 				<div className={'flex flex-col justify-center items-center p-4'}>
 					<FontAwesomeIcon style={{width: 24, height: 24}} className={'mt-8 text-white'} icon={faIcon} />
 					<p className={'mt-6 text-white font-medium'}>{title}</p>
@@ -28,7 +28,7 @@ function	ItemCollection({selected, faIcon, title, onClick}) {
 			<div className={'flex flex-col justify-center items-center p-4'}>
 				<FontAwesomeIcon
 					style={{width: 24, height: 24}}
-					className={'mt-8 text-gray-400 dark:text-dark-white group-hover:animate-shake group-hover:text-playerone dark:group-hover:text-white'} icon={faIcon} />
+					className={'mt-8 text-gray-400 dark:text-dark-white group-hover:animate-shake group-hover:text-accent-900 dark:group-hover:text-white'} icon={faIcon} />
 				<p className={'mt-6 text-gray-400 dark:text-dark-white dark:group-hover:text-white font-medium'}>{title}</p>
 			</div>
 		</div>
@@ -43,7 +43,7 @@ function	SectionCollections() {
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Browse the collections`}
 				</h3>
-				<h3 className={'text-sm leading-6 font-normal text-playerone dark:text-dark-white text-opacity-60 cursor-pointer hover:text-opacity-100 hover:underline'}>
+				<h3 className={'text-sm leading-6 font-normal text-accent-900 dark:text-dark-white text-opacity-60 cursor-pointer hover:text-opacity-100 hover:underline'}>
 					{`See all`}
 				</h3>
 			</div>

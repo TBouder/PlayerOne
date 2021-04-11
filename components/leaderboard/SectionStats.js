@@ -15,7 +15,7 @@ function	ItemStatChallengers({count}) {
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
-				<div className={'absolute bg-teal-500 rounded-md p-3'}>
+				<div className={'absolute bg-accent-900 rounded-md p-3'}>
 					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'} aria-hidden={'true'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={'2'} d={'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'} /></svg>
 				</div>
 				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Total Challengers'}</p>
@@ -29,7 +29,7 @@ function	ItemStatChallengers({count}) {
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-dark-background-400 px-4 py-4 sm:px-6'}>
 					<div className={'text-sm'}>
 						<Link href={'#challengers'} passHref>
-							<a className={'font-medium text-teal-600 hover:text-teal-500'}>
+							<a className={'font-medium text-accent-900 hover:text-accent-700 hover:underline'}>
 								{'Discover the challengers'}
 							</a>
 						</Link>
@@ -43,7 +43,7 @@ function	ItemStatAchievements({count}) {
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
-				<div className={'absolute bg-teal-500 rounded-md p-3'}>
+				<div className={'absolute bg-accent-900 rounded-md p-3'}>
 					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' /></svg>
 				</div>
 				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Total achievements'}</p>
@@ -56,7 +56,7 @@ function	ItemStatAchievements({count}) {
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-dark-background-400 px-4 py-4 sm:px-6'}>
 					<div className={'text-sm'}>
 						<Link href={'/'} passHref>
-							<a className={'font-medium text-teal-600 hover:text-teal-500'}>
+							<a className={'font-medium text-accent-900 hover:text-accent-700 hover:underline'}>
 								{'View all'}
 							</a>
 						</Link>
@@ -82,7 +82,7 @@ function	ItemStatTotalSupply() {
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
-				<div className={'absolute bg-teal-500 rounded-md p-3'}>
+				<div className={'absolute bg-accent-900 rounded-md p-3'}>
 					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z' /><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z' /></svg>
 				</div>
 				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Current supply'}</p>
@@ -98,7 +98,7 @@ function	ItemStatTotalSupply() {
 						<a
 							href={'https://ropsten.etherscan.io/token/0x35017DC776c43Bcf8192Bb6Ba528348D32A57CB5'}
 							target={'_blank'}
-							className={'font-medium text-teal-600 hover:text-teal-500'}>
+							className={'font-medium text-accent-900 hover:text-accent-700 hover:underline'}>
 							{'Check token'}
 						</a>
 					</div>

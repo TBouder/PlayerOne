@@ -9,6 +9,7 @@ import	Link					from	'next/link';
 import	{useRouter}				from	'next/router';
 import	{FontAwesomeIcon}		from	'@fortawesome/react-fontawesome'
 import	{faCrown}				from	'@fortawesome/free-solid-svg-icons'
+import Image from 'next/image';
 
 function	SectionNavigate({menuOpen, set_menuOpen}) {
 	const	router = useRouter();
@@ -34,28 +35,28 @@ function	SectionNavigate({menuOpen, set_menuOpen}) {
 							</button>
 						</div>
 						<div className={'flex-1 hidden items-center justify-center sm:items-stretch sm:justify-start sm:flex'}>
-							<div>
-								<Link href={'/'} passHref>
-									<div className={'cursor-pointer'}>
-										<FontAwesomeIcon
-											style={{width: 24, height: 24}}
-											className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white'}
-											icon={faCrown} />
-									</div>
-								</Link>
+							<Link href={'/'} passHref>
+								<p className={'text-2xl cursor-pointer'}>{'🌕'}</p>
+								{/* <div className={'cursor-pointer'}>
+									<Image
+										width={30}
+										height={30}
+										layout={'fixed'}
+										src={'/coin.svg'} />
+								</div> */}
+							</Link>
+							<div className={'flex items-center'}>
+								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white text-sm cursor-pointer mx-8'}>{'About'}</p>
 							</div>
-							<div>
-								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mx-8'}>{'About'}</p>
-							</div>
-							<div>
+							<div className={'flex items-center'}>
 								<Link href={'/leaderboard'} passHref>
-									<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mr-8'}>
+									<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white text-sm cursor-pointer mr-8'}>
 										{'Leaderboard'}
 									</p>
 								</Link>
 							</div>
-							<div>
-								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white leading-7 text-sm cursor-pointer mr-8'}>{'Governance'}</p>
+							<div className={'flex items-center'}>
+								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white text-sm cursor-pointer mr-8'}>{'Governance'}</p>
 							</div>
 						</div>
 					</>

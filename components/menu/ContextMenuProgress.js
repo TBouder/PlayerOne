@@ -33,8 +33,8 @@ function	ContextItemClaimable({set_modalOpen, count}) {
 				{`${count} claimable`}
 			</p>
 			{count > 0 ? <span className={'flex absolute h-3 w-3 right-0 mr-2'}>
-				<span className={'animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75'} />
-				<span className={'relative inline-flex rounded-full h-3 w-3 bg-teal-500'} />
+				<span className={'animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-600 opacity-75'} />
+				<span className={'relative inline-flex rounded-full h-3 w-3 bg-accent-900'} />
 			</span> : null}
 		</li>
 	);
@@ -97,7 +97,7 @@ function	ContextMenuProgress({claims, claimables, locked, set_modalOpen, set_ope
 			<div className={'rounded-md shadow-lg overflow-auto'}>
 				<div className={'relative grid gap-2'}>
 					<div>
-						<div className={'bg-teal-600 px-2 py-2 flex flex-row justify-between items-center'}>
+						<div className={'bg-accent-900 px-2 py-2 flex flex-row justify-between items-center'}>
 							<p className={'font-medium text-sm text-white'}>{'Achievements'}</p>
 							<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 text-white animate-wobble-hor-bottom cursor-pointer'} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5 5a3 3 0 015-2.236A3 3 0 0114.83 6H16a2 2 0 110 4h-5V9a1 1 0 10-2 0v1H4a2 2 0 110-4h1.17C5.06 5.687 5 5.35 5 5zm4 1V5a1 1 0 10-1 1h1zm3 0a1 1 0 10-1-1v1h1z" clipRule="evenodd" /><path d="M9 11H3v5a2 2 0 002 2h4v-7zM11 18h4a2 2 0 002-2v-5h-6v7z" /></svg>
 						</div>

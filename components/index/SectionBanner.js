@@ -25,7 +25,7 @@ function	SectionBanner() {
 	const	[currentStep, set_currentStep] = useState(0);
 	const	[isClaiming, set_isClaiming] = useState(false);
 	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-3 gap-4';
-	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-teal-700 grid grid-cols-3 gap-4';
+	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-accent-900 grid grid-cols-3 gap-4';
 	const	thirdClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full wbtcGradient grid grid-cols-3 gap-4';
 
 	useInterval(() => {

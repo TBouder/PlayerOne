@@ -23,8 +23,8 @@ const	ItemBannerSponsor = forwardRef((props, ref) => {
 				</p>
 				<div className={'flex md:block justify-center items-center'}>
 					<HelperButton
-						bgColor={'bg-teal-700'}
-						textColor={'text-teal-700'}
+						bgColor={'bg-accent-900'}
+						textColor={'text-accent-900'}
 						achievementKey={props.achievementKey}
 						defaultClaimed={props.defaultClaimed}
 						onClaim={props.onClaim}

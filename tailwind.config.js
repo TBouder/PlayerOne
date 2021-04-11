@@ -9,12 +9,23 @@ module.exports = {
   darkMode: 'class',
   theme: {
     colors: {
+      accent: {
+        900: '#f9b12a',
+        800: '#f9b83f',
+        700: '#fac054',
+        600: '#fac869',
+        500: '#fbd07f',
+        400: '#fcd894',
+        300: '#fcdfa9',
+        200: '#fde7bf',
+        100: '#fdefd4',
+        50: '#fef7e9',
+      },
       gray: colors.blueGray,
       teal: colors.teal,
       amber: colors.amber,
       pink: colors.pink,
       green: colors.green,
-      emerald: colors.emerald,
       orange: colors.orange,
       red: colors.red,
       white: colors.white,
@@ -33,11 +44,7 @@ module.exports = {
         },
       },
       colors: {
-        'playerone': '#2846c2',
-        'playerone2': 'rgb(255,71,62)',
         'dark': {
-          // playerone: 'rgb(255, 158, 65)',
-          playerone: '#C1436D',
           black: '#051622',
           white: 'rgb(228, 226, 228)',
           background: {
@@ -49,10 +56,6 @@ module.exports = {
             400: 'rgb(24,48,95)',
             200: 'rgb(133, 142, 161)'
           },
-          typo: {
-            primary: '#DEB992',
-            secondary: '#1BA098',
-          }
         },
         'uniswap': {
           pink: 'rgb(255, 0, 122)',

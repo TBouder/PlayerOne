@@ -34,7 +34,7 @@ function	Page() {
 				<div ref={headerRef} className={'headerAnim'}>
 					<section
 						aria-label={'header'}
-						className={'py-32 md:py-48 bg-playerone -mt-28 relative'}>
+						className={'py-32 md:py-48 bg-accent-900 -mt-28 relative'}>
 						{/* <ul className={'circles circlesMoreVisible pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul> */}
 						<header className={'pt-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
 							<div className={'lg:text-center'}>

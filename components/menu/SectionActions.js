@@ -28,7 +28,7 @@ function	SectionActions() {
 		if (address) {
 			return (
 				<span className={'whitespace-nowrap'}>
-					<span className={'font-semibold bg-playerone text-white mr-2 -ml-4 px-2 py-4'}>{`150 RWD`}</span>
+					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`150 RWD`}</span>
 					{`${address.slice(0, 4)}...${address.slice(-4)}`}
 				</span>
 			);
@@ -56,7 +56,7 @@ function	SectionActions() {
 						}
 					}}
 					type={'button'}
-					className={'inline-flex px-4 py-2 items-center shadow-md leading-4 font-normal rounded-md text-xs text-gray-700 bg-white hover:bg-gray-100 overflow-auto focus:outline-none'}
+					className={'inline-flex px-4 py-2 items-center shadow-md leading-4 font-normal rounded-md text-xs text-gray-700 bg-white hover:bg-gray-100 overflow-auto focus:outline-none overflow-y-hidden'}
 					id={'options-menu'}
 					aria-expanded={'true'}
 					aria-haspopup={'true'}>
@@ -66,8 +66,8 @@ function	SectionActions() {
 					<svg className={`-mr-1 ml-2 h-5 w-5 text-gray-400 ${!active ? 'hidden' : 'block'}`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" /></svg>
 				</button>
 				{elements.claimables?.length > 0 ? <span className={`transition-opacity flex absolute h-3 w-3 top-0 right-0 -mt-0.5 -mr-1 ${active && !slideOverOpen ? 'opacity-100' : 'opacity-0'}`}>
-					<span className={'animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75'} />
-					<span className={'relative inline-flex rounded-full h-3 w-3 bg-teal-500'} />
+					<span className={'animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-600 opacity-75'} />
+					<span className={'relative inline-flex rounded-full h-3 w-3 bg-accent-900'} />
 				</span> : null}
 			</div>
 

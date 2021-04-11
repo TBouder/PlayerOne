@@ -29,7 +29,7 @@ function	SectionWalletConnect() {
 					onClick={() => connect(walletType.METAMASK)}
 					type={'button'}
 					style={{display: mount && typeof window !== 'undefined' && typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask ? 'inline-flex' : 'none'}}
-					className={'inline-flex items-center px-4 py-4 border border-transparent shadow-sm leading-4 font-medium rounded-md text-white bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 justify-center md:justify-items-auto'}>
+					className={'inline-flex items-center px-4 py-4 border border-transparent shadow-sm leading-4 font-medium rounded-md text-white bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-900 justify-center md:justify-items-auto'}>
 					<Image
 						src={'/logoMetamask.svg'}
 						alt={'wallet-connect'}
@@ -43,7 +43,7 @@ function	SectionWalletConnect() {
 					id={'with_wallet_connect'}
 					onClick={() => connect(walletType.WALLET_CONNECT)}
 					type={'button'}
-					className={'inline-flex items-center px-4 py-4 border border-transparent shadow-sm leading-4 font-medium rounded-md text-white bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 justify-center md:justify-items-auto'}>
+					className={'inline-flex items-center px-4 py-4 border border-transparent shadow-sm leading-4 font-medium rounded-md text-white bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent-900 justify-center md:justify-items-auto'}>
 					<Image
 						src={'/logoWalletConnect.svg'}
 						alt={'wallet-connect'}
