@@ -8,11 +8,12 @@
 function	PageHeader() {
 	return (
 		<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'} style={{width: 'fit-content'}}>
-			<div className={'lg:text-center'}>
-				<p className={'text-3xl leading-8 font-extrabold tracking-tight text-playerone-gradient sm:text-5xl my-4 md:my-8'} style={{fontFamily: '"Press Start 2P"'}}>
-					{'PLAYER ONE'}
-				</p>
-				<p className={'mt-4 max-w-2xl text-xl text-gray-500 dark:text-dark-white lg:mx-auto'}>
+			<div className={'text-center'}>
+				<span className={'flex flex-row my-4 md:my-6 items-center justify-center text-playerone-gradient text-3xl sm:text-5xl leading-8 font-extrabold tracking-tight'} style={{fontFamily: '"Press Start 2P"'}}>
+					<p className={'mr-6'}>{'PLAYER'}</p>
+					<p className={''}>{'ONE'}</p>
+				</span>
+				<p className={'my-4 max-w-2xl text-sm md:text-base text-gray-500 dark:text-dark-white dark:opacity-75 lg:mx-auto'}>
 					{'Are you ready to claim your name ? Come and unlock unique achievements throughout your Degen life in the DEFI ecosystem, and become the first to get the golden Reward'}
 				</p>
 			</div>

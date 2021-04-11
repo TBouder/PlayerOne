@@ -80,7 +80,7 @@ function	Page() {
 
 	return (
 		<main className={'dark:bg-dark-background-900'}>
-			<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto py-32 md:py-48 -mt-28 relative'}>
+			<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto py-32 md:py-48 mt-12 md:-mt-28 relative'}>
 				<div className={'py-6'}>
 					<div ref={headerRef} className={'headerAnim'}>
 						<Header />

@@ -71,7 +71,7 @@ function	SectionBanner() {
 	}
 
 	return (
-		<section id={'preview'} aria-label={'preview'} className={'w-full mt-12 z-10'}>
+		<section id={'preview'} aria-label={'preview'} className={'w-full mt-4 md:mt-12 z-10'}>
 			<div ref={hoverRef} className={'relative h-72 md:h-77.5'}>
 				<ItemBannerUniswap
 					id={'Like a unicorn'}

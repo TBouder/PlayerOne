@@ -17,10 +17,10 @@ function	SectionHeader() {
 						{'Greetings'}
 					</p>
 					<span className={'flex flex-row items-center justify-center'}>
-						<p className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-5xl my-4 md:my-8 mr-6'} style={{fontFamily: '"Press Start 2P"'}}>
+						<p className={'text-3xl sm:text-5xl leading-8 font-extrabold tracking-tight text-white my-4 md:my-8 mr-6'} style={{fontFamily: '"Press Start 2P"'}}>
 							{'PLAYER'}
 						</p>
-						<p className={'text-3xl leading-8 font-extrabold tracking-tight text-white sm:text-5xl my-4 md:my-8'} style={{fontFamily: '"Press Start 2P"'}}>
+						<p className={'text-3xl sm:text-5xl leading-8 font-extrabold tracking-tight text-white my-4 md:my-8'} style={{fontFamily: '"Press Start 2P"'}}>
 							{'ONE'}
 						</p>
 					</span>
