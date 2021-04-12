@@ -9,7 +9,7 @@ import	{useState}								from	'react';
 import	{FontAwesomeIcon}						from	'@fortawesome/react-fontawesome'
 import	{
 	faCoins, faParachuteBox, faGasPump, faShapes,
-	faUniversity, faAward}						from	'@fortawesome/free-solid-svg-icons'
+	faUniversity, faAward}						from	'@fortawesome/pro-solid-svg-icons'
 
 
 function	ItemCollection({selected, faIcon, title, onClick}) {

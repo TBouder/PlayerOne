@@ -6,7 +6,7 @@
 ******************************************************************************/
 
 import	{forwardRef}					from	'react';
-import	{faMedal}						from	'@fortawesome/free-solid-svg-icons'
+import	{faMedal}						from	'@fortawesome/pro-solid-svg-icons'
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
 import	HelperButton					from	'components/index/ItemBanners/HelperButton';
 
