@@ -7,7 +7,7 @@
 
 import	{useRef, useState, useEffect}	from	'react';
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
-import	{faCrown}						from	'@fortawesome/free-solid-svg-icons'
+import	{faCrown}						from	'@fortawesome/pro-solid-svg-icons'
 import	jazzicon						from	'@metamask/jazzicon';
 import	useWeb3							from	'contexts/useWeb3';
 import	{jsNumberForAddress}			from	'utils'

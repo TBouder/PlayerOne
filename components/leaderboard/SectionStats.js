@@ -7,6 +7,8 @@
 
 import	{useState, useEffect}		from	'react';
 import	Link						from	'next/link';
+import	{FontAwesomeIcon}			from	'@fortawesome/react-fontawesome';
+import	{faUsersCrown, faTrophy, faCoin}				from	'@fortawesome/pro-solid-svg-icons'
 import	useWeb3						from	'contexts/useWeb3';
 import	useAchievements				from	'contexts/useAchievements';
 import	{formatNumber}				from	'utils'
@@ -15,10 +17,13 @@ function	ItemStatChallengers({count}) {
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
-				<div className={'absolute bg-accent-900 rounded-md p-3'}>
-					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'} aria-hidden={'true'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={'2'} d={'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'} /></svg>
+				<div className={'absolute bg-accent-900 rounded-md p-2 group'}>
+					<FontAwesomeIcon
+						style={{width: 32, height: 32}}
+						className={'text-white group-hover:animate-shake'}
+						icon={faUsersCrown} />
 				</div>
-				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Total Challengers'}</p>
+				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Challengers'}</p>
 			</dt>
 
 			<dd className={'ml-16 pb-6 flex items-baseline sm:pb-7'}>
@@ -43,8 +48,11 @@ function	ItemStatAchievements({count}) {
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
-				<div className={'absolute bg-accent-900 rounded-md p-3'}>
-					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' /></svg>
+				<div className={'absolute bg-accent-900 rounded-md p-3 group'}>
+					<FontAwesomeIcon
+						style={{width: 24, height: 24}}
+						className={'text-white group-hover:animate-shake'}
+						icon={faTrophy} />
 				</div>
 				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Total achievements'}</p>
 			</dt>
@@ -83,7 +91,10 @@ function	ItemStatTotalSupply() {
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>
 			<dt>
 				<div className={'absolute bg-accent-900 rounded-md p-3'}>
-					<svg className={'h-6 w-6 text-white'} xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z' /><path strokeLinecap={'round'} strokeLinejoin={'round'} strokeWidth={2} d='M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z' /></svg>
+					<FontAwesomeIcon
+						style={{width: 24, height: 24}}
+						className={'text-white group-hover:animate-shake'}
+						icon={faCoin} />
 				</div>
 				<p className={'ml-16 text-sm font-medium text-gray-500 dark:text-dark-white truncate'}>{'Current supply'}</p>
 			</dt>

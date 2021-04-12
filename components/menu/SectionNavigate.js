@@ -7,9 +7,6 @@
 
 import	Link					from	'next/link';
 import	{useRouter}				from	'next/router';
-import	{FontAwesomeIcon}		from	'@fortawesome/react-fontawesome'
-import	{faCrown}				from	'@fortawesome/free-solid-svg-icons'
-import Image from 'next/image';
 
 function	SectionNavigate({menuOpen, set_menuOpen}) {
 	const	router = useRouter();

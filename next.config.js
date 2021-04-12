@@ -58,8 +58,8 @@ const	ContentSecurityPolicy = `
 	default-src 'self';
 	script-src 'self' 'unsafe-eval' 'unsafe-inline';
 	style-src 'self' 'unsafe-inline';
-	img-src 'none';
-	media-src 'none';
+	img-src 'self';
+	media-src 'self';
 	connect-src *;
 	font-src 'self' fonts.googleapis.com;
 `;
