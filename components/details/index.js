@@ -84,16 +84,3 @@ function	Page(props) {
 }
 
 export default Page;
-
-
-// #fdac53
-// #fdb464
-// #fdbc75
-// #fdc486
-// #fdcd97
-// #fed5a9
-// #feddba
-// #fee6cb
-// #feeedc
-// #fef6ed
-// #ffffff
