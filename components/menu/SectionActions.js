@@ -5,30 +5,49 @@
 **	@Filename:				SectionActions.js
 ******************************************************************************/
 
-import	{useState, useRef}		from	'react';
+import	{useState, useRef, useEffect}	from	'react';
+import	useSWR					from	'swr';
+import	{ethers}				from	'ethers';
 import	useWeb3					from	'contexts/useWeb3';
 import	useAchievements			from	'contexts/useAchievements';
 import	useOnClickOutside		from	'hook/useOnClickOutside';
 import	ContextMenuLogin		from	'components/menu/ContextMenuLogin'
 import	ContextMenuProgress		from	'components/menu/ContextMenuProgress'
+import	{bigNumber}				from	'utils';
+
+let walletBalanceNonceHack = 0;
+const fakeFetcher = () => walletBalanceNonceHack++;
 
 function	SectionActions() {
 	const	refOutside = useRef();
-	const	{address, active} = useWeb3();
+	const	{address, active, provider} = useWeb3();
 	const	{elements} = useAchievements()
 	const	[open, set_open] = useState(false);
 	const	[slideOverOpen, set_slideOverOpen] = useState(false);
+	const	[userBalance, set_userBalance] = useState(bigNumber.from(0));
+	const	{data: balanceNonce} = useSWR(`gimemybalance`, fakeFetcher);
 
 	useOnClickOutside(refOutside, () => {
 		set_open(false);
 		set_slideOverOpen(false);
 	});
 
+	useEffect(async () => {
+		const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
+		const ERC20Contract = new ethers.Contract(process.env.TOKEN_ADDRESS, ERC20_ABI, provider);
+		try {
+		  const userBalance = await ERC20Contract.balanceOf(address);
+		  set_userBalance(userBalance)
+		} catch (error) {
+		  console.log(error);
+		}
+	}, [balanceNonce])
+
 	function	renderContent() {
 		if (address) {
 			return (
 				<span className={'whitespace-nowrap'}>
-					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`150 RWD`}</span>
+					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`${userBalance.toString()} RWD`}</span>
 					{`${address.slice(0, 4)}...${address.slice(-4)}`}
 				</span>
 			);

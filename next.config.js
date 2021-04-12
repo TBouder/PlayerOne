@@ -11,12 +11,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 })
 
 module.exports = withBundleAnalyzer({
-	async headers() {
-		return [{
-			source: '/', headers: securityHeaders,
-			source: '/:path*', headers: securityHeaders,
-		}]
-	},
 	plugins: [
 		new Dotenv()
 	],
@@ -24,6 +18,7 @@ module.exports = withBundleAnalyzer({
 		WSS_ETH_NODE: process.env.WSS_ETH_NODE,
 		ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
 		API_URI: process.env.API_URI,
+		TOKEN_ADDRESS: process.env.TOKEN_ADDRESS,
 	},
 	images: {
 		domains: ['images.unsplash.com', 'source.unsplash.com'],
@@ -38,6 +33,12 @@ module.exports = withBundleAnalyzer({
 			maxInitialRequests: 25,
 			minSize: 20000
 		}
+	},
+	async headers() {
+		return [{
+			source: '/', headers: securityHeaders,
+			source: '/:path*', headers: securityHeaders,
+		}]
 	},
 	webpack: (config, {webpack}) => {
 		// Note: we provide webpack above so you should not `require` it
