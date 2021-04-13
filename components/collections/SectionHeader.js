@@ -9,7 +9,7 @@ function	SectionHeader() {
 	return (
 		<section
 			aria-label={'header'}
-			className={'py-32 md:py-48 bg-playerone-gradient -mt-24 md:-mt-28 relative'}>
+			className={'py-32 md:py-48 bg-white dark:bg-dark-background-900 bg-playerone-gradient -mt-24 md:-mt-28 relative'}>
 			<ul className={'circles circlesMoreVisible pointer-events-none'}><li /><li /><li /><li /><li /><li /><li /><li /><li /><li /></ul>
 			<header className={'pt-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
 				<div className={'text-center'}>
