@@ -7,6 +7,7 @@
 
 import	{useState, useEffect, useContext, createContext}	from	'react';
 import	useLocalStorage										from	'hook/useLocalStorage';
+import	useClientEffect										from	'hook/useClientEffect';
 
 const	UI = createContext();
 export const UIApp = ({children}) => {
@@ -33,13 +34,13 @@ export const UIApp = ({children}) => {
 		}
 	}, [confetti.active])
 
-	useEffect(() => {
-		if (typeof(window) !== 'undefined' && theme !== 'dark-initial') {
+	useClientEffect(() => {
+		if (theme !== 'dark-initial') {
 			const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 			if (darkModeMediaQuery.matches)
 				set_theme('dark')
 		}
-	}, [window])
+	}, [])
 
 	useEffect(() => {
 		if (theme === 'light') {
