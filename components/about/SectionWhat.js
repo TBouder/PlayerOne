@@ -22,6 +22,8 @@ function	SectionWhat() {
 				<p>All of these adventures show how passionate and diverse is the crypto world. But there is one thing that links all of these different projects & events: <strong>community</strong>. And as crypto relies on <strong>transparency</strong>, <strong>accessibility</strong> and <strong>openness</strong>, federating a community is key to make projects successful. This is why <strong>Player One</strong> aims at building a community of engaged crypto enthusiasts that will be able to claim their rewards but also to spot the latest protocols or opportunities available in the crypto space. Challenges provide you with guidance to identify them but also on how to achieve them. Leaderboard will enable you to know the ones having the hottest activity in this new space.</p>
 
 				<p>As you achieve more and more you will be able to participate in <strong>exclusive programs with specific rewards</strong> such as participation in beta testing of projects, get access to referral programs, gain exclusive NFTs highlighting your engagement, be part of the governance of some protocols, and much more. All of these non exhaustive rewards will be distributed solely based on your crypto activity.</p>
+
+				<p>As stated precedently, we are betting on your activity to build a strong and recognized community. In line with this, we are very open to suggestions, ideas or help in building this project. Do not hesitate to <a href={'#'} target={'_blank'} className={'font-medium hover:underline cursor-pointer'}>reach out</a> we would be please to talk to build the best product possible.</p>
 			</div>
 		</div>
 	);
