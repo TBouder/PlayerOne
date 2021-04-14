@@ -10,7 +10,7 @@ import	useLocalStorage										from	'hook/useLocalStorage';
 
 const	UI = createContext();
 export const UIApp = ({children}) => {
-	const	[theme, set_theme] = useLocalStorage('theme', 'light');
+	const	[theme, set_theme] = useLocalStorage('theme', 'dark-initial');
 	const	[confetti, set_confetti] = useState({x: 0, y: 0});
 	const	confettiConfig = {
 		angle: 90,
@@ -34,10 +34,19 @@ export const UIApp = ({children}) => {
 	}, [confetti.active])
 
 	useEffect(() => {
+		if (typeof(window) !== 'undefined' && theme !== 'dark-initial') {
+			const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+			if (darkModeMediaQuery.matches)
+				set_theme('dark')
+		}
+	}, [window])
+
+	useEffect(() => {
 		if (theme === 'light') {
 			document.documentElement.classList.add('light')
 			document.documentElement.classList.remove('dark')
-		} else if (theme === 'dark') {
+			document.documentElement.classList.remove('dark-initial')
+		} else if (theme === 'dark' || theme === 'dark-initial') {
 			document.documentElement.classList.add('dark')
 			document.documentElement.classList.remove('light')
 		}

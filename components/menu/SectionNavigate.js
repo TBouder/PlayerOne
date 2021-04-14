@@ -43,7 +43,9 @@ function	SectionNavigate({menuOpen, set_menuOpen}) {
 								</div> */}
 							</Link>
 							<div className={'flex items-center'}>
-								<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white text-sm cursor-pointer mx-8'}>{'About'}</p>
+								<Link href={'/about'} passHref>
+									<p className={'text-gray-600 hover:text-gray-900 dark:text-dark-white dark:hover:text-white text-sm cursor-pointer mx-8'}>{'About'}</p>
+								</Link>
 							</div>
 							<div className={'flex items-center'}>
 								<Link href={'/leaderboard'} passHref>
