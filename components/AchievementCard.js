@@ -72,7 +72,6 @@ function	ClaimableButtom(props) {
 	);
 };
 
-
 const	AchievementCard = forwardRef((props, ref) => {
 	const	{addToast} = useToasts();
 	const	{confetti} = useUI();
@@ -126,8 +125,8 @@ const	AchievementCard = forwardRef((props, ref) => {
 		<Link href={`/details/${achievement.slug}`}>
 			<div
 				ref={ref}
-				className={'flex w-full lg:w-auto'}>
-				<div className={`flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu shadow-lg rounded-lg bg-white dark:bg-dark-background-400 ${props.claimed || props.claimable ? 'shine hover:scale-102' : 'filter grayscale dark:filter-none dark:opacity-20'}`}>
+				className={'flex w-full lg:w-auto dark:bg-dark-background-900 bg-white rounded-lg'}>
+				<div className={`flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu shadow-lg rounded-lg bg-white dark:bg-dark-background-400 ${props.claimed || props.claimable ? 'shine hover:scale-102' : 'filter grayscale dark:filter-none dark:opacity-20'}`} style={{marginTop: -1}}>
 					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
 						<div className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl bg-white bg-opacity-90'}>

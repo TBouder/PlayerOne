@@ -52,7 +52,7 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 					<div className={'sm:flex sm:items-center sm:justify-between'}>
 						<div className={'w-full flex flex-col'}>
 
-							<SectionCollections collections={achievement.badges} className={'hidden lg:flex'} />
+							<SectionCollections collections={achievement.collections} className={'hidden lg:flex'} />
 
 							<div aria-label={'descriptions'} className={'flex flex-col lg:flex-row py-4 lg:py-0'}>
 								<div className={'flex flex-row w-full lg:w-1/3 pr-0 lg:pr-2'}>
@@ -64,7 +64,7 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 										</div>
 									</div>
 									<div className={'ml-4 -mt-2 lg:mt-1 '}>
-										<SectionCollections collections={achievement.badges} className={'flex lg:hidden'} />
+										<SectionCollections collections={achievement.collections} className={'flex lg:hidden'} />
 										<span className={'text-xl font-bold text-gray-900 dark:text-white sm:text-2xl'}>
 											{achievement.title}
 											<p className={'text-sm font-normal text-gray-400 dark:text-dark-white inline ml-2'}>

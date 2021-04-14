@@ -8,10 +8,49 @@
 import	{useRef, useState, useEffect}		from	'react';
 import	SectionHeader						from	'components/collections/SectionHeader';
 import	SectionCollections					from	'components/collections/SectionCollections';
-import	useSWR								from	'swr';
-import	{fetcher}							from	'utils'
+import	useAchievements						from	'contexts/useAchievements';
+import	useWeb3								from	'contexts/useWeb3';
 
-function	Page(props) {
+function	Page() {
+	const	{active} = useWeb3();
+	const	{elements, achievementsCheckProgress} = useAchievements();
+	const	[collectionsProgress, set_collectionsProgress] = useState({});
+
+	useEffect(() => {
+		if (elements && active && achievementsCheckProgress.progress === achievementsCheckProgress.total) {
+			const	allAchiements = [...elements?.claims || [], ...elements?.claimables || [],...elements?.locked || []];
+			allAchiements.forEach((achievement) => {
+				achievement.collections.forEach((collection) => {
+					if (achievement.status === 'CLAIMED') {
+						set_collectionsProgress(x => ({...x,
+							'all': {
+								claimed: (x['all'] ? x['all']?.claimed || 0 : 0) + 1,
+								count: (x['all'] ? x['all']?.count || 0 : 0) + 1,
+							},
+							[collection]: {
+								claimed: (x[collection] ? x[collection]?.claimed || 0 : 0) + 1,
+								count: (x[collection] ? x[collection]?.count || 0 : 0) + 1,
+							}
+						}))
+					} else {
+						set_collectionsProgress(x => ({...x,
+							'all': {
+								claimed: (x['all'] ? x['all']?.claimed || 0 : 0),
+								count: (x['all'] ? x['all']?.count || 0 : 0) + 1,
+							},
+							[collection]: {
+								claimed: (x[collection] ? x[collection]?.claimed || 0 : 0),
+								count: (x[collection] ? x[collection]?.count || 0 : 0) + 1,
+							}
+						}))
+					}
+				});
+			})
+		} else if (!active) {
+			set_collectionsProgress({});
+		}
+	}, [elements.nonce, achievementsCheckProgress, active])
+
 	/**************************************************************************
 	**	Used for the animations
 	**************************************************************************/
@@ -39,7 +78,7 @@ function	Page(props) {
 									className={'h-96 hidden dark:block'}
 									style={{zIndex: 0, backgroundImage: 'url("/bg-noise-dark.svg")'}} />
 							</div>
-							<SectionCollections />
+							<SectionCollections progress={collectionsProgress} />
 						</div>
 					</div>
 				</main>

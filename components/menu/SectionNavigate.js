@@ -10,14 +10,17 @@ import	{useRouter}				from	'next/router';
 
 function	SectionNavigate({menuOpen, set_menuOpen}) {
 	const	router = useRouter();
+	const	pathWithBack = ['/details/[slug]', '/collections/[slug]']
 
 	return (
 		<nav className={'flex flex-col w-full'}>
 			<div className={'relative flex-row items-center text-left z-50 pointer-events-auto flex'}>
-				{router.pathname === '/details/[slug]' ? <Link href={'/'} scroll={false} passHref>
-					<svg className={'w-6 h-6 text-gray-400 hover:text-gray-900 cursor-pointer'} xmlns='http://www.w3.org/2000/svg' fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-				</Link> : null}
-				{router.pathname !== '/details/[slug]' ?
+				{pathWithBack.includes(router.pathname) ?
+					<div onClick={() => router.back()}>
+						<svg className={'w-6 h-6 text-gray-400 hover:text-gray-900 dark:hover:text-white cursor-pointer'} xmlns='http://www.w3.org/2000/svg' fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+					</div>
+				: null}
+				{!pathWithBack.includes(router.pathname) ?
 					<>
 						<div className={'absolute inset-y-0 left-0 flex items-center sm:hidden'}>
 								<button

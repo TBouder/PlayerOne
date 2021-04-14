@@ -8,7 +8,7 @@
 import	{FontAwesomeIcon}				from	'@fortawesome/react-fontawesome'
 import	{faDiscord, faEthereum, faTelegram, faTwitter}						from	'@fortawesome/free-brands-svg-icons';
 
-function	ItemTeamMajor({name, title, photo}) {
+function	ItemTeam({name, title, photo}) {
 	return (
 		<li className={'sm:py-8'}>
 			<div className={'space-y-4'}> 
@@ -85,9 +85,9 @@ function	SectionTeam() {
 			</div>
 			<div className={'lg:col-span-3'}>
 				<ul className='space-x-12 flex flex-row'>
-					<ItemTeamMajor name={'Major'} title={'Someone'} photo={'/major.jpg'} />
-					<ItemTeamMajor name={'CAC'} title={'Somebody else'} photo={'/cac.jpg'} />
-					<ItemTeamMajor name={'Pepe'} title={'A random frog'} photo={'/pepe.jpg'} />
+					<ItemTeam name={'Major'} title={'Someone'} photo={'/major.jpg'} />
+					<ItemTeam name={'CAC'} title={'Somebody else'} photo={'/cac.jpg'} />
+					<ItemTeam name={'Pepe'} title={'A random frog'} photo={'/pepe.jpg'} />
 				</ul>
 			</div>
 		</div>
