@@ -69,3 +69,10 @@ export function jsNumberForAddress(address) {
 	const seed = parseInt(addr, 16);
 	return seed;
 }
+
+export function truncateAddress(address) {
+	if (address !== undefined) {
+		return `${address.slice(0, 4)}...${address.slice(-4)}`;
+	}
+	return `0x000...0000`;
+}

@@ -151,7 +151,8 @@ module.exports = {
         backgroundColor: ['group-focus'],
         opacity: ['group-hover', 'group-focus', 'dark'],
         filter: ['dark'],
-        display: ['group-hover'],
+        borderStyle: ['dark'],
+        display: ['dark', 'group-hover'],
         animation: ['group-hover', 'hover']
     },
   },

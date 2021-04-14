@@ -30,9 +30,16 @@ function	Page(props) {
 			<div ref={contentRef} className={'contentAnim'}>
 				<main className={'-mt-24 pb-8'}>
 					<div className={'max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8'}>
-						<div className={'flex flex-col'}>
+						<div className={'flex flex-col relative'}>
+							<div className={'absolute h-96 -left-28 w-full transform translate-y-1/3 '}>
+								<div
+									className={'h-96 block dark:hidden'}
+									style={{zIndex: 0, backgroundImage: 'url("/bg-noise.svg")'}} />
+								<div
+									className={'h-96 hidden dark:block'}
+									style={{zIndex: 0, backgroundImage: 'url("/bg-noise-dark.svg")'}} />
+							</div>
 							<SectionCollections />
-							<div className={'relative h-96 transform -translate-y-2/3 -translate-x-1/2'} style={{zIndex: 0, backgroundImage: 'url("/bg-noise.svg")'}} />
 						</div>
 					</div>
 				</main>

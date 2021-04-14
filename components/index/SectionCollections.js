@@ -10,6 +10,7 @@ import	{FontAwesomeIcon}						from	'@fortawesome/react-fontawesome'
 import	{
 	faCoins, faParachuteBox, faGasPump, faShapes,
 	faUniversity, faAward}						from	'@fortawesome/pro-solid-svg-icons'
+import Link from 'next/link';
 
 
 function	ItemCollection({selected, faIcon, title, onClick}) {
@@ -43,9 +44,11 @@ function	SectionCollections() {
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Browse the collections`}
 				</h3>
-				<h3 className={'text-sm leading-6 font-normal text-accent-900 dark:text-dark-white text-opacity-60 cursor-pointer hover:text-opacity-100 hover:underline'}>
-					{`See all`}
-				</h3>
+				<Link href={'/collections'} passHref>
+					<h3 className={'text-sm leading-6 font-normal text-accent-900 dark:text-dark-white text-opacity-60 cursor-pointer hover:text-opacity-100 hover:underline'}>
+						{`See all`}
+					</h3>
+				</Link>
 			</div>
 			<div className={'grid gap-6 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8'}>
 				<ItemCollection selected={selec === 0} onClick={() => set_selec(0)} faIcon={faAward} title={'All'} />

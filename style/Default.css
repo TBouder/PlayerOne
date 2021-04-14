@@ -519,7 +519,7 @@ input[type=number] {
     border-radius: 50%;
     width: 4.3em;
     height: 4.3em;
-    background-color: white;
+    background-color: #F1F5F9;
     content: " ";
 }
 .dark .progress-circle:after{
@@ -530,17 +530,6 @@ input[type=number] {
     width: 5em;
     z-index: 2;
 }
-/* .progress-circle span {
-    position: absolute;
-    line-height: 5em;
-    width: 5em;
-    text-align: center;
-    display: flex;
-	justify-content: center;
-	align-items: center;
-    color: #f9b12a;
-    z-index: 2;
-} */
 .left-half-clipper { 
    border-radius: 50%;
    width: 5em;
