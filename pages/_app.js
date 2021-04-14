@@ -36,10 +36,10 @@ function	AppWrapper(props) {
 	return (
 		<>
 			<Head>
-				<title>{'DEFI Achievements'}</title>
+				<title>{'Player One'}</title>
 				<meta httpEquiv={'X-UA-Compatible'} content={'IE=edge'} />
 				<meta name={'viewport'} content={'width=device-width, initial-scale=1'} />
-				<meta name={'description'} content={'DEFI Achievements - Get achievement & NFT from your DEFI Degen score'} />
+				<meta name={'description'} content={'Player One - Are you ready to claim your name ?'} />
 				<meta name={'msapplication-TileColor'} content={'#9fcc2e'} />
 				<meta name={'theme-color'} content={'#ffffff'} />
 				<link rel="preconnect" href="https://fonts.gstatic.com" />
