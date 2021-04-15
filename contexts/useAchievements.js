@@ -18,7 +18,7 @@ import	{bigNumber, fetcher, removeFromArray}				from	'utils';
 const	AchievementsContext = createContext();
 export const AchievementsContextApp = (props) => {
 	const	{addToast} = useToasts();
-	const	{address, provider, rProvider, walletData, chainID, actions} = useWeb3();
+	const	{address, ethMainnetProvider, walletData, chainID, actions} = useWeb3();
 
 	/**************************************************************************
 	**	achievements: matches the local state to handle the achievements on the
@@ -179,7 +179,7 @@ export const AchievementsContextApp = (props) => {
 	**	Updating the achievements when we have the wallet history
 	**************************************************************************/
 	useEffect(() => {
-		if (walletData.ready && provider) {
+		if (walletData.ready && ethMainnetProvider) {
 			if (elements.locked !== undefined && !achievementsCheckProgress.checking) {
 				checkAchievements();
 			}
@@ -212,7 +212,7 @@ export const AchievementsContextApp = (props) => {
 		if (achievement?.strategy?.name) {
 			const	strategy = getStrategy(achievement.strategy.name);
 			if (strategy !== undefined) {
-				const	{unlocked} = await strategy(provider, address, walletData, achievement?.strategy?.args);
+				const	{unlocked} = await strategy(ethMainnetProvider, address, walletData, achievement?.strategy?.args);
 				if (unlocked) {
 					try {
 						const	newClaimable = await axios.post(`${process.env.API_URI}/claimable`, {
@@ -265,7 +265,7 @@ export const AchievementsContextApp = (props) => {
 		if (strategy === undefined) {
 			return null;
 		}
-		const	{unlocked, informations} = await strategy(provider, address, walletData, achievement?.strategy?.args);
+		const	{unlocked, informations} = await strategy(ethMainnetProvider, address, walletData, achievement?.strategy?.args);
 		achievement.unlocked = unlocked;
 		achievement.informations = informations || {};
 		return achievement;

@@ -91,6 +91,41 @@ function	ContextTheme({set_open}) {
 	);
 }
 
+function	ContextExplorer({set_open}) {
+	const	{chainID} = useWeb3();
+
+	function	getNetwork() {
+		if (chainID === 524289 || chainID === 80001) { //POLYGON TESNET
+			return `https://explorer-mumbai.maticvigil.com/address/${process.env.CONTRACT_ADDRESS}`;
+		}
+		if (chainID === 311 || chainID === 137) { //POLYGON MAINNET
+			return `https://explorer-mainnet.maticvigil.com//address/${process.env.CONTRACT_ADDRESS}`;
+		}
+		if (chainID === 3) { //ETHEREUM TESTNET
+			return `https://ropsten.etherscan.io/address/${process.env.CONTRACT_ADDRESS}`;
+		}
+		if (chainID === 1) { //ETHEREUM MAINNET
+			return `https://etherscan.io/address/${process.env.CONTRACT_ADDRESS}`;
+		}
+		return '#';
+	}
+
+	return (
+		<a
+			target={'_blank'}
+			href={getNetwork()}>
+			<li
+				onClick={() => set_open(false)}
+				className={'transition-all px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer border-t border-solid border-gray-200'}>
+					<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 inline'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+				<p className={'ml-2 text-sm inline'}>
+					{`Contract on chain ${chainID == 80001}`}
+				</p>
+			</li>
+		</a>
+	);
+}
+
 function	ContextMenuProgress({claims, claimables, locked, set_modalOpen, set_open}) {
 	return (
 		<div className={'absolute z-10 left-1/2 transform -translate-x-1/2 mt-6 px-2 w-full max-w-xs sm:px-0'}>
@@ -111,6 +146,7 @@ function	ContextMenuProgress({claims, claimables, locked, set_modalOpen, set_ope
 								<ContextItemLocked
 									count={locked?.length || 0} />
 								<ContextTheme set_open={set_open} />
+								<ContextExplorer set_open={set_open} />
 								<ContextDisconnnect set_open={set_open} />
 							</ul>
 						</div>

@@ -75,7 +75,7 @@ function	ClaimableButtom(props) {
 const	AchievementCard = forwardRef((props, ref) => {
 	const	{addToast} = useToasts();
 	const	{confetti} = useUI();
-	const	{provider, address, walletData} = useWeb3();
+	const	{ethMainnetProvider, address, walletData} = useWeb3();
 	const	{actions} = useAchievements();
 
 	const	[achievement, set_achievement] = useState(props.achievement);
@@ -105,7 +105,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 			return console.error(`No strategy function`);
 		}
 
-		const	{unlocked} = await strategyFunc(provider, address, walletData, strategy?.args);
+		const	{unlocked} = await strategyFunc(ethMainnetProvider, address, walletData, strategy?.args);
 		if (!unlocked) {
 			addToast(`Achievement is not unlocked`, {appearance: 'error'});
 			callback({status: 'ERROR'});

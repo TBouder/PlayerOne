@@ -39,7 +39,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	web3 = useWeb3React();
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
 	const	[provider, set_provider] = useState(undefined);
-	const	[rProvider, set_rProvider] = useState(undefined);
+	const	[ethMainnetProvider, set_ethMainnetProvider] = useState(undefined);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
 	const	[lastWallet, set_lastWallet] = useLocalStorage('lastWallet', walletType.NONE);
@@ -128,15 +128,15 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	useEffect(() => {
 		//USED FOR THE ENS
 		// const	_providerMainnet = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
-		// set_rProviderMainnet(_providerMainnet)
+		// set_ethMainnetProviderMainnet(_providerMainnet)
 
 		//USED FOR THE ROPSTEN BUILD
-		const	_provider = new ethers.providers.AlchemyProvider('ropsten', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
-		set_rProvider(_provider)
+		const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		set_ethMainnetProvider(_provider)
 
 		//USED FOR THE LOCAL DEV
 		// const	_provider = new ethers.providers.getDefaultProvider('http://localhost:8545')
-		// set_rProvider(_provider)
+		// set_ethMainnetProvider(_provider)
 	}, [])
 
 	/**************************************************************************
@@ -157,7 +157,15 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			if (active) {
 				deactivate()
 			}
-			const	injected = new InjectedConnector({supportedChainIds: [1, 3, 1337]})
+			const	injected = new InjectedConnector({
+				supportedChainIds: [
+					1, //ETH MAINNET
+					3, // ETH ROPSTEN
+					137, // MATIC MAINET
+					80001, //MATIC TESTNET
+					1337 // ETH MAJORNET
+				]
+			})
 			activate(injected, undefined, true);
 			set_lastWallet(walletType.METAMASK);
 		} else if (_providerType === walletType.WALLET_CONNECT) {
@@ -168,6 +176,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				rpc: {
 					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
 					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
+					137: 'https://rpc-mainnet.maticvigil.com/v1/6f6a9a1a465a6c6c245f070146df18cbeacb6647',
+					80001: 'https://rpc-mumbai.maticvigil.com/v1/6f6a9a1a465a6c6c245f070146df18cbeacb6647',
 				},
 				chainId: 1,
 				bridge: 'https://bridge.walletconnect.org',
@@ -322,10 +332,13 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				onDesactivate,
 				walletType,
 				walletData,
-				provider,
-				rProvider,
 				chainID,
 				active,
+
+				provider,
+				currentRPCProvider: provider,
+				ethMainnetProvider: ethMainnetProvider,
+
 				actions: {
 					sign,
 					claim,

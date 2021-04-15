@@ -37,7 +37,7 @@ function	GetSwapGraph(routerAddress) {
 }
 
 function	SwapRouter({routerAddress, pairID, token}) {
-	const	{address, actions, provider} = useWeb3();
+	const	{address, actions, ethMainnetProvider} = useWeb3();
 	const	[swapPath, set_swapPath] = useState([]);
 	const	[swapOrder, set_swapOrder] = useState(0);
 	const	[swapToken0, set_swapToken0] = useState(0);
@@ -88,10 +88,8 @@ function	SwapRouter({routerAddress, pairID, token}) {
 
 	async function	calculateAmountIn(amountOut, decimalsOut, path) {
 		try {
-			console.log(amountOut)
 			const	toEth = ethers.utils.parseUnits(amountOut, decimalsOut);
-			console.log(toEth.toString())
-			const	contract = new ethers.Contract(routerAddress, AMOUNTS_IN_OUT_ABI, provider);
+			const	contract = new ethers.Contract(routerAddress, AMOUNTS_IN_OUT_ABI, ethMainnetProvider);
 			const	amountIn = await contract.getAmountsIn(toEth, path);
 			const	slippage = slippageTolerance.multiply(amountIn[0]).quotient.toString();
 			const	ethToPay = amountIn[0].add(slippage);
@@ -103,7 +101,7 @@ function	SwapRouter({routerAddress, pairID, token}) {
 	async function	calculateAmountOut(amountIn, decimalsIn, path) {
 		try {
 			const	toEth = ethers.utils.parseUnits(amountIn, decimalsIn);
-			const	contract = new ethers.Contract(routerAddress, AMOUNTS_IN_OUT_ABI, provider);
+			const	contract = new ethers.Contract(routerAddress, AMOUNTS_IN_OUT_ABI, ethMainnetProvider);
 			const	amountOut = await contract.getAmountsOut(toEth, path);
 			const	slippage = slippageTolerance.multiply(amountOut[0]).quotient.toString();
 			const	ethToPay = amountOut[0].add(slippage);

@@ -34,7 +34,7 @@ function	SectionActions() {
 
 	useEffect(async () => {
 		const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
-		const ERC20Contract = new ethers.Contract(process.env.TOKEN_ADDRESS, ERC20_ABI, provider);
+		const ERC20Contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, ERC20_ABI, provider);
 		try {
 		  const userBalance = await ERC20Contract.balanceOf(address);
 		  set_userBalance(userBalance)
@@ -47,7 +47,7 @@ function	SectionActions() {
 		if (address) {
 			return (
 				<span className={'whitespace-nowrap'}>
-					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`${userBalance.toString()} RWD`}</span>
+					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`${((userBalance / 100) || 0).toFixed(2).toString()} RWD`}</span>
 					{`${address.slice(0, 4)}...${address.slice(-4)}`}
 				</span>
 			);

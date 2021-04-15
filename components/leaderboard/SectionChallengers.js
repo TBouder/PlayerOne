@@ -51,7 +51,7 @@ function	TableHead() {
 }
 
 function	TableRow({index, challenger, numberOfAchievements}) {
-	const	{rProvider} = useWeb3();
+	const	{ethMainnetProvider} = useWeb3();
 	const	jazziconRef = useRef();
 	const	[requestor, set_requestor] = useState(undefined);
 	const	[isENS, set_isENS] = useState(false);
@@ -66,12 +66,12 @@ function	TableRow({index, challenger, numberOfAchievements}) {
 		set_isENS(false);
 		set_requestor(challenger.address);
 
-		// if (rProvider) {
-		// 	const	ENS = await rProvider.lookupAddress(challenger.address);
+		// if (ethMainnetProvider) {
+		// 	const	ENS = await ethMainnetProvider.lookupAddress(challenger.address);
 		// 	set_isENS(ENS ? true : false);
 		// 	set_requestor(ENS || challenger.address);
 		// }
-	}, [rProvider])
+	}, [ethMainnetProvider])
 
 	return (
 		<li>

@@ -75,17 +75,17 @@ function	ItemStatAchievements({count}) {
 	);
 }
 function	ItemStatTotalSupply() {
-	const	{rProvider} = useWeb3();
+	const	{provider} = useWeb3();
 	const	{actions} = useAchievements();
 	const	[totalSupply, set_totalSupply] = useState(0);
 
 	useEffect(() => {
-		if (rProvider) {
-			actions.getTotalSupply(rProvider).then((supply) => {
+		if (provider) {
+			actions.getTotalSupply(provider).then((supply) => {
 				set_totalSupply(supply);
 			})
 		}
-	}, [rProvider])
+	}, [provider])
 
 	return (
 		<div className={'relative bg-white dark:bg-dark-background-600 pt-5 px-4 pb-12 sm:pt-6 sm:px-6 shadow rounded-lg overflow-hidden'}>

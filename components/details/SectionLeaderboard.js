@@ -19,7 +19,7 @@ function jsNumberForAddress(address) {
 }
 
 function	Leader({claim}) {
-	const	{rProvider} = useWeb3();
+	const	{ethMainnetProvider} = useWeb3();
 	const	[requestor, set_requestor] = useState(claim.address)
 	const	jazziconRef = useRef();
 	const	numericRepresentation = jsNumberForAddress(claim.address);
@@ -34,11 +34,11 @@ function	Leader({claim}) {
 				jazziconRef.current.removeChild(jazziconRef.current.childNodes[0]); 
 			jazziconRef.current.appendChild(jazzicon(48, numericRepresentation))
 		}
-		// if (rProvider) {
-		// 	const	ENS = await rProvider.lookupAddress(claim.address);
+		// if (ethMainnetProvider) {
+		// 	const	ENS = await ethMainnetProvider.lookupAddress(claim.address);
 		// 	set_requestor(ENS || claim.address);
 		// }
-	}, [rProvider])
+	}, [ethMainnetProvider])
 
 	/**************************************************************************
 	**	List element to render
