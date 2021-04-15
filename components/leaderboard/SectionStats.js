@@ -107,7 +107,7 @@ function	ItemStatTotalSupply() {
 				<div className={'absolute bottom-0 inset-x-0 bg-gray-50 dark:bg-dark-background-400 px-4 py-4 sm:px-6'}>
 					<div className={'text-sm'}>
 						<a
-							href={'https://ropsten.etherscan.io/token/0x35017DC776c43Bcf8192Bb6Ba528348D32A57CB5'}
+							href={`${process.env.EXPLORER_BASE_URL}/token/${process.env.CONTRACT_ADDRESS}`}
 							target={'_blank'}
 							className={'font-medium text-accent-900 hover:text-accent-700 hover:underline'}>
 							{'Check token'}

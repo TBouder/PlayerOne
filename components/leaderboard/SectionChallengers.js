@@ -87,7 +87,7 @@ function	TableRow({index, challenger, numberOfAchievements}) {
 						<div className={'ml-4 flex flex-col justify-center w-full'}>
 							<p className={`text-sm font-medium text-gray-900 dark:text-dark-white ${requestor === undefined ? 'cpLine' : 'cpLine-after truncate'}`}>
 								<a
-									href={`https://etherscan.io/address/${requestor}`}
+									href={`${process.env.EXPLORER_BASE_URL}/address/${requestor}`}
 									target={'_blank'}
 									className={'hover:text-accent-900 hover:underline cursor-pointer truncate'}>
 									{requestor}

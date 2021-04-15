@@ -9,12 +9,10 @@ import	{useState, useEffect, useContext, createContext}	from	'react';
 import	{ethers}											from	'ethers';
 import	{useToasts}											from	'react-toast-notifications';
 import	QRCodeModal											from	'@walletconnect/qrcode-modal';
-
 import	{useWeb3React}										from	'@web3-react-fork/core';
 import	{InjectedConnector}									from	'@web3-react-fork/injected-connector';
 import	{ConnectorEvent}									from	'@web3-react-fork/types';
 import	{WalletConnectConnector}							from	'@web3-react-fork/walletconnect-connector';
-
 import	useLocalStorage										from	'hook/useLocalStorage';
 import	{fetcher, toAddress}								from	'utils';
 
@@ -40,6 +38,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	const	walletType = {NONE: -1, METAMASK: 0, WALLET_CONNECT: 1};
 	const	[provider, set_provider] = useState(undefined);
 	const	[ethMainnetProvider, set_ethMainnetProvider] = useState(undefined);
+	const	[currentDeployProvider, set_currentDeployProvider] = useState(undefined);
 	const	[address, set_address] = useLocalStorage('address', '');
 	const	[chainID, set_chainID] = useLocalStorage('chainID', -1);
 	const	[lastWallet, set_lastWallet] = useLocalStorage('lastWallet', walletType.NONE);
@@ -128,6 +127,9 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	useEffect(() => {
 		const	_provider = new ethers.providers.AlchemyProvider('homestead', process.env.ALCHEMY_KEY)
 		set_ethMainnetProvider(_provider)
+
+		const	_maticProvider = new ethers.providers.WebSocketProvider(`wss://rpc-mumbai.maticvigil.com/ws/v1/${process.env.MATICVIGIL_KEY}`)
+		set_currentDeployProvider(_maticProvider)
 	}, [])
 
 	/**************************************************************************
@@ -329,6 +331,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				provider,
 				currentRPCProvider: provider,
 				ethMainnetProvider: ethMainnetProvider,
+				currentDeployProvider: currentDeployProvider,
 
 				actions: {
 					sign,

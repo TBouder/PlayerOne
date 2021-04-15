@@ -16,10 +16,14 @@ module.exports = withBundleAnalyzer({
 	],
 	env: {
 		WSS_ETH_NODE: process.env.WSS_ETH_NODE,
-		ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
 		API_URI: process.env.API_URI,
 		CONTRACT_ADDRESS: process.env.CONTRACT_ADDRESS,
 		CONTRACT_NETWORK: process.env.CONTRACT_NETWORK,
+		EXPLORER_BASE_URL: process.env.EXPLORER_BASE_URL,
+
+		ETHERSCAN_KEY: process.env.ETHERSCAN_KEY,
+		ALCHEMY_KEY: process.env.ALCHEMY_KEY,
+		MATICVIGIL_KEY: process.env.MATICVIGIL_KEY,
 	},
 	images: {
 		domains: ['images.unsplash.com', 'source.unsplash.com'],

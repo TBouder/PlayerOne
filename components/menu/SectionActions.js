@@ -20,7 +20,7 @@ const fakeFetcher = () => walletBalanceNonceHack++;
 
 function	SectionActions() {
 	const	refOutside = useRef();
-	const	{address, active, provider} = useWeb3();
+	const	{address, active, currentDeployProvider} = useWeb3();
 	const	{elements} = useAchievements()
 	const	[open, set_open] = useState(false);
 	const	[slideOverOpen, set_slideOverOpen] = useState(false);
@@ -33,15 +33,17 @@ function	SectionActions() {
 	});
 
 	useEffect(async () => {
-		const ERC20_ABI = ["function balanceOf(address owner) view returns (uint256)"];
-		const ERC20Contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, ERC20_ABI, provider);
-		try {
-		  const userBalance = await ERC20Contract.balanceOf(address);
-		  set_userBalance(userBalance)
-		} catch (error) {
-		  console.log(error);
+		if (address) {
+			const ERC20_ABI = ['function balanceOf(address owner) view returns (uint256)'];
+			const ERC20Contract = new ethers.Contract(process.env.CONTRACT_ADDRESS, ERC20_ABI, currentDeployProvider);
+			try {
+				const userBalance = await ERC20Contract.balanceOf(address);
+				set_userBalance(userBalance)
+			} catch (error) {
+				console.error(error)
+			}
 		}
-	}, [balanceNonce])
+	}, [balanceNonce, address, currentDeployProvider])
 
 	function	renderContent() {
 		if (address) {
