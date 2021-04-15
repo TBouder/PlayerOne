@@ -18,7 +18,7 @@ import	{WalletConnectConnector}							from	'@web3-react-fork/walletconnect-conne
 import	useLocalStorage										from	'hook/useLocalStorage';
 import	{fetcher, toAddress}								from	'utils';
 
-const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY || 'M63TWVTHMKIBXEQHXHKEF87RU16GSMQV9S';
+const	ETHERSCAN_KEY = process.env.ETHERSCAN_KEY;
 function	fetchERC20(baseUri, address) {
 	return fetcher(`${baseUri}?module=account&action=tokentx&address=${address}&startblock=0&endblock=999999999&sort=asc&apikey=${ETHERSCAN_KEY}`)
 };
@@ -90,9 +90,6 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 		}
 	}
 	function	onUpdate(update) {
-		set_walletData({erc20: undefined, transactions: undefined, ready: false});
-		set_shouldReset();
-
 		if (update.provider) {
 			set_provider(library);
 		}
@@ -100,7 +97,10 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			set_chainID(parseInt(update.chainId, 16));
 		}
 		if (update.account) {
+			set_shouldReset();
+			set_walletData({erc20: undefined, transactions: undefined, ready: false});
 			set_address(toAddress(update.account));
+			fetchOnEtherscan(update.chainId, update.account);
 		}
 		set_nonce(n => n + 1);
 	}
@@ -126,17 +126,8 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	**	Init default provider
 	**************************************************************************/
 	useEffect(() => {
-		//USED FOR THE ENS
-		// const	_providerMainnet = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
-		// set_ethMainnetProviderMainnet(_providerMainnet)
-
-		//USED FOR THE ROPSTEN BUILD
-		const	_provider = new ethers.providers.AlchemyProvider('homestead', 'v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf')
+		const	_provider = new ethers.providers.AlchemyProvider('homestead', process.env.ALCHEMY_KEY)
 		set_ethMainnetProvider(_provider)
-
-		//USED FOR THE LOCAL DEV
-		// const	_provider = new ethers.providers.getDefaultProvider('http://localhost:8545')
-		// set_ethMainnetProvider(_provider)
 	}, [])
 
 	/**************************************************************************
@@ -174,10 +165,10 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 			}
 			const walletconnect = new WalletConnectConnector({
 				rpc: {
-					1: 'https://eth-mainnet.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
-					3: 'https://eth-ropsten.alchemyapi.io/v2/v1u0JPu1HrHxMnXKOzxTDokxcwQzwyvf',
-					137: 'https://rpc-mainnet.maticvigil.com/v1/6f6a9a1a465a6c6c245f070146df18cbeacb6647',
-					80001: 'https://rpc-mumbai.maticvigil.com/v1/6f6a9a1a465a6c6c245f070146df18cbeacb6647',
+					1: `https://eth-mainnet.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+					3: `https://eth-ropsten.alchemyapi.io/v2/${process.env.ALCHEMY_KEY}`,
+					137: `https://rpc-mainnet.maticvigil.com/v1/${process.env.MATICVIGIL_KEY}`,
+					80001: `https://rpc-mumbai.maticvigil.com/v1/${process.env.MATICVIGIL_KEY}`,
 				},
 				chainId: 1,
 				bridge: 'https://bridge.walletconnect.org',
