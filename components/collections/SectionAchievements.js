@@ -18,7 +18,7 @@ function	SectionAchievements({slug}) {
 				enterAnimation={'fade'}
 				leaveAnimation={'fade'}
 				maintainContainerHeight
-				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6'}>
+				className={'mx-auto grid gap-5 gap-y-6 lg:gap-y-10 grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'}>
 				{([
 					...elements.claims || [],
 					...elements.claimables || [],
