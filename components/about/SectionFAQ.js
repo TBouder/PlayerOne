@@ -44,7 +44,7 @@ function	SectionFAQ() {
 						/>
 						<ItemQuestion
 							question={'How do you know if I made it ?'}
-							answer={'You will be able to claim it.'}
+							answer={'Sed velit mi, dictum a justo iaculis, sollicitudin suscipit quam. Etiam feugiat massa non sapien vulputate gravida. Quisque at metus sapien. Aliquam convallis, metus at scelerisque ultrices, elit arcu sagittis elit, at laoreet justo nibh sit amet orci. Vestibulum nibh ligula, ullamcorper eget leo quis, bibendum mollis lectus. Cras at porttitor enim. In vehicula commodo metus, quis porta ex tincidunt ut. Etiam varius diam imperdiet urna facilisis vehicula. Etiam nec euismod arcu. Curabitur et volutpat tortor. Praesent porta dignissim lectus et eleifend.'}
 						/>
 						<ItemQuestion
 							question={'Who decides what will be the next challenges ?'}
@@ -52,7 +52,7 @@ function	SectionFAQ() {
 						/>
 						<ItemQuestion
 							question={'What can I do with my RWD Token ?'}
-							answer={'Charles Ponzi\'s original scheme in 1919 was focused on the US Postal Service. The postal service, at that time, had developed international reply coupons that allowed a sender to pre-purchase postage and include it in their correspondence. The receiver would take the coupon to a local post office and exchange it for the priority airmail postage stamps needed to send a reply.'}
+							answer={'Pellentesque cursus lectus vitae ipsum rutrum accumsan. In porttitor sollicitudin odio. Nam ut felis nec justo interdum euismod. Morbi pulvinar ornare massa, eu condimentum lorem rhoncus tempor. Nulla luctus mi dui, eu ultrices libero gravida eu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam rhoncus libero et enim elementum egestas. Nulla non vehicula nisl, fringilla euismod sem. Suspendisse imperdiet ante at quam vestibulum aliquam. Suspendisse quis tristique justo. Quisque non tincidunt nisi.'}
 						/>
 						<ItemQuestion
 							question={'How could I contribute to the project ?'}
