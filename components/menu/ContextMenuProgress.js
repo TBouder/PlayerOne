@@ -110,19 +110,43 @@ function	ContextExplorer({set_open}) {
 		return '#';
 	}
 
+	function	getFaucet() {
+		if (chainID === 524289 || chainID === 80001) { //POLYGON TESNET
+			return `https://faucet.matic.network/`;
+		}
+		if (chainID === 3) { //ETHEREUM TESTNET
+			return `https://faucet.ropsten.be/`;
+		}
+		return '#';
+	}
+
 	return (
-		<a
-			target={'_blank'}
-			href={getNetwork()}>
-			<li
-				onClick={() => set_open(false)}
-				className={'transition-all px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer border-t border-solid border-gray-200'}>
-					<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 inline'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-				<p className={'ml-2 text-sm inline'}>
-					{`Contract on chain ${chainID == 80001}`}
-				</p>
-			</li>
-		</a>
+		<>
+			<a
+				target={'_blank'}
+				href={getNetwork()}>
+				<li
+					onClick={() => set_open(false)}
+					className={'transition-all px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer border-t border-solid border-gray-200'}>
+						<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 inline'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+					<p className={'ml-2 text-sm inline'}>
+						{`Contract on chain`}
+					</p>
+				</li>
+			</a>
+			{chainID === 524289 || chainID === 80001 || chainID === 3 ? <a
+				target={'_blank'}
+				href={getFaucet()}>
+				<li
+					onClick={() => set_open(false)}
+					className={'transition-all px-2 py-2 text-gray-400 flex items-center hover:bg-gray-200 hover:text-gray-800 cursor-pointer'}>
+						<svg xmlns="http://www.w3.org/2000/svg" className={'h-4 w-4 inline'} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+					<p className={'ml-2 text-sm inline'}>
+						{`Faucet`}
+					</p>
+				</li>
+			</a> : null}
+		</>
 	);
 }
 
@@ -145,8 +169,8 @@ function	ContextMenuProgress({claims, claimables, locked, set_modalOpen, set_ope
 									set_modalOpen={set_modalOpen} />
 								<ContextItemLocked
 									count={locked?.length || 0} />
-								<ContextTheme set_open={set_open} />
 								<ContextExplorer set_open={set_open} />
+								<ContextTheme set_open={set_open} />
 								<ContextDisconnnect set_open={set_open} />
 							</ul>
 						</div>

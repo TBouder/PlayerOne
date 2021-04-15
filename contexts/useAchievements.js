@@ -222,16 +222,16 @@ export const AchievementsContextApp = (props) => {
 
 						set_elements((x) => ({
 							...x,
-							claimables: [...x.claimables, {
+							claimables: [...x?.claimables || [], {
 								...achievement,
 								status: `CLAIMABLE`,
 								verified: newClaimable.verified,
 								address: newClaimable.address,
 								date: newClaimable.date,
 							}],
-							claimablesAsMapping: {...x.claimablesAsMapping, [achievement.key]: true},
-							locked: removeFromArray(x.locked, 'key', achievement.key),
-							lockedAsMapping: {...x.lockedAsMapping, [achievement.key]: false},
+							claimablesAsMapping: {...x?.claimablesAsMapping || {}, [achievement.key]: true},
+							locked: removeFromArray(x?.locked, 'key', achievement.key),
+							lockedAsMapping: {...x?.lockedAsMapping || {}, [achievement.key]: false},
 							nonce: x.nonce + 1
 						}));
 					} catch (error) {
