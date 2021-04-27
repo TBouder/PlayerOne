@@ -120,6 +120,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 		}
 	}
 
+
 	return (
 		<Link href={`/details/${achievement.slug}`}>
 			<div

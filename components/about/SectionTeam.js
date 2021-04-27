@@ -24,7 +24,7 @@ function	ItemTeam({name, title, photo}) {
 							<h3>{name}</h3>
 							<p className={'text-accent-900'}>{title}</p>
 						</div>
-						<div className={'text-lg'}>
+						<div className={'text-md md:text-lg'}>
 							<p className={'text-gray-500 dark:text-dark-white'}>Ultricies massa malesuada viverra cras lobortis. Tempor orci hac ligula dapibus mauris sit ut eu. Eget turpis urna maecenas cras. Nisl dictum.</p>
 						</div>
 						<ul className={'flex space-x-5'}>
@@ -75,16 +75,16 @@ function	ItemTeam({name, title, photo}) {
 function	SectionTeam() {
 	return (
 		<div className={'mx-auto pt-24'}>
-			<div className={'space-y-5 sm:space-y-4 mb-2'}>
+			<div className={'space-y-5 sm:space-y-4 mb-8 md:mb-2'}>
 				<h2 className='text-3xl font-extrabold tracking-tight sm:text-4xl text-gray-900 dark:text-white'>
 					{'About Us'}
 				</h2>
-				<p className='text-lg text-gray-500 dark:text-dark-white'>
+				<p className={'prose-md md:text-xl text-gray-500 dark:text-dark-white'}>
 					{'We are three random people going through the darkness of Crypto : Major, Hanpepe & CAC'}
 				</p>
 			</div>
 			<div className={'lg:col-span-3'}>
-				<ul className='space-x-12 flex flex-row'>
+				<ul className={'space-x-0 md:space-x-12 space-y-12 md:space-y-0 flex flex-col md:flex-row'}>
 					<ItemTeam name={'Major'} title={'Someone'} photo={'/major.jpg'} />
 					<ItemTeam name={'CAC'} title={'Somebody else'} photo={'/cac.jpg'} />
 					<ItemTeam name={'Pepe'} title={'A random frog'} photo={'/pepe.jpg'} />

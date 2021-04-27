@@ -93,7 +93,6 @@ export const AchievementsContextApp = (props) => {
 	**************************************************************************/
 	async function	recomputeClaims() {
 		const	{claims: addressClaims, claimables: addressClaimables} = await fetcher(`${process.env.API_URI}/address/${address || 'none'}`);
-
 		const	_claimsAsMapping = {};
 		const	_claimablesAsMapping = {};
 		const	_lockedAsMapping = {};
