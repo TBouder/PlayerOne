@@ -489,10 +489,13 @@ input[type=number] {
 
 
 .bg-playerone-gradient {
-    background-image: linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #F9BC2C 100%);
+	background-image: linear-gradient(to right, #0250c5 0%, #d43f8d 100%);
+    /* background-image: linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #F9BC2C 100%); */
 }
 .text-playerone-gradient {
-	background: linear-gradient(-225deg, #231557 0%, #44107A 4%, #FF1361 50%, #F9BC2C 100%);
+	background: linear-gradient(to right, #0250c5 0%, #d43f8d 100%);;
+
+	/* background: linear-gradient(-225deg, #231557 0%, #44107A 4%, #FF1361 50%, #F9BC2C 100%); */
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -659,3 +662,82 @@ input[type=number] {
 .progress-circle.p98 .value-bar { transform: rotate(353deg); }
 .progress-circle.p99 .value-bar { transform: rotate(356deg); }
 .progress-circle.p100 .value-bar { transform: rotate(360deg); }
+
+
+.withNeon {
+	-webkit-animation: neon1 1.5s ease-in-out infinite alternate;
+	-moz-animation: neon1 1.5s ease-in-out infinite alternate;
+	animation: neon1 1.5s ease-in-out infinite alternate;
+}
+/*glow for webkit*/
+@-webkit-keyframes neon1 {
+from {
+	text-shadow: 0 0 1px #fff,
+	0 0 2px #fff,
+	0 0 3px #fff,
+	0 0 4px rgb(249, 177, 42),
+	0 0 7px rgb(249, 177, 42),
+	0 0 8px rgb(249, 177, 42),
+	0 0 10px rgb(249, 177, 42),
+	0 0 15px rgb(249, 177, 42);
+}
+to {
+	text-shadow: 0 0 5px #fff,
+	0 0 1px #fff,
+	0 0 1.5px #fff,
+	0 0 2px rgb(249, 177, 42),
+	0 0 3.5px rgb(249, 177, 42),
+	0 0 4px rgb(249, 177, 42),
+	0 0 5px rgb(249, 177, 42),
+	0 0 7.5px rgb(249, 177, 42);
+}
+}
+/*glow for mozilla*/
+@-moz-keyframes neon1 {
+from {
+	text-shadow: 0 0 1px #fff,
+	0 0 2px #fff,
+	0 0 3px #fff,
+	0 0 4px rgb(249, 177, 42),
+	0 0 7px rgb(249, 177, 42),
+	0 0 8px rgb(249, 177, 42),
+	0 0 10px rgb(249, 177, 42),
+	0 0 15px rgb(249, 177, 42);
+}
+to {
+	text-shadow: 0 0 5px #fff,
+	0 0 1px #fff,
+	0 0 1.5px #fff,
+	0 0 2px rgb(249, 177, 42),
+	0 0 3.5px rgb(249, 177, 42),
+	0 0 4px rgb(249, 177, 42),
+	0 0 5px rgb(249, 177, 42),
+	0 0 7.5px rgb(249, 177, 42);
+}
+}
+
+/*glow*/
+
+@keyframes neon1 {
+from {
+	text-shadow: 0 0 1px #fff,
+	0 0 2px #fff,
+	0 0 3px #fff,
+	0 0 4px rgb(249, 177, 42),
+	0 0 7px rgb(249, 177, 42),
+	0 0 8px rgb(249, 177, 42),
+	0 0 10px rgb(249, 177, 42),
+	0 0 15px rgb(249, 177, 42);
+}
+to {
+	text-shadow: 0 0 5px #fff,
+	0 0 1px #fff,
+	0 0 1.5px #fff,
+	0 0 2px rgb(249, 177, 42),
+	0 0 3.5px rgb(249, 177, 42),
+	0 0 4px rgb(249, 177, 42),
+	0 0 5px rgb(249, 177, 42),
+	0 0 7.5px rgb(249, 177, 42);
+}
+}
+  

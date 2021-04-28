@@ -31,6 +31,9 @@ module.exports = {
       white: colors.white,
     },
     extend: {
+      letterSpacing: {
+        extrem: '0.8rem'
+      },
       typography: {
         xl: {
           css: {

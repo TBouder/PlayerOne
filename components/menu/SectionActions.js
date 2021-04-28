@@ -48,7 +48,7 @@ function	SectionActions() {
 	function	renderContent() {
 		if (address) {
 			return (
-				<span className={'whitespace-nowrap'}>
+				<span suppressHydrationWarning className={'whitespace-nowrap'}>
 					<span className={'font-semibold bg-accent-900 text-white mr-2 -ml-4 px-2 py-4'}>{`${((userBalance / 100) || 0).toFixed(2).toString()} RWD`}</span>
 					{`${address.slice(0, 4)}...${address.slice(-4)}`}
 				</span>

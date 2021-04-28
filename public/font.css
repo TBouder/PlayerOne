@@ -1,0 +1,81 @@
+@font-face {
+  font-family: 'AXR Outrunner';
+  src: url('./fonts/AXROutrunner/AXROutrunner.eot');
+  src: url('./fonts/AXROutrunner/AXROutrunner.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/AXROutrunner/AXROutrunner.woff2') format('woff2'),
+      url('./fonts/AXROutrunner/AXROutrunner.woff') format('woff'),
+      url('./fonts/AXROutrunner/AXROutrunner.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Stargaze Stencil';
+  src: url('./fonts/Stargaze/Stargaze\ Stencil.otf');
+  src: url('./fonts/Stargaze/Stargaze\ Stencil.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PROXON';
+  src: url('./fonts/Proxon/PROXONRegular.eot');
+  src: url('./fonts/Proxon/PROXONRegular.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/Proxon/PROXONRegular.woff2') format('woff2'),
+      url('./fonts/Proxon/PROXONRegular.woff') format('woff'),
+      url('./fonts/Proxon/PROXONRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Thunderstorm';
+  src: url('./fonts/Thunderstorm/Thunderstorm.eot');
+  src: url('./fonts/Thunderstorm/Thunderstorm.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/Thunderstorm/Thunderstorm.woff2') format('woff2'),
+      url('./fonts/Thunderstorm/Thunderstorm.woff') format('woff'),
+      url('./fonts/Thunderstorm/Thunderstorm.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Grind Demolished';
+  src: url('./fonts/Grind/GrindDemolished.eot');
+  src: url('./fonts/Grind/GrindDemolished.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/Grind/GrindDemolished.woff2') format('woff2'),
+      url('./fonts/Grind/GrindDemolished.woff') format('woff'),
+      url('./fonts/Grind/GrindDemolished.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neon Absolute Sans';
+  src: url('./fonts/NeonAbsolute/NeonAbsoluteSansRegular.eot');
+  src: url('./fonts/NeonAbsolute/NeonAbsoluteSansRegular.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/NeonAbsolute/NeonAbsoluteSansRegular.woff2') format('woff2'),
+      url('./fonts/NeonAbsolute/NeonAbsoluteSansRegular.woff') format('woff'),
+      url('./fonts/NeonAbsolute/NeonAbsoluteSansRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Absolute Neon Script';
+  src: url('./fonts/NeonAbsolute/AbsoluteNeonScriptRegular.eot');
+  src: url('./fonts/NeonAbsolute/AbsoluteNeonScriptRegular.eot?#iefix') format('embedded-opentype'),
+      url('./fonts/NeonAbsolute/AbsoluteNeonScriptRegular.woff2') format('woff2'),
+      url('./fonts/NeonAbsolute/AbsoluteNeonScriptRegular.woff') format('woff'),
+      url('./fonts/NeonAbsolute/AbsoluteNeonScriptRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
