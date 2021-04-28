@@ -21,7 +21,7 @@ import	useScrollRestoration		from	'hook/useScrollRestoration';
 import	TopMenu						from	'components/TopMenu';
 import	{Web3ReactProvider}			from	'@web3-react-fork/core';
 
-import	'style/Default.css'
+import	'style/Default.scss'
 import	'tailwindcss/tailwind.css';
 
 Router.events.on('routeChangeStart', () => NProgress.start());

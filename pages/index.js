@@ -6,6 +6,7 @@
 ******************************************************************************/
 
 import	{useRef, useState, useEffect}	from	'react';
+
 import	Header							from	'components/index/Header';
 import	SectionBanner					from	'components/index/SectionBanner';
 import	SectionWalletConnect			from	'components/index/SectionWalletConnect';
@@ -77,9 +78,11 @@ function	Page() {
 		)
 	}
 
-
 	return (
-		<main className={'dark:bg-dark-background-900'}>
+		<main className={'dark:bg-dark-background-900 relative'}>
+			<div className={'diagonal-hero-bg bg-gray-100 dark:bg-dark-background-600 dark:bg-opacity-40'}>
+
+			</div>
 			<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto py-32 md:py-48 mt-12 md:-mt-28 relative'}>
 				<div className={'py-6'}>
 					<div ref={headerRef} className={'headerAnim'}>
