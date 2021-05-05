@@ -24,14 +24,14 @@ function	SectionBanner() {
 	const	[intervalStep, set_intervalStep] = useState(0);
 	const	[currentStep, set_currentStep] = useState(0);
 	const	[isClaiming, set_isClaiming] = useState(false);
-	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient grid grid-cols-3 gap-4';
-	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-accent-900 grid grid-cols-3 gap-4';
-	const	thirdClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full wbtcGradient grid grid-cols-3 gap-4';
+	const	firstClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full uniswapGradient';
+	const	secondClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full bg-accent-900';
+	const	thirdClassName = 'absolute inset-0 rounded-lg shadow-xl overflow-hidden w-full wbtcGradient';
 
-	useInterval(() => {
-		if (!isHover && !isClaiming)
-			triggerStep(currentStep, intervalStep);
-	}, 400, true, [isHover, isClaiming]);
+	// useInterval(() => {
+	// 	if (!isHover && !isClaiming)
+	// 		triggerStep(currentStep, intervalStep);
+	// }, 400, true, [isHover, isClaiming]);
 
 	function	triggerStep(_currentStep, _intervalStep) {
 		if (_intervalStep === 20) {
@@ -71,8 +71,8 @@ function	SectionBanner() {
 	}
 
 	return (
-		<section id={'preview'} aria-label={'preview'} className={'w-full mt-4 md:mt-12 z-10'}>
-			<div ref={hoverRef} className={'relative h-72 md:h-77.5'}>
+		<section id={'preview'} aria-label={'preview'} className={'w-full z-10'}>
+			<div ref={hoverRef} className={'relative h-80'}>
 				<ItemBannerUniswap
 					id={'Like a unicorn'}
 					ref={firstBannerRef}

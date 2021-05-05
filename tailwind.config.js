@@ -34,6 +34,9 @@ module.exports = {
       letterSpacing: {
         extrem: '0.8rem'
       },
+      spacing: {
+        '1px': '1px',
+      },
       typography: {
         xl: {
           css: {

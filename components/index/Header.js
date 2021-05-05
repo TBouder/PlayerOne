@@ -5,7 +5,131 @@
 **	@Filename:				Header.js
 ******************************************************************************/
 
+import	{Fragment, useRef, useState}	from	'react';
+import	{Dialog, Transition}			from	'@headlessui/react';
+import	Image							from	'next/image';
+import	SectionBanner					from	'components/index/SectionBanner';
+import	SectionProgress					from	'components/index/SectionProgress';
+import	useAchievements					from	'contexts/useAchievements';
+import	useWeb3							from	'contexts/useWeb3';
+
+function	LoginModal({open, set_open}) {
+	const	walletConnectRef = useRef()
+	const	{connect, walletType} = useWeb3();
+
+	return (
+		<Transition.Root show={open} as={Fragment}>
+			<Dialog
+				as={'div'}
+				static
+				className={'fixed z-10 inset-0 overflow-y-auto'}
+				style={{zIndex: 9999999}}
+				initialFocus={walletConnectRef}
+				open={open}
+				onClose={set_open}>
+				<div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
+					<Transition.Child
+						as={Fragment}
+						enter={'ease-out duration-300'} enterFrom={'opacity-0'} enterTo={'opacity-100'}
+						leave={'ease-in duration-200'} leaveFrom={'opacity-100'} leaveTo={'opacity-0'}>
+						<Dialog.Overlay className={'fixed inset-0 bg-gray-400 bg-opacity-75 dark:bg-dark-background-900 dark:bg-opacity-75 transition-opacity'} />
+					</Transition.Child>
+
+					<span className={'hidden sm:inline-block sm:align-middle sm:h-screen'} aria-hidden={'true'}>
+						&#8203;
+					</span>
+					<Transition.Child
+						as={Fragment}
+						enter={'ease-out duration-300'}
+						enterFrom={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}
+						enterTo={'opacity-100 translate-y-0 sm:scale-100'}
+						leave={'ease-in duration-200'}
+						leaveFrom={'opacity-100 translate-y-0 sm:scale-100'}
+						leaveTo={'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'}>
+						<div className={'inline-block align-bottom dark:bg-dark-background-600 bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:mb-96'}>
+							<div className={'dark:bg-dark-background-600 bg-white rounded-lg p-6 space-y-4'}>
+								<div
+									onClick={() => {
+										connect(walletType.METAMASK);
+										set_open(false);
+									}}
+									className={'dark:bg-dark-background-900 dark:bg-opacity-20 dark:hover:bg-opacity-30 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md flex flex-col justify-center items-center transition-colors p-6 text-center'}>
+									<div className="web3modal-icon">
+										<Image src={'/logoMetamask.svg'} alt={'metamask'} width={45} height={45} />
+									</div>
+									<div className={'mt-2 font-bold text-2xl text-gray-700 dark:text-white'}>MetaMask</div>
+									<div className={'mt-2 text-lg text-gray-500 dark:text-white dark:text-opacity-60'}>Connect to your MetaMask Wallet</div>
+								</div>
+								<div
+									onClick={() => {
+										connect(walletType.WALLET_CONNECT);
+										set_open(false);
+									}}
+									ref={walletConnectRef}
+									className={'dark:bg-dark-background-900 dark:bg-opacity-20 dark:hover:bg-opacity-30 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md flex flex-col justify-center items-center transition-colors p-6 text-center'}>
+									<div className='web3modal-icon'>
+										<Image src={'/logoWalletConnect.svg'} alt={'walletConnect'} width={45} height={45} />
+									</div>
+									<div className={'mt-2 font-bold text-2xl text-gray-700 dark:text-white'}>WalletConnect</div>
+									<div className={'mt-2 text-lg text-gray-500 dark:text-white dark:text-opacity-60'}>Scan with WalletConnect to connect</div>
+								</div>
+							</div>
+						</div>
+					</Transition.Child>
+				</div>
+			</Dialog>
+		</Transition.Root>
+	)
+}
+
 function	PageHeader() {
+	const	{active} = useWeb3();
+	const	{elements} = useAchievements();
+	const	[open, set_open] = useState(false);
+
+	return (
+		<header className={'grid grid-cols-2 gap-12 mb-0 md:mb-16'}>
+			<div className={'text-center md:text-left col-span-2 md:col-span-1 md:pr-16'}>
+				<span className={'my-4 md:my-6 items-center justify-center font-extrabold relative'}>
+					<p
+						className={'mr-0 text-2xl md:text-4xl block mb-4 md:mb-8 text-gray-500 dark:text-dark-white dark:opacity-75 text-center md:text-left'}
+						style={{fontFamily: 'monospace'}}>
+						{'Are you ready,'}
+					</p>
+					<p
+						className={'text-playerone-gradient mr-0 text-2xl md:text-5xl block text-center md:text-left'}
+						style={{fontFamily: '"Press Start 2P"', lineHeight: 'unset'}}>
+						{'PLAYER ONE'}
+					</p>
+				</span>
+				<div
+					className={'mt-4 md:mt-8 my-4 text-sm md:text-base text-gray-500 dark:text-dark-white dark:opacity-75 lg:mx-auto prose-sm text-center md:text-left'}
+					style={{fontFamily: 'monospace'}}>
+					<p>Player One offers every crypto user, from crypto noob to DeFi degen, a chance to highlight & value their crypto activity.</p>
+					<p className={'hidden md:block'}>You will be able to participate in various challenges, to claim your rewards but also to spot the latest protocols or opportunities available in the crypto space.</p>
+				</div>
+				{
+					active ?
+					<SectionProgress
+						unlocked={elements?.claims?.length + elements?.claimables?.length || 0}
+						total={elements.count} />
+					:
+					<div
+						className={'loginButton text-white mt-2 md:mt-4'}
+						onClick={() => set_open(true)}>
+						{'Connect your wallet'}
+					</div>
+				}
+			</div>
+			<div className={'col-span-2 md:col-span-1 md:mt-12'}>
+				<SectionBanner />
+			</div>
+			<LoginModal open={open} set_open={set_open} />
+		</header>
+	);
+}
+
+function	PageHeaderOld() {
 	return (
 		<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'} style={{width: 'fit-content'}}>
 			<div className={'text-center'}>
@@ -21,7 +145,7 @@ function	PageHeader() {
 	);
 }
 
-function	PageHeaderOld() {
+function	PageHeaderOlder() {
 	return (
 		<header className={'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-opacity-10'} style={{width: 'fit-content'}}>
 			<div className={'text-center'}>

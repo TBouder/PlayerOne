@@ -5,8 +5,7 @@
 **	@Filename:				prices.js
 ******************************************************************************/
 
-import	{useRef, useState, useEffect}	from	'react';
-
+import	{useRef, useEffect}				from	'react';
 import	Header							from	'components/index/Header';
 import	SectionBanner					from	'components/index/SectionBanner';
 import	SectionWalletConnect			from	'components/index/SectionWalletConnect';
@@ -78,38 +77,63 @@ function	Page() {
 		)
 	}
 
+	if (false) {
+		return (
+			<main className={'dark:bg-dark-background-900 relative'}>
+				<div className={'diagonal-hero-bg bg-gray-100 dark:bg-dark-background-600 dark:bg-opacity-40'}>
+
+				</div>
+				<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto py-32 md:py-48 mt-12 md:-mt-28 relative'}>
+					<div className={'py-6'}>
+						<div ref={headerRef} className={'headerAnim'}>
+							<Header />
+							<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full pt-4'} suppressHydrationWarning>
+								<SectionWalletConnect />
+							</section>
+							
+							<div className={'relative z-0 -ml-10'}>
+								<svg width={'404'} height={'300'} fill={'none'} viewBox={'0 0 404 300'} className={`absolute left-0 transform opacity-50`}><defs><pattern id={'64e643ad-2176-4f86-b3d7-f2c5da3b6a6d'} x={'0'} y={'0'} width={'20'} height={'20'} patternUnits={'userSpaceOnUse'}><rect x={'0'} y={'0'} width={'4'} height={'4'} rx={'2'} fill={'currentColor'} className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width={'404'} height={'300'} fill={'url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)'}></rect></svg>
+							</div>
+							
+							<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full z-10'} suppressHydrationWarning>
+								<SectionProgress
+									unlocked={elements?.claimables?.length || 0}
+									total={elements.count} />
+							</section>
+
+							<SectionBanner />
+						</div>
+						<div ref={contentRef} className={'contentAnim'}>
+							<SectionCollections />
+							<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
+								<svg width="404" height="500" fill="none" viewBox="0 0 404 500" className="hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0"><defs><pattern id="b1e6e422-73f8-40a6-b5d9-c8586e37e0e7" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="4" height="4" rx={'2'} fill="currentColor" className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width="404" height="500" fill="url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)"></rect></svg>
+							</div>
+							<SectionAchievements />
+						</div>
+					</div>
+				</div>
+			</main>
+		)
+	}
+
 	return (
 		<main className={'dark:bg-dark-background-900 relative'}>
-			<div className={'diagonal-hero-bg bg-gray-100 dark:bg-dark-background-600 dark:bg-opacity-40'}>
+			<div ref={headerRef} className={'headerAnim bg-gray-50 dark:bg-dark-background-600 dark:bg-opacity-40 '}>
+				<div className={'w-full px-4 md:px-12 lg:px-12 xl:px-12 mx-auto relative max-w-screen-2xl pt-8 md:pt-40 pb-8 mt-12 md:-mt-12'}>
+					<Header />
 
+					<div className={'relative z-0 -ml-10'}>
+						<svg width={'404'} height={'300'} fill={'none'} viewBox={'0 0 404 300'} className={`absolute -left-20 -top-50 transform opacity-30`}><defs><pattern id={'64e643ad-2176-4f86-b3d7-f2c5da3b6a6d'} x={'0'} y={'0'} width={'20'} height={'20'} patternUnits={'userSpaceOnUse'}><rect x={'0'} y={'0'} width={'4'} height={'4'} rx={'2'} fill={'currentColor'} className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width={'404'} height={'300'} fill={'url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)'}></rect></svg>
+					</div>
+				</div>
 			</div>
-			<div className={'w-full pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto py-32 md:py-48 mt-12 md:-mt-28 relative'}>
-				<div className={'py-6'}>
-					<div ref={headerRef} className={'headerAnim'}>
-						<Header />
-						<section id={'wallet-connect-select'} aria-label={'wallet-connect-select'} className={'w-full pt-4'} suppressHydrationWarning>
-							<SectionWalletConnect />
-						</section>
-						
-						<div className={'relative z-0 -ml-10'}>
-							<svg width={'404'} height={'300'} fill={'none'} viewBox={'0 0 404 300'} className={`absolute left-0 transform opacity-50`}><defs><pattern id={'64e643ad-2176-4f86-b3d7-f2c5da3b6a6d'} x={'0'} y={'0'} width={'20'} height={'20'} patternUnits={'userSpaceOnUse'}><rect x={'0'} y={'0'} width={'4'} height={'4'} rx={'2'} fill={'currentColor'} className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width={'404'} height={'300'} fill={'url(#64e643ad-2176-4f86-b3d7-f2c5da3b6a6d)'}></rect></svg>
-						</div>
-						
-						<section id={'achievement-progress'} aria-label={'achievement-progress'} className={'w-full z-10'} suppressHydrationWarning>
-							<SectionProgress
-								unlocked={elements?.claimables?.length || 0}
-								total={elements.count} />
-						</section>
 
-						<SectionBanner />
+			<div className={'w-full md:pt-2 px-6 md:px-12 lg:px-12 xl:px-12 max-w-screen-2xl mx-auto relative'}>
+				<div ref={contentRef} className={'contentAnim'}>
+					<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
+						<svg width="404" height="500" fill="none" viewBox="0 0 404 500" className="hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0"><defs><pattern id="b1e6e422-73f8-40a6-b5d9-c8586e37e0e7" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="4" height="4" rx={'2'} fill="currentColor" className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width="404" height="500" fill="url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)"></rect></svg>
 					</div>
-					<div ref={contentRef} className={'contentAnim'}>
-						<SectionCollections />
-						<div className={'relative h-0 -ml-10'} style={{zIndex: -1}}>
-							<svg width="404" height="500" fill="none" viewBox="0 0 404 500" className="hidden lg:block absolute left-full transform -translate-x-1/2 opacity-50 z-0"><defs><pattern id="b1e6e422-73f8-40a6-b5d9-c8586e37e0e7" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="4" height="4" rx={'2'} fill="currentColor" className={'text-gray-200 dark:text-dark-background-400'}></rect></pattern></defs><rect width="404" height="500" fill="url(#b1e6e422-73f8-40a6-b5d9-c8586e37e0e7)"></rect></svg>
-						</div>
-						<SectionAchievements />
-					</div>
+					<SectionAchievements />
 				</div>
 			</div>
 		</main>

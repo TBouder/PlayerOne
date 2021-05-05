@@ -76,7 +76,7 @@ export const AchievementsContextApp = (props) => {
 
 	useEffect(() => {
 		if (!achievements && achievementsList) {
-			set_achievements(achievementsList.map(e => ({...e})));
+			set_achievements(achievementsList?.map(e => ({...e})) || []);
 		}
 	}, [achievementsList])
 
@@ -158,7 +158,7 @@ export const AchievementsContextApp = (props) => {
 	useEffect(() => {
 		if (props.shouldReset) {
 			const	_lockedAsMapping = {};
-			achievementsList.forEach((a) => {_lockedAsMapping[a.key] = true});
+			achievementsList?.forEach((a) => {_lockedAsMapping[a.key] = true});
 			set_elements({
 				claims: undefined,
 				claimsAsMapping: {},
@@ -166,7 +166,7 @@ export const AchievementsContextApp = (props) => {
 				claimablesAsMapping: {},
 				locked: achievementsList,
 				lockedAsMapping: _lockedAsMapping,
-				count: achievementsList.length,
+				count: achievementsList?.length,
 			});
 			set_achievementsCheckProgress({checking: false, progress: 0, total: 0});
 			set_achievementsProgressNonce({previous: undefined, current: undefined});

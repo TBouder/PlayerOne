@@ -55,7 +55,7 @@ function HelperButton(props) {
 				})
 			}}
 			disabled={buttonStatus === STATUS.PENDING || buttonStatus === STATUS.LOCKED}
-			className={`mt-12 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white ${props.textColor} font-medium relative  ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : buttonStatus === STATUS.LOCKED ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+			className={`mt-4 border border-solid border-opacity-0 rounded-lg shadow px-5 py-3 inline-flex items-center text-base bg-white ${props.textColor} font-medium relative  ${buttonStatus === STATUS.PENDING ? 'cursor-wait' : buttonStatus === STATUS.LOCKED ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
 			<p style={buttonStatus === STATUS.PENDING ? {opacity: 0} : {opacity: 1} }>
 				{buttonStatus === STATUS.CONNECT ?
 					'Please connect your wallet' :

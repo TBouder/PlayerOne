@@ -8,7 +8,7 @@
 import	useWeb3					from	'contexts/useWeb3';
 import	useAchievements			from	'contexts/useAchievements';
 
-function	SectionProgress({unlocked, total}) {
+function	SectionProgressOld({unlocked, total}) {
 	const	{active} = useWeb3();
 	const	{achievementsCheckProgress} = useAchievements();
 	
@@ -26,6 +26,43 @@ function	SectionProgress({unlocked, total}) {
 			<p className={'text-gray-400 uppercase mt-2 text-center text-xs'}>
 				&nbsp;{achievementsCheckProgress.checking ? `(${achievementsCheckProgress.progress}/${achievementsCheckProgress.total})` : ''}&nbsp;
 			</p>
+		</section>
+	)
+}
+
+function	SectionProgress({unlocked, total}) {
+	const	{active} = useWeb3();
+	
+	if (!active) {
+		return null;
+	}
+	function	Slices() {
+		const	limit = unlocked * 50 / [total || 1]
+		let	res = [];
+		for (let index = 0; index < 50; index++) {
+			if (index < limit) {
+				res.push(
+					<div
+						className={'h-full bg-accent-900 transition-all duration-700'}
+						style={{width: `calc(100% * ${1/50})`}} />
+				)
+			} else {
+				res.push(
+					<div
+						className={'h-full bg-dark-background-200 bg-opacity-20 transition-all duration-700'}
+						style={{width: `calc(100% * ${1/50})`}} />
+				)
+			}
+			
+		}
+		return res;
+	}
+
+	return (
+		<section aria-label={'achievement-progress'} id={'achievement-progress'} className={'flex flex-col w-full z-10 pt-2 md:mt-12 md:pt-1.5'}>
+			<div className={'h-4 mb-0.5 flex flex-row z-10 boerder border-accent-900 space-x-1px'}>
+				<Slices />
+			</div>
 		</section>
 	)
 }

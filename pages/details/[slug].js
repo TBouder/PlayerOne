@@ -10,7 +10,7 @@ import	{fetcher}					from	'utils';
 
 export async function getStaticPaths() {
 	const	achievementsList = await fetcher(`${process.env.API_URI}/achievements`)
-	const	achievements = achievementsList.map((achievement) => ({params: {slug: achievement.slug}}))
+	const	achievements = achievementsList?.map((achievement) => ({params: {slug: achievement.slug}})) || []
 
 	return	{paths: achievements, fallback: false}
 }

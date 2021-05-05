@@ -14,14 +14,14 @@ function	SectionAchievements() {
 
 	return (
 		<section className={'mt-16 z-10'} aria-label={`achievements`}>
-			<div className={'pb-8 flex flex-row'}>
+			{/* <div className={'pb-8 flex flex-row'}>
 				<h3 className={'text-base leading-6 font-medium text-gray-400'}>
 					{`Featured Achievements`}
 				</h3>
 				<div className={'bg-red-400 ml-2 rounded inline opacity-100'}>
 					<p className={'text-white text-xs px-1.5 py-0.5 pt-1 font-semibold'}>{elements.count}</p>
 				</div>
-			</div>
+			</div> */}
 			<FlipMove
 				enterAnimation={'fade'}
 				leaveAnimation={'fade'}
