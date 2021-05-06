@@ -11,6 +11,7 @@ import	checkGasPrice			from	'achievements/checkGasPrice';
 import	checkAirdrop			from	'achievements/checkAirdrop';
 import	checkWalletLogin		from	'achievements/checkWalletLogin';
 import	checkSponsoring			from	'achievements/checkSponsoring';
+import	checkMethodID			from	'achievements/checkMethodID'
 
 export function getStrategy(strategy) {
 	if (strategy === 'checkYearnDaiExploit') {
@@ -25,6 +26,8 @@ export function getStrategy(strategy) {
 		return checkGasPrice;
 	} else if (strategy === 'checkSponsoring') {
 		return checkSponsoring;
+	} else if (strategy === 'checkMethodID') {
+		return checkMethodID;
 	}
 	return undefined;
 }

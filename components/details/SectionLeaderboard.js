@@ -279,6 +279,15 @@ function	SectionLeaderboard(props) {
 							</a>
 						</div>
 					);
+				} else if (key === 'methodsID') {
+					return (
+						<div key={key}>
+							<p className={'inline font-medium text-gray-600 dark:text-gray-300 dark:text-opacity-60'}>{`Methods: `}</p>
+							{value.map((e, i) => (
+								<p key={e} className={'inline lining-nums break-all'}>{`${i !== 0 ? ', ' : ''}${e}`}</p>
+							))}
+						</div>
+					);
 				}
 				return (
 					<div key={key}>

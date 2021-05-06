@@ -105,6 +105,24 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 	}
 
 	function	fetchOnEtherscan(_chainID, _address) {
+
+		// //UNISWAP V2 -> ENTER LP
+		// "0xe8e33700": "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)",
+		// "0xf305d719": "addLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+
+		// //UNISWAP V2 -> LEAVE LP
+		// "0xbaa2abde": "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
+		// "0x02751cec": "removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+		// "0xded9382a": "removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+		// "0x2195995c": "removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+
+		// //UNISWAP V2 -> SWAP
+		// "0xfb3bdb41": "swapETHForExactTokens(uint256,address[],address,uint256)",
+		// "0x7ff36ab5": "swapExactETHForTokens(uint256,address[],address,uint256)",
+		// "0x18cbafe5": "swapExactTokensForETH(uint256,uint256,address[],address,uint256)",
+		// "0x38ed1739": "swapExactTokensForTokens(uint256,uint256,address[],address,uint256)",
+		// "0x4a25d94a": "swapTokensForExactETH(uint256,uint256,address[],address,uint256)",
+		// "0x8803dbee": "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)",
 		fetchERC20(etherscanBaseDomain(_chainID), _address).then((walletDataERC20) => {
 			set_walletData(wc => ({
 				transactions: wc.transactions,
@@ -112,7 +130,7 @@ export const Web3ContextApp = ({children, set_shouldReset}) => {
 				ready: Boolean(wc.transactions && walletDataERC20.result)
 			}));
 		});
-		fetchTx(etherscanBaseDomain(_chainID), _address).then((walletDataTransactions) => {
+		fetchTx(etherscanBaseDomain(_chainID), _address).then(async (walletDataTransactions) => {
 			set_walletData(wc => ({
 				transactions: walletDataTransactions.result || [],
 				erc20: wc.erc20,
