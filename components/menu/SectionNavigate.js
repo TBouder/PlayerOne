@@ -36,7 +36,8 @@ function	SectionNavigate({menuOpen, set_menuOpen}) {
 						</div>
 						<div className={'flex-1 hidden items-center justify-center sm:items-stretch sm:justify-start sm:flex'}>
 							<Link href={'/'} passHref>
-								<p className={'text-2xl cursor-pointer'}>{'🌕'}</p>
+  								<div className={'hexagon'} />
+								{/* <p className={'text-2xl cursor-pointer'}>{'🌕'}</p> */}
 								{/* <div className={'cursor-pointer'}>
 									<Image
 										width={30}
