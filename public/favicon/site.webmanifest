@@ -1,0 +1,21 @@
+{
+    "name": "Player One",
+    "short_name": "Player One",
+    "icons": [
+        {
+            "src": "/favicon/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#09162e",
+    "background_color": "#09162e",
+    "start_url": "https://player-one.xyz",
+    "display": "standalone",
+    "orientation": "portrait"
+}

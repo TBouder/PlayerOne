@@ -137,7 +137,7 @@ function	AppWrapper(props) {
 				<title>{'Player One'}</title>
 				<meta httpEquiv={'X-UA-Compatible'} content={'IE=edge'} />
 				<meta name={'viewport'} content={'width=device-width, initial-scale=1'} />
-				<meta name={'description'} content={'Player One - Are you ready to claim your name ?'} />
+				<meta name={'description'} content={'Player One offers every crypto user, from crypto noob to DeFi degen, a chance to highlight & value their crypto activity'} />
 				<meta name={'msapplication-TileColor'} content={'#9fcc2e'} />
 				<meta name={'theme-color'} content={'#ffffff'} />
 				<link rel="preconnect" href="https://fonts.gstatic.com" />

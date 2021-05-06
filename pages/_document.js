@@ -16,15 +16,15 @@ export default class MyDocument extends Document
 			<Html lang={'fr'}>
 				<Head>
 					<link rel={'stylesheet'} href={'https://rsms.me/inter/inter.css'} />
-					<link rel="preload" href="/fonts/Agames.woff2" as="font" crossOrigin="" />
-					<link rel={'shortcut icon'} type={'image/x-icon'} href={'/favicons/favicon.ico'} />
-					<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-					<link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
-					<link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
-					<link rel="manifest" href="/favicons/site.webmanifest" />
-					<link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
-					<meta name="msapplication-TileColor" content="#00aba9" />
-					<meta name="theme-color" content="#ffffff" />
+					<link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+					<link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+					<link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
+					<link rel="manifest" href="/favicon/site.webmanifest" />
+					<link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#f9b12a" />
+					<link rel="shortcut icon" href="/favicon/favicon.ico" />
+					<meta name="msapplication-TileColor" content="#09162e" />
+					<meta name="msapplication-config" content="/favicon/browserconfig.xml" />
+					<meta name="theme-color" content="#09162e" />
 				</Head>
 				<body>
 					<Main />
