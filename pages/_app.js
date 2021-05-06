@@ -28,7 +28,7 @@ Router.events.on('routeChangeStart', () => NProgress.start());
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-function Example() {
+function PolygonNetwork() {
 	const	{chainID, active, address} = useWeb3();
 	const	[show, set_show] = useState(false);
 
@@ -145,7 +145,7 @@ function	AppWrapper(props) {
 				<meta charSet={'utf-8'} />
 			</Head>
 			<div id={'app'} className={'flex min-h-screen'}>
-				<div className={'w-full overflow-x-hidden min-h-screen bg-white dark:bg-dark-background-900'} key={router.pathname}>
+				<div className={'w-full overflow-x-hidden min-h-screen bg-white dark:bg-dark-background-900 pb-24'} key={router.pathname}>
 					<TopMenu />
 					<div>
 						<Component
@@ -163,7 +163,7 @@ function	AppWrapper(props) {
 					<Confetti active={confetti.get.active} config={confetti.config} />
 				</div>
 			</div>
-			<Example />
+			<PolygonNetwork />
 			<div id={'portal-root'} />
 		</>
 	);

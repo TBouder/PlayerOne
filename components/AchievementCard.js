@@ -12,6 +12,7 @@ import	{getStrategy}								from	'achievements/helpers';
 import	useUI										from	'contexts/useUI';
 import	useWeb3										from	'contexts/useWeb3';
 import	useAchievements								from	'contexts/useAchievements';
+import Image from 'next/image';
 
 function	ClaimableButtom(props) {
 	const	STATUS = {UNDEFINED: 0, PENDING: 1, UNLOCKED: 2};
@@ -125,12 +126,22 @@ const	AchievementCard = forwardRef((props, ref) => {
 			<div
 				ref={ref}
 				className={'flex w-full lg:w-auto dark:bg-dark-background-900 rounded-lg'}>
-				<div className={`flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu shadow-lg rounded-lg bg-white dark:bg-dark-background-400 ${props.claimed || props.claimable ? 'shine hover:scale-102' : 'filter grayscale dark:filter-none dark:opacity-20'}`} style={{marginTop: -1}}>
+				<div className={`flex flex-row lg:flex-col overflow-hidden w-full h-full cursor-pointer transition-transform transform-gpu shadow-lg rounded-lg bg-white dark:bg-dark-background-400 ${props.claimed || props.claimable ? 'shine hover:scale-102' : 'filter grayscale dark:filter-none dark:opacity-100'}`} style={{marginTop: -1}}>
 					<div className={'flex-shrink-0 flex justify-center items-center h-auto lg:h-28 w-32 lg:w-full'}
 						style={{background: achievement.background}}>
-						<div className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl bg-white bg-opacity-90'}>
-							{achievement.icon}
-						</div>
+						{achievement.icon ?
+							<div className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl bg-white bg-opacity-90'}>
+								{achievement.icon}
+							</div>
+							:
+							<Image
+								src={achievement.image}
+								width={64}
+								quality={100}
+								height={64}
+								objectFit={'cover'}
+								alt={achievement.title} />
+						}
 					</div>
 					<div className={`flex flex-col h-full w-full`}>
 						<div className={'flex flex-col items-center text-center px-3 mb-12'}>

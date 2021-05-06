@@ -15,8 +15,7 @@ export default class MyDocument extends Document
 		return (
 			<Html lang={'fr'}>
 				<Head>
-					{/* <link rel={'stylesheet'} href={'https://rsms.me/inter/inter.css'} /> */}
-					<link rel={'stylesheet'} href={'/font.css'} />
+					<link rel={'stylesheet'} href={'https://rsms.me/inter/inter.css'} />
 					<link rel="preload" href="/fonts/Agames.woff2" as="font" crossOrigin="" />
 					<link rel={'shortcut icon'} type={'image/x-icon'} href={'/favicons/favicon.ico'} />
 					<link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />

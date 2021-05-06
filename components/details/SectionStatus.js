@@ -10,6 +10,7 @@ import	useAchievements						from	'contexts/useAchievements';
 import	Badge								from	'components/Badges';
 import	SwapOnSushiswap						from	'components/details/SwapRouter';
 import	{formatPercent}						from	'utils';
+import Image from 'next/image';
 
 function	SectionQuickStats({numberOfClaims}) {
 	const	{poolSize} = useAchievements();
@@ -57,11 +58,21 @@ function	SectionStatus({achievement, currentAddressClaim, description}) {
 							<div aria-label={'descriptions'} className={'flex flex-col lg:flex-row py-4 lg:py-0'}>
 								<div className={'flex flex-row w-full lg:w-1/3 pr-0 lg:pr-2'}>
 									<div className={'flex-shrink-0 -mt-4'}>
-										<div
-											style={{background: achievement.background}}
-											className={'mx-auto h-20 w-20 text-5xl flex justify-center items-center rounded-full text-white'}>
-											{achievement.icon}
-										</div>
+										{achievement.icon ? 
+											<div
+												style={{background: achievement.background}}
+												className={'mx-auto h-20 w-20 text-5xl flex justify-center items-center rounded-full text-white'}>
+												{achievement.icon}
+											</div>
+											:
+											<Image
+												src={achievement.image}
+												width={80}
+												quality={100}
+												height={80}
+												objectFit={'cover'}
+												alt={achievement.title} />
+										}
 									</div>
 									<div className={'ml-4 -mt-2 lg:mt-1 '}>
 										<SectionCollections collections={achievement.collections} className={'flex lg:hidden'} />
