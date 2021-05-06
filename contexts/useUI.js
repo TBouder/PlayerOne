@@ -13,6 +13,7 @@ const	UI = createContext();
 export const UIApp = ({children}) => {
 	const	[theme, set_theme] = useLocalStorage('theme', 'dark-initial');
 	const	[confetti, set_confetti] = useState({x: 0, y: 0});
+	const	[walletModal, set_walletModal] = useState(false);
 	const	confettiConfig = {
 		angle: 90,
 		spread: 360,
@@ -57,6 +58,8 @@ export const UIApp = ({children}) => {
 		<UI.Provider
 			children={children}
 			value={{
+				walletModal,
+				set_walletModal,
 				theme: {
 					get: theme,
 					set: set_theme,

@@ -36,15 +36,7 @@ function	SectionNavigate({menuOpen, set_menuOpen}) {
 						</div>
 						<div className={'flex-1 hidden items-center justify-center sm:items-stretch sm:justify-start sm:flex'}>
 							<Link href={'/'} passHref>
-  								<div className={'hexagon'} />
-								{/* <p className={'text-2xl cursor-pointer'}>{'🌕'}</p> */}
-								{/* <div className={'cursor-pointer'}>
-									<Image
-										width={30}
-										height={30}
-										layout={'fixed'}
-										src={'/coin.svg'} />
-								</div> */}
+  								<div className={'hexagon cursor-pointer'} />
 							</Link>
 							<div className={'flex items-center'}>
 								<Link href={'/about'} passHref>

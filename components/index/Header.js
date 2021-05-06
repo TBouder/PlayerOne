@@ -5,28 +5,30 @@
 **	@Filename:				Header.js
 ******************************************************************************/
 
-import	{Fragment, useRef, useState}	from	'react';
+import	{Fragment, useRef}				from	'react';
 import	{Dialog, Transition}			from	'@headlessui/react';
 import	Image							from	'next/image';
 import	SectionBanner					from	'components/index/SectionBanner';
 import	SectionProgress					from	'components/index/SectionProgress';
 import	useAchievements					from	'contexts/useAchievements';
 import	useWeb3							from	'contexts/useWeb3';
+import	useUI							from	'contexts/useUI';
 
-function	LoginModal({open, set_open}) {
+function	LoginModal() {
 	const	walletConnectRef = useRef()
 	const	{connect, walletType} = useWeb3();
+	const	{walletModal, set_walletModal} = useUI();
 
 	return (
-		<Transition.Root show={open} as={Fragment}>
+		<Transition.Root show={walletModal} as={Fragment}>
 			<Dialog
 				as={'div'}
 				static
 				className={'fixed z-10 inset-0 overflow-y-auto'}
 				style={{zIndex: 9999999}}
 				initialFocus={walletConnectRef}
-				open={open}
-				onClose={set_open}>
+				open={walletModal}
+				onClose={set_walletModal}>
 				<div className='flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0'>
 					<Transition.Child
 						as={Fragment}
@@ -51,7 +53,7 @@ function	LoginModal({open, set_open}) {
 								<div
 									onClick={() => {
 										connect(walletType.METAMASK);
-										set_open(false);
+										set_walletModal(false);
 									}}
 									className={'dark:bg-dark-background-900 dark:bg-opacity-20 dark:hover:bg-opacity-30 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md flex flex-col justify-center items-center transition-colors p-6 text-center'}>
 									<div className="web3modal-icon">
@@ -63,7 +65,7 @@ function	LoginModal({open, set_open}) {
 								<div
 									onClick={() => {
 										connect(walletType.WALLET_CONNECT);
-										set_open(false);
+										set_walletModal(false);
 									}}
 									ref={walletConnectRef}
 									className={'dark:bg-dark-background-900 dark:bg-opacity-20 dark:hover:bg-opacity-30 bg-gray-100 hover:bg-gray-200 cursor-pointer rounded-md flex flex-col justify-center items-center transition-colors p-6 text-center'}>
@@ -83,9 +85,9 @@ function	LoginModal({open, set_open}) {
 }
 
 function	PageHeader() {
+	const	{set_walletModal} = useUI();
 	const	{active} = useWeb3();
 	const	{elements} = useAchievements();
-	const	[open, set_open] = useState(false);
 
 	return (
 		<header className={'grid grid-cols-2 gap-12 mb-0 md:mb-16'}>
@@ -116,7 +118,7 @@ function	PageHeader() {
 					:
 					<div
 						className={'loginButton text-white mt-2 md:mt-4'}
-						onClick={() => set_open(true)}>
+						onClick={() => set_walletModal(true)}>
 						{'Connect your wallet'}
 					</div>
 				}
@@ -124,7 +126,7 @@ function	PageHeader() {
 			<div className={'col-span-2 md:col-span-1 md:mt-12'}>
 				<SectionBanner />
 			</div>
-			<LoginModal open={open} set_open={set_open} />
+			<LoginModal />
 		</header>
 	);
 }
