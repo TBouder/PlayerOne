@@ -36,6 +36,27 @@ import	{toAddress} 			from	'utils'
 **	"0xdb3e2198": "exactOutputSingle((address,address,uint24,address,uint256,uint256,uint256,uint160))",
 **	"0xac9650d8": "multicall(bytes[])",
 **
+**	SUSHISWAP -> LP
+**	"e8e33700": "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)",
+**	"f305d719": "addLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+**	"baa2abde": "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
+**	"02751cec": "removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
+**	"af2979eb": "removeLiquidityETHSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256)",
+**	"ded9382a": "removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+**	"5b0d5984": "removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+**	"2195995c": "removeLiquidityWithPermit(address,address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
+**		
+**	SUSHISWAP -> SWAP
+**	"fb3bdb41": "swapETHForExactTokens(uint256,address[],address,uint256)",
+**	"7ff36ab5": "swapExactETHForTokens(uint256,address[],address,uint256)",
+**	"b6f9de95": "swapExactETHForTokensSupportingFeeOnTransferTokens(uint256,address[],address,uint256)",
+**	"18cbafe5": "swapExactTokensForETH(uint256,uint256,address[],address,uint256)",
+**	"791ac947": "swapExactTokensForETHSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+**	"38ed1739": "swapExactTokensForTokens(uint256,uint256,address[],address,uint256)",
+**	"5c11d795": "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
+**	"4a25d94a": "swapTokensForExactETH(uint256,uint256,address[],address,uint256)",
+**	"8803dbee": "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)",
+**
 ******************************************************************************/
 async function	checkMethodID(provider, userAddress, walletData, args) {
 	const	{address, methodsID} = args;

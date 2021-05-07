@@ -11,6 +11,7 @@ import	jazzicon							from	'@metamask/jazzicon';
 import	useSWR								from	'swr';
 import	useWeb3								from	'contexts/useWeb3';
 import	{fetcher}							from	'utils';
+import { useRouter } from 'next/router';
 
 function jsNumberForAddress(address) {
 	const addr = address.slice(2, 10);
@@ -99,6 +100,8 @@ function	Leader({claim}) {
 }
 
 function	SectionLeaderboard(props) {
+	const	router = useRouter();
+	const	[initialRedirectionDone, set_initialRedirectionDone] = useState(false);
 	const	[currentSubSection, set_currentSubSection] = useState(0);
 	/**************************************************************************
 	**	Based on the props received we can initialize `claims`, aka the list
@@ -120,6 +123,40 @@ function	SectionLeaderboard(props) {
 	useEffect(() => {
 		set_claims(data || []);
 	}, [data]);
+
+	/**************************************************************************
+	**	Change the tab when the route change with an anchor
+	**************************************************************************/
+	useEffect(() => {
+		if (!initialRedirectionDone) {
+			if (router.asPath.endsWith('#claims')) {
+				set_currentSubSection(0)
+			} else if (router.asPath.endsWith('#technical')) {
+				set_currentSubSection(1)
+			} else if (router.asPath.endsWith('#social')) {
+				set_currentSubSection(2)
+			}
+			set_initialRedirectionDone(true);
+		}
+	}, [router])
+
+	useEffect(() => {
+		if (typeof(window) !== 'undefined' && initialRedirectionDone) {
+			if (currentSubSection === 0) {
+				if (window.history.replaceState) {
+					window.history.replaceState(null, null, `${window.location.pathname}#claims`);
+				}
+			} else if (currentSubSection === 1) {
+				if (window.history.replaceState) {
+					window.history.replaceState(null, null, `${window.location.pathname}#technical`);
+				}
+			} else if (currentSubSection === 2) {
+				if (window.history.replaceState) {
+					window.history.replaceState(null, null, `${window.location.pathname}#social`);
+				}
+			}
+		}
+	}, [typeof(window), currentSubSection, initialRedirectionDone]);
 
 	/**************************************************************************
 	**	Sections to render
@@ -151,18 +188,21 @@ function	SectionLeaderboard(props) {
 					<div className={'hidden lg:block'}>
 						<nav className={'-mb-px flex space-x-8'}>
 							<button
+								id={'claims'}
 								onClick={() => set_currentSubSection(0)}
 								className={`${currentSubSection === 0 ? 'border-accent-900 text-accent-900' : 'dark:border-dark-background-400 border-transparent text-accent-900 dark:text-dark-white hover:text-gray-700'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
 								{'Claims'}
 							</button>
 
 							<button
+								id={'technical'}
 								onClick={() => set_currentSubSection(1)}
 								className={`${currentSubSection === 1 ? 'border-accent-900 text-accent-900' : 'dark:border-dark-background-400 border-transparent text-accent-900 dark:text-dark-white hover:text-gray-700'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
 								{'Technical informations'}
 							</button>
 
 							<button
+								id={'social'}
 								onClick={() => set_currentSubSection(2)}
 								className={`${currentSubSection === 2 ? 'border-accent-900 text-accent-900' : 'dark:border-dark-background-400 border-transparent text-accent-900 dark:text-dark-white hover:text-gray-700'} whitespace-nowrap pb-4 px-1 border-b font-medium text-base cursor-pointer`}>
 								{'Social'}
@@ -209,8 +249,6 @@ function	SectionLeaderboard(props) {
 
 	function	Technical() {
 		function	renderArguments(args) {
-			// MoreOrLess  *int8   `json:"moreOrLess,omitempty" bson:"moreOrLess,omitempty"`
-
 			return Object.entries(args).map(([key, value]) => {
 				if (key === 'value') {
 					return (
