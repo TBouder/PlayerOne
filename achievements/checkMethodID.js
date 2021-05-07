@@ -61,6 +61,29 @@ import	{toAddress} 			from	'utils'
 **	"219f5d17": "increaseLiquidity((uint256,uint256,uint256,uint256,uint256,uint256))",
 **	"88316456": "mint((address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256))",
 **
+**	PARASWAP V1 -> Swap
+** "c5f0b909": "multiSwap(address,address,uint256,uint256,uint256,(address,(address,address,uint256,bytes,uint256)[])[],uint256,address,uint256,string)",
+**
+**	PARASWAP V2 -> Swap
+** 	"bb2a349b": "buy(address,address,uint256,uint256,uint256,(address,address,uint256,uint256,bytes,uint256)[],uint256,address,uint256,string)",
+** 	"cbd1603e": "multiSwap(address,address,uint256,uint256,uint256,(address,uint256,(address,address,uint256,bytes,uint256)[])[],uint256,address,uint256,string)",
+** 	
+**	PARASWAP V3 -> Swap
+**	"0x46546cfc": "buy((address,address,uint256,uint256,address,string,(address,address,uint256,uint256,bytes,uint256)[]))",
+**	"0xda8567c8": "multiSwap((address,address,uint256,uint256,uint256,address,string,(address,uint256,(address,address,uint256,bytes,uint256)[])[]))",
+**	"0xae6fba44": "simplBuy(address,address,uint256,uint256,address[],bytes,uint256[],uint256[],address,string)",
+**	"0x1610ca95": "simpleSwap(address,address,uint256,uint256,uint256,address[],bytes,uint256[],uint256[],address,string)",
+**
+**	PARASWAP V4 -> Swap
+**	"0xf95a49eb": "buy((address,address,uint256,uint256,address,string,bool,(address,address,uint256,uint256,bytes,uint256)[]))",
+**	"0xf9355f72": "buyOnUniswap(uint256,uint256,address[],uint8)",
+**	"0x33635226": "buyOnUniswapFork(address,bytes32,uint256,uint256,address[],uint8)",
+**	"0xec1d21dd": "megaSwap((address,uint256,uint256,uint256,address,string,bool,(uint256,(address,uint256,(address,address,uint256,bytes,uint256)[])[])[]))",
+**	"0x8f00eccb": "multiSwap((address,uint256,uint256,uint256,address,string,bool,(address,uint256,(address,address,uint256,bytes,uint256)[])[]))",
+**	"0xa27e8b6b": "simplBuy(address,address,uint256,uint256,address[],bytes,uint256[],uint256[],address,string,bool)",
+**	"0xcfc0afeb": "simpleSwap(address,address,uint256,uint256,uint256,address[],bytes,uint256[],uint256[],address,string,bool)",
+**	"0x58b9d179": "swapOnUniswap(uint256,uint256,address[],uint8)",
+**	"0x0863b7ac": "swapOnUniswapFork(address,bytes32,uint256,uint256,address[],uint8)",
 ******************************************************************************/
 async function	checkMethodID(provider, userAddress, walletData, args) {
 	const	{address, methodsID} = args;
