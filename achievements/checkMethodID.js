@@ -11,11 +11,9 @@ import	{toAddress} 			from	'utils'
 ** _DETAILS_: Check if a specific address has performed a tx with a specific
 **		      method
 **	
-**	UNISWAP V2 -> ENTER LP
+**	UNISWAP V2 -> LP
 **	"0xe8e33700": "addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256)",
 **	"0xf305d719": "addLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
-**	
-**	UNISWAP V2 -> LEAVE LP
 **	"0xbaa2abde": "removeLiquidity(address,address,uint256,uint256,uint256,address,uint256)",
 **	"0x02751cec": "removeLiquidityETH(address,uint256,uint256,uint256,address,uint256)",
 **	"0xded9382a": "removeLiquidityETHWithPermit(address,uint256,uint256,uint256,address,uint256,bool,uint8,bytes32,bytes32)",
@@ -56,6 +54,12 @@ import	{toAddress} 			from	'utils'
 **	"5c11d795": "swapExactTokensForTokensSupportingFeeOnTransferTokens(uint256,uint256,address[],address,uint256)",
 **	"4a25d94a": "swapTokensForExactETH(uint256,uint256,address[],address,uint256)",
 **	"8803dbee": "swapTokensForExactTokens(uint256,uint256,address[],address,uint256)",
+**
+**	UNISWAPV3 -> LP
+**	"13ead562": "createAndInitializePoolIfNecessary(address,address,uint24,uint160)",
+**	"0c49ccbe": "decreaseLiquidity((uint256,uint128,uint256,uint256,uint256))",
+**	"219f5d17": "increaseLiquidity((uint256,uint256,uint256,uint256,uint256,uint256))",
+**	"88316456": "mint((address,address,uint24,int24,int24,uint256,uint256,uint256,uint256,address,uint256))",
 **
 ******************************************************************************/
 async function	checkMethodID(provider, userAddress, walletData, args) {

@@ -136,6 +136,7 @@ const	AchievementCard = forwardRef((props, ref) => {
 							:
 							<Image
 								src={achievement.image}
+								className={'flex justify-center items-center w-16 h-16 rounded-full shadow-lg text-3xl bg-white bg-opacity-90'}
 								width={64}
 								quality={100}
 								height={64}
